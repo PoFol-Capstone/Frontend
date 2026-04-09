@@ -1,9 +1,10 @@
-import Header from "@/components/Header";
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
   return (
     <main className="min-h-screen bg-white text-black">
-
       {/* 히어로 */}
       <section className="flex flex-col items-center justify-center text-center py-32 gap-6">
         <h2 className="text-3xl font-bold">
@@ -12,7 +13,10 @@ export default function HomePage() {
         <p className="text-gray-600">
           코드 리뷰, 팀원 모집, 프로젝트 관리를 한 곳에서
         </p>
-        <button className="bg-black text-white px-6 py-3 rounded">
+        <button
+          className="bg-black text-white px-6 py-3 rounded cursor-pointer"
+          onClick={() => router.push("/board")}
+        >
           시작하기
         </button>
       </section>
@@ -35,19 +39,14 @@ export default function HomePage() {
 
       {/* CTA */}
       <section className="text-center py-24 border-t">
-        <p className="text-xl font-semibold mb-4">
-          지금 바로 시작하세요
-        </p>
-        <button className="border px-6 py-2 rounded">
-          무료로 시작하기 →
-        </button>
+        <p className="text-xl font-semibold mb-4">지금 바로 시작하세요</p>
+        <button className="border px-6 py-2 rounded">무료로 시작하기 →</button>
       </section>
 
       {/* 푸터 */}
       <footer className="border-t py-10 text-center text-sm text-gray-500">
         © 2026 PoFol
       </footer>
-
     </main>
   );
 }

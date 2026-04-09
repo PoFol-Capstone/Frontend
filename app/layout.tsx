@@ -1,7 +1,7 @@
+import Header from "@/components/Header";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang = "ko">
+    <html lang="ko">
       <body>
-        <Header isLoggedIn = {true}/>
+        <Header isLoggedIn={true} />
         {/*로그인 후 화면 보려면 true로 변경*/}
         {/*로그인 전 화면 보려면 false로 변경*/}
         {children}
