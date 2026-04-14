@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,11 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang = "ko">
+    <html lang="ko">
       <body>
-        <Header isLoggedIn = {true}/>
-        {/*로그인 후 화면 보려면 true로 변경*/}
-        {/*로그인 전 화면 보려면 false로 변경*/}
+        <Header />
         {children}
       </body>
     </html>

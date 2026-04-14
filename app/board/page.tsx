@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { isLoggedIn } from "@/lib/session";
 
 const categories = [
   "All",
-  "Fronted",
+  "Frontend",
   "Backend",
   "Design",
   "AI",
@@ -19,7 +21,7 @@ const posts = [
     title: "감정 일기장",
     description: "감정 일기장 어쩌고",
     tags: ["Next.js", "React", "Firebase"],
-    category: "Fronted",
+    category: "Frontend",
     author: "HotaeHwang",
   },
   {
@@ -41,16 +43,30 @@ const posts = [
 ];
 
 export default function BoardPage() {
+  const router = useRouter();
+  const [checked, setChecked] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      router.push("/signup");
+      return;
+    }
+
+    setChecked(true);
+  }, [router]);
 
   const filteredPosts =
     selectedCategory === "All"
       ? posts
       : posts.filter((post) => post.category === selectedCategory);
 
+  if (!checked) {
+    return <div className="p-6">확인 중...</div>;
+  }
+
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">
-      {/* 필터 */}
       <section className="mb-6 flex flex-wrap gap-3">
         {categories.map((category) => (
           <button
@@ -68,7 +84,6 @@ export default function BoardPage() {
         ))}
       </section>
 
-      {/* 카드 리스트 */}
       <section className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
         {filteredPosts.map((post) => (
           <Link
