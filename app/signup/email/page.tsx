@@ -2,14 +2,21 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { sendOtp } from "@/lib/auth";
+import { useEffect, useState } from "react";
+import { sendOtp } from "@/api/auth";
 
 export default function SignupEmailPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const savedName = sessionStorage.getItem("signupName");
+    if (!savedName) {
+      router.push("/signup");
+    }
+  }, [router]);
 
   const handleSendOtp = async () => {
     if (!email.trim()) {
