@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { verifyOtp } from "@/lib/auth";
+import { verifyOtp, register } from "@/api/auth";
 import { saveLogin } from "@/lib/session";
 
 export default function SignupVerifyPage() {
@@ -42,14 +42,16 @@ export default function SignupVerifyPage() {
         return;
       }
 
-      saveLogin(email);
-
       if (result.newUser) {
-        router.push("/signup/type");
-      } else {
-        //router.push("/board");
-        window.location.href = "/board"; //헤더 임시방편
+        const name = sessionStorage.getItem("signupName") ?? "";
+        await register(email, name);
+        sessionStorage.removeItem("signupName");
+        sessionStorage.removeItem("signupEmail");
       }
+
+      saveLogin(email);
+      sessionStorage.removeItem("loginEmail");
+      window.location.href = "/board"; //헤더 임시방편
     } catch (error) {
       console.error(error);
       setMessage("인증 확인에 실패했습니다.");
