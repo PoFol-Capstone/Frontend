@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { sendOtp } from "@/api/auth";
+import { sendOtp } from "@/lib/auth";
 
 export default function SignupEmailPage() {
   const router = useRouter();

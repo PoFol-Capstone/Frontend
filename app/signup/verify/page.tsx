@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { verifyOtp, register } from "@/api/auth";
+import { verifyOtp, register } from "@/lib/auth";
 import { saveLogin } from "@/lib/session";
 
 export default function SignupVerifyPage() {

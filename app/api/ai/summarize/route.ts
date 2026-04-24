@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 export async function POST(req: NextRequest) {
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json(
@@ -11,6 +9,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const { projectName, readmeText, techStack } = await req.json();
 
   const prompt = `다음은 GitHub 프로젝트 정보입니다.

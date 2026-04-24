@@ -1,50 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-function parseReadme(markdown: string): {
-  description: string;
-  mainFeatures: string;
-} {
-  const lines = markdown.split("\n");
-
-  // 첫 번째 단락: h1 제목 다음에 오는 첫 번째 비어있지 않은 일반 텍스트
-  let description = "";
-  let passedTitle = false;
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!passedTitle) {
-      if (trimmed.startsWith("#")) passedTitle = true;
-      continue;
-    }
-    if (trimmed && !trimmed.startsWith("#") && !trimmed.startsWith("!")) {
-      description = trimmed;
-      break;
-    }
-  }
-
-  // 주요 기능 섹션: 기능/Features/주요 기능 헤딩 아래 목록 추출
-  const featureHeadings = /^#{1,3}\s.*(기능|feature|function|주요|핵심).*/i;
-  let inFeatureSection = false;
-  const featureLines: string[] = [];
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.startsWith("#")) {
-      if (featureHeadings.test(trimmed)) {
-        inFeatureSection = true;
-      } else if (inFeatureSection) {
-        break; // 다음 섹션 시작 → 종료
-      }
-      continue;
-    }
-    if (inFeatureSection && (trimmed.startsWith("-") || trimmed.startsWith("*") || /^\d+\./.test(trimmed))) {
-      featureLines.push(trimmed.replace(/^[-*]\s*|\d+\.\s*/, "").trim());
-    }
-  }
-
-  const mainFeatures = featureLines.join("\n");
-
-  return { description, mainFeatures };
-}
+import { parseReadme, FRAMEWORK_MAP } from "@/lib/github";
 
 export async function GET(req: NextRequest) {
   const token = process.env.GITHUB_TOKEN;
@@ -56,7 +11,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const fullName = searchParams.get("repo"); // "owner/repo" 형식
+  const fullName = searchParams.get("repo");
   if (!fullName) {
     return NextResponse.json(
       { error: "repo 파라미터가 필요합니다." },
@@ -87,25 +42,14 @@ export async function GET(req: NextRequest) {
   const repoData = await repoRes.json();
   const langData = langRes.ok ? await langRes.json() : {};
 
-  // package.json에서 프레임워크 감지
-  const FRAMEWORK_MAP: Record<string, string> = {
-    next: "Next.js", react: "React", vue: "Vue", nuxt: "Nuxt",
-    "@angular/core": "Angular", svelte: "Svelte", astro: "Astro",
-    remix: "Remix", gatsby: "Gatsby", express: "Express",
-    fastify: "Fastify", nestjs: "@nestjs/core", koa: "Koa",
-    "spring-boot": "Spring Boot", django: "Django", flask: "Flask",
-    prisma: "Prisma", drizzle: "Drizzle", mongoose: "Mongoose",
-    tailwindcss: "Tailwind CSS", "@mui/material": "MUI",
-    "framer-motion": "Framer Motion",
-  };
   const frameworks: string[] = [];
   if (pkgRes.ok) {
     const pkgJson = await pkgRes.json();
     const pkgText = Buffer.from(pkgJson.content, "base64").toString("utf-8");
     const pkg = JSON.parse(pkgText);
     const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
-    for (const [pkg_name, label] of Object.entries(FRAMEWORK_MAP)) {
-      if (pkg_name in allDeps) frameworks.push(label);
+    for (const [key, label] of Object.entries(FRAMEWORK_MAP)) {
+      if (key in allDeps) frameworks.push(label);
     }
   }
 
