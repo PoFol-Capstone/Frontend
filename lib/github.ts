@@ -45,7 +45,8 @@ export function parseReadme(markdown: string): {
   return { description, mainFeatures: featureLines.join("\n") };
 }
 
-export const FRAMEWORK_MAP: Record<string, string> = {
+// npm (package.json)
+const NPM_MAP: Record<string, string> = {
   next: "Next.js",
   react: "React",
   vue: "Vue",
@@ -66,3 +67,71 @@ export const FRAMEWORK_MAP: Record<string, string> = {
   "@mui/material": "MUI",
   "framer-motion": "Framer Motion",
 };
+
+export function detectFromPackageJson(content: string): string[] {
+  const pkg = JSON.parse(content);
+  const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+  return Object.entries(NPM_MAP)
+    .filter(([key]) => key in allDeps)
+    .map(([, label]) => label);
+}
+
+// Java (pom.xml / build.gradle)
+export function detectFromPomXml(content: string): string[] {
+  const found: string[] = [];
+  if (/spring-boot/i.test(content)) found.push("Spring Boot");
+  if (/quarkus/i.test(content)) found.push("Quarkus");
+  if (/micronaut/i.test(content)) found.push("Micronaut");
+  return found;
+}
+
+export function detectFromGradle(content: string): string[] {
+  const found: string[] = [];
+  if (/spring.?boot/i.test(content)) found.push("Spring Boot");
+  if (/quarkus/i.test(content)) found.push("Quarkus");
+  if (/micronaut/i.test(content)) found.push("Micronaut");
+  return found;
+}
+
+// Python (requirements.txt / pyproject.toml)
+export function detectFromPython(content: string): string[] {
+  const lower = content.toLowerCase();
+  const found: string[] = [];
+  if (lower.includes("django")) found.push("Django");
+  if (lower.includes("flask")) found.push("Flask");
+  if (lower.includes("fastapi")) found.push("FastAPI");
+  if (lower.includes("tornado")) found.push("Tornado");
+  if (lower.includes("aiohttp")) found.push("aiohttp");
+  return found;
+}
+
+// Ruby (Gemfile)
+export function detectFromGemfile(content: string): string[] {
+  const lower = content.toLowerCase();
+  const found: string[] = [];
+  if (lower.includes("rails")) found.push("Rails");
+  if (lower.includes("sinatra")) found.push("Sinatra");
+  if (lower.includes("hanami")) found.push("Hanami");
+  return found;
+}
+
+// Go (go.mod)
+export function detectFromGoMod(content: string): string[] {
+  const found: string[] = [];
+  if (content.includes("gin-gonic/gin")) found.push("Gin");
+  if (content.includes("labstack/echo")) found.push("Echo");
+  if (content.includes("gofiber/fiber")) found.push("Fiber");
+  if (content.includes("go-chi/chi")) found.push("Chi");
+  if (content.includes("beego/beego")) found.push("Beego");
+  return found;
+}
+
+// Rust (Cargo.toml)
+export function detectFromCargoToml(content: string): string[] {
+  const found: string[] = [];
+  if (content.includes("actix")) found.push("Actix");
+  if (content.includes("axum")) found.push("Axum");
+  if (content.includes("rocket")) found.push("Rocket");
+  if (content.includes("warp")) found.push("Warp");
+  return found;
+}

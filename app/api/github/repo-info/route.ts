@@ -1,5 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parseReadme, FRAMEWORK_MAP } from "@/lib/github";
+import {
+  parseReadme,
+  detectFromPackageJson,
+  detectFromPomXml,
+  detectFromGradle,
+  detectFromPython,
+  detectFromGemfile,
+  detectFromGoMod,
+  detectFromCargoToml,
+} from "@/lib/github";
+
+const EXTRA_FILES = [
+  "pom.xml",
+  "build.gradle",
+  "requirements.txt",
+  "pyproject.toml",
+  "Gemfile",
+  "go.mod",
+  "Cargo.toml",
+] as const;
+
+type ExtraFile = (typeof EXTRA_FILES)[number];
 
 export async function GET(req: NextRequest) {
   const token = process.env.GITHUB_TOKEN;
@@ -25,11 +46,12 @@ export async function GET(req: NextRequest) {
   };
   const base = `https://api.github.com/repos/${fullName}`;
 
-  const [repoRes, langRes, readmeRes, pkgRes] = await Promise.all([
+  const [repoRes, langRes, readmeRes, pkgRes, ...extraRes] = await Promise.all([
     fetch(base, { headers }),
     fetch(`${base}/languages`, { headers }),
     fetch(`${base}/readme`, { headers }),
     fetch(`${base}/contents/package.json`, { headers }),
+    ...EXTRA_FILES.map((f) => fetch(`${base}/contents/${f}`, { headers })),
   ]);
 
   if (!repoRes.ok) {
@@ -42,16 +64,34 @@ export async function GET(req: NextRequest) {
   const repoData = await repoRes.json();
   const langData = langRes.ok ? await langRes.json() : {};
 
-  const frameworks: string[] = [];
+  // 각 파일 내용을 병렬로 디코딩
+  const fileContents = await Promise.all(
+    EXTRA_FILES.map(async (file, i) => {
+      const res = extraRes[i];
+      if (!res.ok) return [file, null] as const;
+      const json = await res.json();
+      const text = Buffer.from(json.content as string, "base64").toString("utf-8");
+      return [file, text] as const;
+    }),
+  );
+  const fileMap = Object.fromEntries(fileContents) as Record<ExtraFile, string | null>;
+
+  const frameworkSet = new Set<string>();
+
   if (pkgRes.ok) {
-    const pkgJson = await pkgRes.json();
-    const pkgText = Buffer.from(pkgJson.content, "base64").toString("utf-8");
-    const pkg = JSON.parse(pkgText);
-    const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
-    for (const [key, label] of Object.entries(FRAMEWORK_MAP)) {
-      if (key in allDeps) frameworks.push(label);
-    }
+    const json = await pkgRes.json();
+    const text = Buffer.from(json.content as string, "base64").toString("utf-8");
+    detectFromPackageJson(text).forEach((f) => frameworkSet.add(f));
   }
+  if (fileMap["pom.xml"]) detectFromPomXml(fileMap["pom.xml"]).forEach((f) => frameworkSet.add(f));
+  if (fileMap["build.gradle"]) detectFromGradle(fileMap["build.gradle"]).forEach((f) => frameworkSet.add(f));
+  if (fileMap["requirements.txt"]) detectFromPython(fileMap["requirements.txt"]).forEach((f) => frameworkSet.add(f));
+  if (fileMap["pyproject.toml"]) detectFromPython(fileMap["pyproject.toml"]).forEach((f) => frameworkSet.add(f));
+  if (fileMap["Gemfile"]) detectFromGemfile(fileMap["Gemfile"]).forEach((f) => frameworkSet.add(f));
+  if (fileMap["go.mod"]) detectFromGoMod(fileMap["go.mod"]).forEach((f) => frameworkSet.add(f));
+  if (fileMap["Cargo.toml"]) detectFromCargoToml(fileMap["Cargo.toml"]).forEach((f) => frameworkSet.add(f));
+
+  const frameworks = [...frameworkSet];
 
   let description = (repoData.description as string) ?? "";
   let mainFeatures = "";
