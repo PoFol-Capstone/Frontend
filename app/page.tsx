@@ -1,10 +1,8 @@
-import Header from "@/components/Header";
 import Link from "next/link";
 
 export default function HomePage() {
   return (
     <main className="min-h-screen bg-white text-black">
-      
       {/* 히어로 */}
       <section className="flex flex-col items-center justify-center text-center py-32 gap-6">
         <h2 className="text-3xl font-bold">

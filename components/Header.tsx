@@ -43,9 +43,9 @@ export default function Header() {
             </div>
 
             <div className="flex items-center gap-5 text-lg">
-              <button>➕</button>
+              <Link href="/board/write">➕</Link>
               <button>🔔</button>
-              <button>👤</button>
+              <Link href="/profile">👤</Link>
             </div>
           </>
         ) : (
