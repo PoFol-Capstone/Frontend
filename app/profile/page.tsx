@@ -131,9 +131,7 @@ export default function ProfilePage() {
                     className="group block"
                   >
                     <div className="aspect-video rounded-xl bg-gray-200 transition group-hover:opacity-80" />
-                    <p className="mt-2 text-sm font-semibold">
-                      {post.title}
-                    </p>
+                    <p className="mt-2 text-sm font-semibold">{post.title}</p>
                   </Link>
                 ))}
               </div>
@@ -209,18 +207,6 @@ export default function ProfilePage() {
                   </div>
                 </article>
               ))}
-
-              <article className="rounded-2xl border border-gray-300 p-6">
-                <h3 className="text-xl font-bold">프로젝트 이름</h3>
-
-                <div className="mt-5 space-y-6 text-sm">
-                  <p>개발 기간</p>
-                  <p>기획 의도</p>
-                  <p>서비스 설명</p>
-                  <p>핵심 기능</p>
-                  <p>태그</p>
-                </div>
-              </article>
             </div>
           </section>
         </section>

@@ -6,6 +6,12 @@ import { redirect } from "next/navigation";
  * cookies() : 브라우저 쿠키를 읽고 / 저장하고 / 삭제하는 Next.js 서버용 API
  */
 
+// ----------------------백 연결 전 임시 로그인
+export async function isLoggedIn() {
+  return true;
+}
+//-----------------------------/////////
+
 // 로그인 할 때, 저장
 export async function saveLogin(email: string) {
   const cookieStore = await cookies();

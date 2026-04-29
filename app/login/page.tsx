@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { sendOtp } from "@/lib/auth";
+//임시 로그인
+import { saveLogin } from "@/lib/session";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,6 +24,11 @@ export default function LoginPage() {
       setMessage("");
 
       await sendOtp(email);
+      // ---------------------------임시 로그인
+      // await saveLogin(email);
+      // router.push("/board");
+      //------------------------------
+
 
       sessionStorage.setItem("loginEmail", email);
       const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl") ?? "/board";
