@@ -1,35 +1,18 @@
-"use client";
-
+import ProfileMenu from "@/components/ProfileMenu";
+import { getSession } from "@/lib/session";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { isLoggedIn, logout } from "@/lib/session";
 
-export default function Header() {
-  const pathname = usePathname();
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setLoggedIn(isLoggedIn());
-    setMounted(true);
-  }, [pathname]); //페이지 이동 시 로그인 상태를 다시 반영하기 위해 사용
-
-  const handleLogout = () => {
-    logout();
-    window.location.href = "/"; //새로고침
-  };
-
-  if (!mounted) return null;
+export default async function Header() {
+  const session = await getSession();
 
   return (
     <header className="border-b border-gray-200 px-10 py-4">
       <div className="mx-auto flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold">
+        <Link href={session ? "/board" : "/"} className="text-xl font-bold">
           PoFol
         </Link>
 
-        {loggedIn ? (
+        {session ? (
           <>
             {/* 로그인 상태 */}
             <div className="mx-10 flex flex-1 justify-center">
@@ -45,7 +28,7 @@ export default function Header() {
             <div className="flex items-center gap-5 text-lg">
               <Link href="/board/write">➕</Link>
               <button>🔔</button>
-              <Link href="/profile">👤</Link>
+              <ProfileMenu />
             </div>
           </>
         ) : (
