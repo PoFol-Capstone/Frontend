@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/lib/session";
+import { useState } from "react";
 
 const categories = [
   "All",
@@ -43,27 +41,12 @@ const posts = [
 ];
 
 export default function BoardPage() {
-  const router = useRouter();
-  const [checked, setChecked] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  useEffect(() => {
-    if (!isLoggedIn()) {
-      router.push("/signup");
-      return;
-    }
-
-    setChecked(true);
-  }, [router]);
 
   const filteredPosts =
     selectedCategory === "All"
       ? posts
       : posts.filter((post) => post.category === selectedCategory);
-
-  if (!checked) {
-    return <div className="p-6">확인 중...</div>;
-  }
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">

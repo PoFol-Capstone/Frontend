@@ -24,6 +24,8 @@ export default function LoginPage() {
       await sendOtp(email);
 
       sessionStorage.setItem("loginEmail", email);
+      const callbackUrl = new URLSearchParams(window.location.search).get("callbackUrl") ?? "/board";
+      sessionStorage.setItem("callbackUrl", callbackUrl);
       router.push("/signup/verify");
     } catch (error) {
       console.error(error);

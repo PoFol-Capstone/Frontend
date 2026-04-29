@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { verifyOtp, register } from "@/lib/auth";
+import { register, verifyOtp } from "@/lib/auth";
 import { saveLogin } from "@/lib/session";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function SignupVerifyPage() {
   const router = useRouter();
@@ -49,9 +49,11 @@ export default function SignupVerifyPage() {
         sessionStorage.removeItem("signupEmail");
       }
 
-      saveLogin(email);
+      await saveLogin(email);
       sessionStorage.removeItem("loginEmail");
-      window.location.href = "/board"; //헤더 임시방편
+      const callbackUrl = sessionStorage.getItem("callbackUrl") ?? "/board";
+      sessionStorage.removeItem("callbackUrl");
+      window.location.href = callbackUrl;
     } catch (error) {
       console.error(error);
       setMessage("인증 확인에 실패했습니다.");
@@ -92,9 +94,7 @@ export default function SignupVerifyPage() {
           </button>
         </form>
 
-        {message && (
-          <p className="mt-4 text-sm text-gray-500">{message}</p>
-        )}
+        {message && <p className="mt-4 text-sm text-gray-500">{message}</p>}
 
         <button
           type="button"
