@@ -1,6 +1,10 @@
+import { getSession } from "@/lib/session";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getSession();
+  if (session) redirect("/board");
   return (
     <main className="min-h-screen bg-white text-black">
       {/* 히어로 */}
