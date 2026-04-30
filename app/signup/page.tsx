@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function SignupPage() {
     }
 
     sessionStorage.setItem("signupName", name.trim());
-    router.push("/signup/email");
+    router.push("/signup/type");
   };
 
   return (
