@@ -1,14 +1,16 @@
-import { http } from "./http";
 import type {
-  PostListParams,
-  RequestPosts,
-  ResponsePosts,
-  RequestApplication,
-  ResponseApplication,
   PatchApplicationStatus,
-} from "@/app/types/post";
+  PostListParams,
+  RequestApplication,
+  RequestPosts,
+  ResponseApplication,
+  ResponsePosts,
+} from "@/types/post";
+import { http } from "./http";
 
-export async function getPosts(params?: PostListParams): Promise<ResponsePosts[]> {
+export async function getPosts(
+  params?: PostListParams,
+): Promise<ResponsePosts[]> {
   const res = await http.get("/api/post", { params });
   return res.data;
 }
@@ -23,7 +25,10 @@ export async function getPost(uuid: string): Promise<ResponsePosts> {
   return res.data;
 }
 
-export async function updatePost(uuid: string, body: Partial<RequestPosts>): Promise<ResponsePosts> {
+export async function updatePost(
+  uuid: string,
+  body: Partial<RequestPosts>,
+): Promise<ResponsePosts> {
   const res = await http.patch(`/api/post/${uuid}`, body);
   return res.data;
 }
@@ -50,12 +55,17 @@ export async function getRelatedPosts(uuid: string): Promise<ResponsePosts[]> {
   return res.data;
 }
 
-export async function applyToPost(uuid: string, body: RequestApplication): Promise<ResponseApplication> {
+export async function applyToPost(
+  uuid: string,
+  body: RequestApplication,
+): Promise<ResponseApplication> {
   const res = await http.post(`/api/post/${uuid}/applications`, body);
   return res.data;
 }
 
-export async function getApplications(uuid: string): Promise<ResponseApplication[]> {
+export async function getApplications(
+  uuid: string,
+): Promise<ResponseApplication[]> {
   const res = await http.get(`/api/post/${uuid}/applications`);
   return res.data;
 }
@@ -65,7 +75,10 @@ export async function updateApplicationStatus(
   applicationId: number,
   body: PatchApplicationStatus,
 ): Promise<ResponseApplication> {
-  const res = await http.patch(`/api/post/${uuid}/applications/${applicationId}`, body);
+  const res = await http.patch(
+    `/api/post/${uuid}/applications/${applicationId}`,
+    body,
+  );
   return res.data;
 }
 

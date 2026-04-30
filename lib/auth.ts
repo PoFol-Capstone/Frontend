@@ -1,4 +1,4 @@
-import { RefreshResponse } from "@/app/types/auth";
+import { RefreshResponse } from "@/types/auth";
 import { http } from "./http";
 
 export async function sendOtp(email: string): Promise<void> {
