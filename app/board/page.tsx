@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/lib/session";
+import { useState } from "react";
+import { posts } from "@/app/_data/posts";
 
 const categories = [
   "All",
@@ -15,55 +14,13 @@ const categories = [
   "Bookmarks",
 ];
 
-const posts = [
-  {
-    id: 1,
-    title: "감정 일기장",
-    description: "감정 일기장 어쩌고",
-    tags: ["Next.js", "React", "Firebase"],
-    category: "Frontend",
-    author: "HotaeHwang",
-  },
-  {
-    id: 2,
-    title: "채팅 어플리케이션",
-    description: "실시간 채팅 가능",
-    tags: ["React", "Next.js", "Firebase"],
-    category: "Backend",
-    author: "HotaeHwang",
-  },
-  {
-    id: 3,
-    title: "디자인 시스템",
-    description: "컴포넌트 구조 정리",
-    tags: ["Figma", "Design"],
-    category: "Design",
-    author: "HotaeHwang",
-  },
-];
-
 export default function BoardPage() {
-  const router = useRouter();
-  const [checked, setChecked] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  useEffect(() => {
-    if (!isLoggedIn()) {
-      router.push("/signup");
-      return;
-    }
-
-    setChecked(true);
-  }, [router]);
 
   const filteredPosts =
     selectedCategory === "All"
       ? posts
       : posts.filter((post) => post.category === selectedCategory);
-
-  if (!checked) {
-    return <div className="p-6">확인 중...</div>;
-  }
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">
@@ -109,7 +66,9 @@ export default function BoardPage() {
 
             <div className="flex items-center justify-between border-t border-gray-200 pt-3 text-xs text-gray-500">
               <span>{post.author}</span>
-              <span>조회수 / 좋아요</span>
+              <span>
+                👁 {post.viewCount} / ♡ {post.likeCount}
+              </span>
             </div>
           </Link>
         ))}
