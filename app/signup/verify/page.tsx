@@ -1,6 +1,6 @@
 "use client";
 
-import { register, verifyOtp } from "@/lib/auth";
+import { login, register, verifyOtp } from "@/lib/auth";
 import { saveLogin } from "@/lib/session";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -42,14 +42,20 @@ export default function SignupVerifyPage() {
         return;
       }
 
+      let uuid: string;
+
       if (result.newUser) {
         const name = sessionStorage.getItem("signupName") ?? "";
-        await register(email, name);
+        const authResult = await register(email, name);
+        uuid = authResult.uuid;
         sessionStorage.removeItem("signupName");
         sessionStorage.removeItem("signupEmail");
+      } else {
+        const authResult = await login(email);
+        uuid = authResult.uuid;
       }
 
-      await saveLogin(email);
+      await saveLogin(email, uuid);
       sessionStorage.removeItem("loginEmail");
       const callbackUrl = sessionStorage.getItem("callbackUrl") ?? "/board";
       sessionStorage.removeItem("callbackUrl");
