@@ -18,6 +18,9 @@ export type Profile = {
   avatarUrl: string;
   bio: string;
   position: string;
+  positionMonths: number;
+  totalViewCount: number;
+  followerCount: number;
   links: ProfileLink[];
   skills: ProfileSkill[];
 };
