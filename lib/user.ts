@@ -1,3 +1,4 @@
+import { Profile } from "@/types/user";
 import { http } from "./http";
 
 export default async function getUser(uuid: string): Promise<Profile> {
