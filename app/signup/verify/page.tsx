@@ -51,7 +51,7 @@ export default function SignupVerifyPage() {
         sessionStorage.removeItem("signupName");
         sessionStorage.removeItem("signupEmail");
       } else {
-        const authResult = await login(email);
+        const authResult = await login(email, code);
         uuid = authResult.uuid;
       }
 

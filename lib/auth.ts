@@ -17,8 +17,8 @@ export async function verifyOtp(
   return res.data;
 }
 
-export async function login(email: string): Promise<AuthResponse> {
-  const res = await http.post<AuthResponse>("/api/auth/login", { email });
+export async function login(email: string, code: string): Promise<AuthResponse> {
+  const res = await http.post<AuthResponse>("/api/auth/login", { email, code });
   return res.data;
 }
 
