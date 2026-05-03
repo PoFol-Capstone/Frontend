@@ -19,18 +19,29 @@ export async function verifyOtp(
   return res.data;
 }
 
-export async function login(email: string, code: string): Promise<AuthResponse> {
+export async function login(
+  email: string,
+  code: string,
+): Promise<AuthResponse> {
   const res = await http.post<AuthResponse>("/api/auth/login", { email, code });
   return res.data;
 }
 
-export async function register(email: string, name: string): Promise<AuthResponse> {
-  const res = await http.post<AuthResponse>("/api/auth/register", { email, name });
+export async function register(
+  email: string,
+  name: string,
+): Promise<AuthResponse> {
+  const res = await http.post<AuthResponse>("/api/auth/register", {
+    email,
+    name,
+  });
   return res.data;
 }
 
-export async function logout(): Promise<void> {
-  await http.post("/api/auth/logout");
+export async function logout(refreshToken: string): Promise<void> {
+  await http.post("/api/auth/logout", {
+    refreshToken,
+  });
 }
 
 export async function refresh(refreshToken: string): Promise<string> {
