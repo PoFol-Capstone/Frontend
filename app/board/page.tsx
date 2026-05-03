@@ -1,8 +1,9 @@
 "use client";
 
+import { posts } from "@/app/_data/posts";
 import Link from "next/link";
 import { useState } from "react";
-import { posts } from "@/app/_data/posts";
+import EmptyView from "./_components/empty-view";
 
 const categories = [
   "All",
@@ -41,38 +42,42 @@ export default function BoardPage() {
         ))}
       </section>
 
-      <section className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
-        {filteredPosts.map((post) => (
-          <Link
-            key={post.id}
-            href={`/board/${post.id}`}
-            className="w-full rounded-2xl border border-gray-200 p-4 transition hover:shadow-sm"
-          >
-            <div className="mb-4 aspect-video w-full rounded-xl bg-gray-100" />
+      {filteredPosts.length === 0 ? (
+        <EmptyView />
+      ) : (
+        <section className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
+          {filteredPosts.map((post) => (
+            <Link
+              key={post.id}
+              href={`/board/${post.id}`}
+              className="w-full rounded-2xl border border-gray-200 p-4 transition hover:shadow-sm"
+            >
+              <div className="mb-4 aspect-video w-full rounded-xl bg-gray-100" />
 
-            <h2 className="mb-1 text-lg font-semibold">{post.title}</h2>
-            <p className="mb-4 text-sm text-gray-500">{post.description}</p>
+              <h2 className="mb-1 text-lg font-semibold">{post.title}</h2>
+              <p className="mb-4 text-sm text-gray-500">{post.description}</p>
 
-            <div className="mb-5 flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700"
-                >
-                  {tag}
+              <div className="mb-5 flex flex-wrap gap-2">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <div className="flex items-center justify-between border-t border-gray-200 pt-3 text-xs text-gray-500">
+                <span>{post.author}</span>
+                <span>
+                  👁 {post.viewCount} / ♡ {post.likeCount}
                 </span>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between border-t border-gray-200 pt-3 text-xs text-gray-500">
-              <span>{post.author}</span>
-              <span>
-                👁 {post.viewCount} / ♡ {post.likeCount}
-              </span>
-            </div>
-          </Link>
-        ))}
-      </section>
+              </div>
+            </Link>
+          ))}
+        </section>
+      )}
     </main>
   );
 }
