@@ -1,6 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { logout as authLogout } from "./auth";
 
 // ----------------------백 연결 전 임시 로그인
 // export async function isLoggedIn() {
@@ -33,9 +34,8 @@ export async function saveLogin(email: string, uuid: string, accessToken: string
     path: "/",
   });
 
-  // access token 저장 (httpOnly: false — 클라이언트 Axios 인터셉터에서도 읽어야 함)
   cookieStore.set("access_token", accessToken, {
-    httpOnly: false,
+    httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 7,
@@ -57,8 +57,10 @@ export async function getSessionUuid() {
 
 // 로그아웃 할 때, 삭제 후 로그인 페이지로 이동
 export async function logout() {
+  await authLogout();
   const cookieStore = await cookies();
   cookieStore.delete("session");
+  cookieStore.delete("uuid");
   cookieStore.delete("access_token");
   redirect("/");
 }

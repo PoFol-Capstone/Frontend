@@ -1,3 +1,5 @@
+"use server";
+
 import { AuthResponse, RefreshResponse } from "@/types/auth";
 import { http } from "./http";
 

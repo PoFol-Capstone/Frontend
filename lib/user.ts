@@ -1,3 +1,5 @@
+"use server";
+
 import { Profile } from "@/types/user";
 import { http } from "./http";
 
