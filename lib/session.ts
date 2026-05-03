@@ -13,7 +13,11 @@ import { logout as authLogout } from "./auth";
  */
 
 // 로그인 할 때, 저장
-export async function saveLogin(email: string, uuid: string, accessToken: string) {
+export async function saveLogin(
+  email: string,
+  uuid: string,
+  accessToken: string,
+) {
   const cookieStore = await cookies();
 
   // session 저장
@@ -55,12 +59,62 @@ export async function getSessionUuid() {
   return cookieStore.get("uuid")?.value ?? null;
 }
 
+export async function getRefreshToken() {
+  const cookieStore = await cookies();
+  return cookieStore.get("refresh_token")?.value ?? null;
+}
+
+// GitHub OAuth 후 토큰 갱신 (email은 기존 쿠키 유지)
+export async function saveAccessToken(
+  uuid: string,
+  accessToken: string,
+  refreshToken: string,
+) {
+  const cookieStore = await cookies();
+
+  cookieStore.set("uuid", uuid, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+
+  cookieStore.set("access_token", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+
+  // 추가
+  cookieStore.set("refresh_token", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+}
+
 // 로그아웃 할 때, 삭제 후 로그인 페이지로 이동
 export async function logout() {
-  await authLogout();
   const cookieStore = await cookies();
-  cookieStore.delete("session");
-  cookieStore.delete("uuid");
-  cookieStore.delete("access_token");
-  redirect("/");
+  const refreshToken = cookieStore.get("refresh_token")?.value;
+
+  try {
+    if (refreshToken) {
+      await authLogout(refreshToken);
+    }
+  } catch (error) {
+    console.error("logout failed:", error);
+  } finally {
+    cookieStore.delete("session");
+    cookieStore.delete("uuid");
+    cookieStore.delete("access_token");
+    cookieStore.delete("refresh_token");
+
+    redirect("/");
+  }
 }
