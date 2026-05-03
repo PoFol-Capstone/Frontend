@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
  */
 
 // 로그인 할 때, 저장
-export async function saveLogin(email: string, uuid: string) {
+export async function saveLogin(email: string, uuid: string, accessToken: string) {
   const cookieStore = await cookies();
 
   // session 저장
@@ -27,6 +27,15 @@ export async function saveLogin(email: string, uuid: string) {
   // uuid 저장
   cookieStore.set("uuid", uuid, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+
+  // access token 저장 (httpOnly: false — 클라이언트 Axios 인터셉터에서도 읽어야 함)
+  cookieStore.set("access_token", accessToken, {
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 7,
@@ -50,5 +59,6 @@ export async function getSessionUuid() {
 export async function logout() {
   const cookieStore = await cookies();
   cookieStore.delete("session");
+  cookieStore.delete("access_token");
   redirect("/");
 }
