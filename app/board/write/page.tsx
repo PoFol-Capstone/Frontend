@@ -17,17 +17,7 @@ export default function Page() {
   const [repos, setRepos] = useState<Repo[]>([]);
   const [selectedRepo, setSelectedRepo] = useState("");
 
-  const handleLoadProject = () => {
-  console.log("프로젝트 불러오기 클릭됨");
-
-  // 임시 테스트용
-  setProjectName("Team Finder Platform");
-  setProjectDescription("팀원을 찾고 프로젝트를 함께 진행할 수 있는 플랫폼입니다.");
-  setMainFeatures("GitHub OAuth 로그인, AI 분석, 협업 기능");
-  setTechStack(["React", "Next.js", "TypeScript"]);
-  };
-  
-  const [isLoadingRepos, setIsLoadingRepos] = useState(true);
+  const [isLoadingRepos, setIsLoadingRepos] = useState(false);
   const [loadingStep, setLoadingStep] = useState<
     "idle" | "repo" | "ai" | "thumbnail"
   >("idle");
@@ -57,30 +47,74 @@ export default function Page() {
     mockProjectData.teamRecruitment.kakaoLink,
   );
 
+  // OAuth 콜백 복귀 감지 + GitHub 연결 여부 확인
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const url = new URL(window.location.href);
+
+    if (params.get("github_error") === "true") {
+      url.searchParams.delete("github_error");
+      window.history.replaceState({}, "", url.toString());
+      setLoadError("GitHub 연결에 실패했습니다. 다시 시도해주세요.");
+      return;
+    }
+
+    if (params.get("github_connected") === "true") {
+      url.searchParams.delete("github_connected");
+      window.history.replaceState({}, "", url.toString());
+      setIsGithubConnected(true);
+      return;
+    }
+
+    fetch("/api/user/me/github-status")
+      .then((r) => r.json())
+      .then((data) => setIsGithubConnected(data.connected ?? false))
+      .catch(() => {});
+  }, []);
+
+  // GitHub 연결 후 레포지토리 목록 로드
+  useEffect(() => {
+    if (!isGithubConnected) return;
+
+    setIsLoadingRepos(true);
     fetch("/api/github/repos")
       .then((r) => r.json())
       .then((data: Repo[]) => {
-        setRepos(data);
-        if (data.length > 0) setSelectedRepo(data[0].fullName);
+        if (Array.isArray(data)) {
+          setRepos(data);
+          if (data.length > 0) setSelectedRepo(data[0].fullName);
+        }
       })
       .catch(() => setLoadError("레포지토리 목록을 불러오지 못했습니다."))
       .finally(() => setIsLoadingRepos(false));
-  }, []);
+  }, [isGithubConnected]);
 
-  {/* 레포지토리 테스트용 */}
-  useEffect(() => {
-  if (isGithubConnected) {
-    const fakeRepos = [
-      { name: "team-finder", fullName: "user/team-finder" },
-      { name: "chat-app", fullName: "user/chat-app" },
-    ];
+  const handleGithubConnect = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const headers: HeadersInit = {};
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
 
-    setRepos(fakeRepos);
-    setSelectedRepo(fakeRepos[0].fullName);
-    setIsLoadingRepos(false);
-  }
-}, [isGithubConnected]);
+    try {
+      const res = await fetch("/api/auth/github/connect", { headers });
+      const data = await res.json();
+
+      if (res.status === 401) {
+        setLoadError("로그인이 만료되었습니다. 다시 로그인해주세요.");
+        return;
+      }
+      if (res.status === 403) {
+        setLoadError("GitHub 연결 권한이 없습니다. 백엔드 설정을 확인해주세요.");
+        return;
+      }
+      if (!res.ok) {
+        setLoadError(data?.error ?? "GitHub 연결에 실패했습니다. 다시 시도해주세요.");
+        return;
+      }
+      if (data.redirectUrl) window.location.href = data.redirectUrl;
+    } catch {
+      setLoadError("GitHub 연결에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   const handleLoadInfo = async () => {
     if (!selectedRepo) return;
@@ -181,11 +215,15 @@ export default function Page() {
 
       {/* GitHub 불러오기 */}
       <section className="relative mb-5 rounded-2xl border border-gray-300 p-4">
-        <div className={!isGithubConnected ? "pointer-events-none opacity-35" : ""}>
+        <div
+          className={!isGithubConnected ? "pointer-events-none opacity-35" : ""}
+        >
           <h2 className="text-xl font-bold">GitHub 불러오기</h2>
 
           <label className="mt-3 block">
-            <span className="mb-1 block text-sm font-semibold">Repository 선택</span>
+            <span className="mb-1 block text-sm font-semibold">
+              Repository 선택
+            </span>
 
             <select
               value={selectedRepo}
@@ -209,7 +247,7 @@ export default function Page() {
 
           <button
             type="button"
-            onClick={handleLoadProject}
+            onClick={handleLoadInfo}
             className="mt-3 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white"
           >
             프로젝트 정보 불러오기
@@ -225,7 +263,7 @@ export default function Page() {
 
         {!isGithubConnected && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-[300px] rounded-2xl bg-white p-5 shadow-lg">
+            <div className="w-75 rounded-2xl bg-white p-5 shadow-lg">
               <h3 className="text-lg font-bold">GitHub 계정을 연결해주세요</h3>
               <p className="mt-3 text-sm leading-5 text-gray-500">
                 레포지토리를 불러와 프로젝트 정보를 자동으로 채울 수 있습니다.
@@ -233,7 +271,7 @@ export default function Page() {
 
               <button
                 type="button"
-                onClick={() => setIsGithubConnected(true)}
+                onClick={handleGithubConnect}
                 className="mt-4 rounded-full border border-gray-300 px-4 py-2 text-sm text-blue-600 hover:bg-gray-50"
               >
                 GitHub 계정 연결하기
@@ -243,8 +281,8 @@ export default function Page() {
         )}
       </section>
 
-        {/* AI 분석 결과 */}
-        {isGithubConnected && selectedRepo && (
+      {/* AI 분석 결과 */}
+      {isGithubConnected && selectedRepo && (
         <section className="relative border border-gray-200 rounded-2xl p-6 space-y-5 bg-white">
           <span className="absolute right-4 top-4 text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">
             수정 가능
@@ -254,135 +292,137 @@ export default function Page() {
             <h2 className="text-base font-semibold">AI 분석 결과</h2>
 
             <p className="text-xs text-gray-400">
-              GitHub 레포지토리와 README를 기반으로 자동 생성된 정보입니다. 수정할 수 있어요.
+              GitHub 레포지토리와 README를 기반으로 자동 생성된 정보입니다.
+              수정할 수 있어요.
             </p>
           </div>
 
-                {/* 프로젝트 이름 */}
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium">프로젝트 이름</label>
-                  <input
-                    type="text"
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
-                  />
-                </div>
-
-        {/* 프로젝트 설명 */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">프로젝트 설명</label>
-          <textarea
-            value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
-            rows={2}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-200"
-          />
-        </div>
-
-        {/* 주요 기능 */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">주요 기능</label>
-          <textarea
-            value={mainFeatures}
-            onChange={(e) => setMainFeatures(e.target.value)}
-            rows={3}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-200"
-          />
-        </div>
-
-        {/* 배포 링크 */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">배포된 사이트</label>
-          <input
-            type="url"
-            value={deployUrl}
-            onChange={(e) => setDeployUrl(e.target.value)}
-            placeholder="https://..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-          />
-        </div>
-
-        {/* 기술 스택 */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">기술 스택</label>
-          <div className="flex flex-wrap gap-2">
-            {techStack.map((tech) => (
-              <span
-                key={tech}
-                className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-              >
-                {tech}
-                <button
-                  onClick={() => removeTag(tech)}
-                  className="text-gray-400 hover:text-gray-600 text-base leading-none ml-0.5"
-                  aria-label={`${tech} 제거`}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
+          {/* 프로젝트 이름 */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">프로젝트 이름</label>
+            <input
+              type="text"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
+            />
           </div>
-        </div>
 
-{/* 추천 썸네일 */}
-<div className="space-y-3">
-  <label className="text-sm font-medium">추천 썸네일</label>
+          {/* 프로젝트 설명 */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">프로젝트 설명</label>
+            <textarea
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+              rows={2}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-200"
+            />
+          </div>
 
-  <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
-      {!thumbnailUrl && !isThumbnailLoading && (
-      <div className="flex flex-col items-center justify-center gap-3 text-gray-400">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-xl">
-          🖼️
-        </div>
-        <span className="text-sm">AI가 생성한 썸네일 미리보기</span>
-      </div>
-    )}
+          {/* 주요 기능 */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">주요 기능</label>
+            <textarea
+              value={mainFeatures}
+              onChange={(e) => setMainFeatures(e.target.value)}
+              rows={3}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-200"
+            />
+          </div>
 
-    {isThumbnailLoading && (
-      <div className="absolute inset-0 z-10 flex animate-pulse flex-col items-start justify-end gap-3 p-6">
-        <div className="h-3 w-20 rounded-full bg-gray-300" />
-        <div className="h-8 w-2/3 rounded-lg bg-gray-300" />
-        <div className="flex gap-2">
-          <div className="h-6 w-16 rounded-md bg-gray-300" />
-          <div className="h-6 w-16 rounded-md bg-gray-300" />
-          <div className="h-6 w-16 rounded-md bg-gray-300" />
-        </div>
-      </div>
-    )}
+          {/* 배포 링크 */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">배포된 사이트</label>
+            <input
+              type="url"
+              value={deployUrl}
+              onChange={(e) => setDeployUrl(e.target.value)}
+              placeholder="https://..."
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+            />
+          </div>
 
-    {thumbnailUrl && (
-      <Image
-        key={thumbnailUrl}
-        src={thumbnailUrl}
-        alt="썸네일 미리보기"
-        fill
-        unoptimized
-        sizes="(max-width: 672px) 100vw, 672px"
-        className={`object-cover transition-opacity duration-300 ${
-          isThumbnailLoading ? "opacity-0" : "opacity-100"
-        }`}
-        onLoad={() => setIsThumbnailLoading(false)}
-        onError={() => {
-          setIsThumbnailLoading(false);
-          setThumbnailUrl("");
-        }}
-      />
-    )}
-  </div>
+          {/* 기술 스택 */}
+          <div className="space-y-1.5">
+            <label className="text-sm font-medium">기술 스택</label>
+            <div className="flex flex-wrap gap-2">
+              {techStack.map((tech) => (
+                <span
+                  key={tech}
+                  className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                >
+                  {tech}
+                  <button
+                    onClick={() => removeTag(tech)}
+                    className="text-gray-400 hover:text-gray-600 text-base leading-none ml-0.5"
+                    aria-label={`${tech} 제거`}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
 
-  <div className="flex justify-center">
-    <button
-      type="button"
-      onClick={handleGenerateThumbnail}
-      disabled={!projectName || isThumbnailLoading}
-      className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      {isThumbnailLoading ? "생성 중..." : "이미지 변경"}
-    </button>
-  </div>
-</div>
-</section>)}
+          {/* 추천 썸네일 */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium">추천 썸네일</label>
+
+            <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
+              {!thumbnailUrl && !isThumbnailLoading && (
+                <div className="flex flex-col items-center justify-center gap-3 text-gray-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-xl">
+                    🖼️
+                  </div>
+                  <span className="text-sm">AI가 생성한 썸네일 미리보기</span>
+                </div>
+              )}
+
+              {isThumbnailLoading && (
+                <div className="absolute inset-0 z-10 flex animate-pulse flex-col items-start justify-end gap-3 p-6">
+                  <div className="h-3 w-20 rounded-full bg-gray-300" />
+                  <div className="h-8 w-2/3 rounded-lg bg-gray-300" />
+                  <div className="flex gap-2">
+                    <div className="h-6 w-16 rounded-md bg-gray-300" />
+                    <div className="h-6 w-16 rounded-md bg-gray-300" />
+                    <div className="h-6 w-16 rounded-md bg-gray-300" />
+                  </div>
+                </div>
+              )}
+
+              {thumbnailUrl && (
+                <Image
+                  key={thumbnailUrl}
+                  src={thumbnailUrl}
+                  alt="썸네일 미리보기"
+                  fill
+                  unoptimized
+                  sizes="(max-width: 672px) 100vw, 672px"
+                  className={`object-cover transition-opacity duration-300 ${
+                    isThumbnailLoading ? "opacity-0" : "opacity-100"
+                  }`}
+                  onLoad={() => setIsThumbnailLoading(false)}
+                  onError={() => {
+                    setIsThumbnailLoading(false);
+                    setThumbnailUrl("");
+                  }}
+                />
+              )}
+            </div>
+
+            <div className="flex justify-center">
+              <button
+                type="button"
+                onClick={handleGenerateThumbnail}
+                disabled={!projectName || isThumbnailLoading}
+                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                {isThumbnailLoading ? "생성 중..." : "이미지 변경"}
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 추가 자료 업로드 */}
       <section className="border border-gray-200 rounded-2xl p-6 space-y-4 bg-white">
@@ -496,6 +536,6 @@ export default function Page() {
       <button className="w-full bg-black text-white py-4 rounded-xl font-semibold text-base hover:bg-gray-900 transition-colors">
         게시글 등록
       </button>
-      </div>
+    </div>
   );
 }
