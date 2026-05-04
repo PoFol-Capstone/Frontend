@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { mockProjectData } from "./_data/mockData";
 
 const uploadIconLabel: Record<string, string> = {
@@ -34,6 +34,11 @@ export default function Page() {
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [isThumbnailLoading, setIsThumbnailLoading] = useState(false);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  const featuresRef = useRef<HTMLTextAreaElement>(null);
+  const recruitRef = useRef<HTMLTextAreaElement>(null);
+
   const [teamRecruitEnabled, setTeamRecruitEnabled] = useState(
     mockProjectData.teamRecruitment.enabled,
   );
@@ -46,6 +51,23 @@ export default function Page() {
   const [kakaoLink, setKakaoLink] = useState(
     mockProjectData.teamRecruitment.kakaoLink,
   );
+
+  const resizeTextarea = (ref: React.RefObject<HTMLTextAreaElement | null>) => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+  };
+
+  useEffect(() => {
+    resizeTextarea(descriptionRef);
+  }, [projectDescription]);
+  useEffect(() => {
+    resizeTextarea(featuresRef);
+  }, [mainFeatures]);
+  useEffect(() => {
+    resizeTextarea(recruitRef);
+  }, [recruitDescription]);
 
   // OAuth 콜백 복귀 감지 + GitHub 연결 여부 확인
   useEffect(() => {
@@ -90,12 +112,8 @@ export default function Page() {
   }, [isGithubConnected]);
 
   const handleGithubConnect = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const headers: HeadersInit = {};
-    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
-
     try {
-      const res = await fetch("/api/auth/github/connect", { headers });
+      const res = await fetch("/api/auth/github/connect");
       const data = await res.json();
 
       if (res.status === 401) {
@@ -103,11 +121,15 @@ export default function Page() {
         return;
       }
       if (res.status === 403) {
-        setLoadError("GitHub 연결 권한이 없습니다. 백엔드 설정을 확인해주세요.");
+        setLoadError(
+          "GitHub 연결 권한이 없습니다. 백엔드 설정을 확인해주세요.",
+        );
         return;
       }
       if (!res.ok) {
-        setLoadError(data?.error ?? "GitHub 연결에 실패했습니다. 다시 시도해주세요.");
+        setLoadError(
+          data?.error ?? "GitHub 연결에 실패했습니다. 다시 시도해주세요.",
+        );
         return;
       }
       if (data.redirectUrl) window.location.href = data.redirectUrl;
@@ -116,7 +138,7 @@ export default function Page() {
     }
   };
 
-  const handleLoadInfo = async () => {
+  const handleLoadInfo = async (forceAI = false) => {
     if (!selectedRepo) return;
     setLoadingStep("repo");
     setLoadError("");
@@ -134,7 +156,7 @@ export default function Page() {
       setReadmeText(data.readmeText ?? "");
       setThumbnailUrl("");
 
-      if (useAiSummary) {
+      if (useAiSummary || forceAI) {
         setLoadingStep("ai");
         const aiRes = await fetch("/api/ai/summarize", {
           method: "POST",
@@ -151,19 +173,30 @@ export default function Page() {
         setMainFeatures(aiData.mainFeatures ?? "");
 
         setLoadingStep("thumbnail");
-        const params = new URLSearchParams({
-          title: name,
-          stack: stack.join(","),
-        });
         setIsThumbnailLoading(true);
-        setThumbnailUrl(`/api/og?${params.toString()}`);
+        const thumbRes = await fetch("/api/ai/thumbnail", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            projectName: name,
+            techStack: stack,
+            projectDescription: aiData.projectDescription ?? "",
+          }),
+        });
+        if (!thumbRes.ok) throw new Error("thumbnail");
+        const thumbData = await thumbRes.json();
+        setThumbnailUrl(thumbData.url ?? "");
+        setIsThumbnailLoading(false);
       }
     } catch (e) {
       if (e instanceof Error && e.message === "ai") {
         setLoadError("AI 요약에 실패했습니다.");
+      } else if (e instanceof Error && e.message === "thumbnail") {
+        setLoadError("AI 썸네일 생성에 실패했습니다.");
       } else {
         setLoadError("프로젝트 정보를 불러오지 못했습니다.");
       }
+      setIsThumbnailLoading(false);
     } finally {
       setLoadingStep("idle");
     }
@@ -189,14 +222,49 @@ export default function Page() {
     }
   };
 
-  const handleGenerateThumbnail = () => {
+  const handleGenerateThumbnail = async () => {
     if (!projectName) return;
-    const params = new URLSearchParams({
-      title: projectName,
-      stack: techStack.join(","),
-    });
     setIsThumbnailLoading(true);
-    setThumbnailUrl(`/api/og?${params.toString()}`);
+    setThumbnailUrl("");
+    try {
+      const res = await fetch("/api/ai/thumbnail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectName, techStack, projectDescription }),
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setThumbnailUrl(data.url ?? "");
+    } catch {
+      setLoadError("AI 썸네일 생성에 실패했습니다.");
+    } finally {
+      setIsThumbnailLoading(false);
+    }
+  };
+
+  const handleThumbnailFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsThumbnailLoading(true);
+    setThumbnailUrl("");
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await fetch("/api/upload/thumbnail", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setThumbnailUrl(data.url ?? "");
+    } catch {
+      setLoadError("썸네일 업로드에 실패했습니다.");
+    } finally {
+      setIsThumbnailLoading(false);
+      e.target.value = "";
+    }
   };
 
   const removeTag = (tag: string) => {
@@ -247,10 +315,18 @@ export default function Page() {
 
           <button
             type="button"
-            onClick={handleLoadInfo}
+            onClick={() => handleLoadInfo()}
             className="mt-3 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white"
           >
             프로젝트 정보 불러오기
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleLoadInfo(true)}
+            className="mt-2 w-full rounded-xl border border-gray-300 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          >
+            AI로 작성하기
           </button>
 
           <p className="mt-3 text-xs text-gray-400">
@@ -312,10 +388,11 @@ export default function Page() {
           <div className="space-y-1.5">
             <label className="text-sm font-medium">프로젝트 설명</label>
             <textarea
+              ref={descriptionRef}
               value={projectDescription}
               onChange={(e) => setProjectDescription(e.target.value)}
-              rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-200"
+              rows={1}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-gray-200"
             />
           </div>
 
@@ -323,10 +400,11 @@ export default function Page() {
           <div className="space-y-1.5">
             <label className="text-sm font-medium">주요 기능</label>
             <textarea
+              ref={featuresRef}
               value={mainFeatures}
               onChange={(e) => setMainFeatures(e.target.value)}
-              rows={3}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-gray-200"
+              rows={1}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-gray-200"
             />
           </div>
 
@@ -410,14 +488,29 @@ export default function Page() {
               )}
             </div>
 
-            <div className="flex justify-center">
+            <input
+              ref={thumbnailInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleThumbnailFileChange}
+            />
+            <div className="flex justify-center gap-2">
               <button
                 type="button"
                 onClick={handleGenerateThumbnail}
                 disabled={!projectName || isThumbnailLoading}
                 className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {isThumbnailLoading ? "생성 중..." : "이미지 변경"}
+                {isThumbnailLoading ? "생성 중..." : "AI 썸네일 재생성"}
+              </button>
+              <button
+                type="button"
+                onClick={() => thumbnailInputRef.current?.click()}
+                disabled={isThumbnailLoading}
+                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                직접 업로드
               </button>
             </div>
           </div>
@@ -488,11 +581,12 @@ export default function Page() {
             <div className="space-y-1.5">
               <label className="text-sm font-medium">프로젝트 설명</label>
               <textarea
+                ref={recruitRef}
                 value={recruitDescription}
                 onChange={(e) => setRecruitDescription(e.target.value)}
                 placeholder="프로젝트에 대해 설명해주세요"
-                rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+                rows={1}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none overflow-hidden placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
               />
             </div>
 

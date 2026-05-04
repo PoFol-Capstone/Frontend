@@ -24,8 +24,9 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ redirectUrl: location });
     }
 
-    if (res.data?.redirectUrl) {
-      return NextResponse.json({ redirectUrl: res.data.redirectUrl });
+    const redirectUrl = res.data?.redirectUrl ?? res.data?.url;
+    if (redirectUrl) {
+      return NextResponse.json({ redirectUrl });
     }
 
     if (res.status === 401 || res.status === 400) {
