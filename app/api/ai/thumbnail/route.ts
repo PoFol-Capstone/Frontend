@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI, Modality } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { put } from "@vercel/blob";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   if (!process.env.GEMINI_API_KEY) {
@@ -18,31 +18,42 @@ export async function POST(req: NextRequest) {
     : "";
 
   // ✏️ 프롬프트 수정 위치
-  const prompt = `A sleek modern software project thumbnail banner for a project called "${projectName}". Tech stack: ${stackStr}.${descStr} Dark background, professional developer aesthetic, abstract geometric shapes, no text, no letters, no words.`;
+  const prompt = `
+  A premium software project hero banner thumbnail for "${projectName}".
+  16:9 composition,
+  ${stackStr ? `Tech stack: ${stackStr}.` : ""}
+  ${descStr ? `Project description: ${descStr}.` : ""}
+  Luxurious deep black background, one large beautifully polished UI screen
+  as the centerpiece, flat 2D interface, idealized premium app design,
+  project title centered large overlay, bold white typography with subtle shadow,
+  minimal and clean composition, sharp contrast, sleek modern SaaS aesthetic,
+  highly eye-catching like a YouTube thumbnail, professional cinematic framing,
+  accent colors adapted naturally to the project's theme and tech stack,
+  high-end product showcase quality.`;
 
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-  const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash-preview-image-generation",
-    contents: prompt,
+  const response = await ai.models.generateImages({
+    model: "imagen-4.0-generate-001",
+    prompt,
     config: {
-      responseModalities: [Modality.IMAGE],
+      numberOfImages: 1,
+      aspectRatio: "16:9",
     },
   });
 
-  const parts = response.candidates?.[0]?.content?.parts ?? [];
-  const imagePart = parts.find((p) => p.inlineData?.data);
+  const imageBytes = response.generatedImages?.[0]?.image?.imageBytes;
 
-  if (!imagePart?.inlineData?.data) {
+  if (!imageBytes) {
     return NextResponse.json(
       { error: "이미지 생성에 실패했습니다." },
       { status: 500 },
     );
   }
 
-  const buffer = Buffer.from(imagePart.inlineData.data, "base64");
-  const mimeType = imagePart.inlineData.mimeType ?? "image/png";
-  const ext = mimeType.split("/")[1] ?? "png";
+  const buffer = Buffer.from(imageBytes, "base64");
+  const mimeType = "image/png";
+  const ext = "png";
 
   const blob = await put(`thumbnails/ai-${Date.now()}.${ext}`, buffer, {
     access: "public",
