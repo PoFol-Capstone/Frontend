@@ -43,23 +43,25 @@ export default function SignupVerifyPage() {
       }
 
       let uuid: string;
-
       let accessToken: string;
+      let refreshToken: string;
 
       if (result.newUser) {
         const name = sessionStorage.getItem("signupName") ?? "";
         const authResult = await register(email, name);
         uuid = authResult.uuid;
         accessToken = authResult.accessToken;
+        refreshToken = authResult.refreshToken;
         sessionStorage.removeItem("signupName");
         sessionStorage.removeItem("signupEmail");
       } else {
         const authResult = await login(email, code);
         uuid = authResult.uuid;
         accessToken = authResult.accessToken;
+        refreshToken = authResult.refreshToken;
       }
 
-      await saveLogin(email, uuid, accessToken);
+      await saveLogin(email, uuid, accessToken, refreshToken);
       sessionStorage.removeItem("loginEmail");
       const callbackUrl = sessionStorage.getItem("callbackUrl") ?? "/board";
       sessionStorage.removeItem("callbackUrl");

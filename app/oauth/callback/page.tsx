@@ -24,7 +24,7 @@ export default function OAuthCallbackPage() {
     localStorage.setItem("uuid", uuid);
     localStorage.setItem("name", name);
 
-    saveAccessToken(uuid, accessToken).then(() => {
+    saveAccessToken(uuid, accessToken, refreshToken).then(() => {
       router.replace("/board/write?github_connected=true");
     });
   }, [router]);

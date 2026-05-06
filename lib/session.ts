@@ -17,6 +17,7 @@ export async function saveLogin(
   email: string,
   uuid: string,
   accessToken: string,
+  refreshToken: string,
 ) {
   const cookieStore = await cookies();
 
@@ -39,6 +40,14 @@ export async function saveLogin(
   });
 
   cookieStore.set("access_token", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+  });
+
+  cookieStore.set("refresh_token", refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
