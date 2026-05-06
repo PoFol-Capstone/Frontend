@@ -18,21 +18,15 @@ export default function Page() {
   const [selectedRepo, setSelectedRepo] = useState("");
 
   const [isLoadingRepos, setIsLoadingRepos] = useState(false);
-  const [loadingStep, setLoadingStep] = useState<
-    "idle" | "repo" | "ai" | "thumbnail"
-  >("idle");
-  const [loadError, setLoadError] = useState("");
-  const [useAiSummary, setUseAiSummary] = useState(false);
 
   const [isGithubConnected, setIsGithubConnected] = useState(false);
+  const [isCheckingGithub, setIsCheckingGithub] = useState(true);
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [mainFeatures, setMainFeatures] = useState("");
   const [techStack, setTechStack] = useState<string[]>([]);
   const [deployUrl, setDeployUrl] = useState("");
-  const [readmeText, setReadmeText] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
-  const [isSummarizing, setIsSummarizing] = useState(false);
   const [isThumbnailLoading, setIsThumbnailLoading] = useState(false);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -77,24 +71,24 @@ export default function Page() {
     if (params.get("github_error") === "true") {
       url.searchParams.delete("github_error");
       window.history.replaceState({}, "", url.toString());
-      setLoadError("GitHub 연결에 실패했습니다. 다시 시도해주세요.");
-      return;
     }
 
     if (params.get("github_connected") === "true") {
       url.searchParams.delete("github_connected");
       window.history.replaceState({}, "", url.toString());
       setIsGithubConnected(true);
+      setIsCheckingGithub(false);
       return;
     }
 
     fetch("/api/user/me/github-status")
       .then((r) => r.json())
       .then((data) => setIsGithubConnected(data.connected ?? false))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setIsCheckingGithub(false));
   }, []);
 
-  // GitHub 연결 후 레포지토리 목록 로드
+  // GitHub 연결 후 레포지토리 목록 로드 + 첫 번째 레포 자동 불러오기
   useEffect(() => {
     if (!isGithubConnected) return;
 
@@ -102,13 +96,15 @@ export default function Page() {
     fetch("/api/github/repos")
       .then((r) => r.json())
       .then((data: Repo[]) => {
-        if (Array.isArray(data)) {
+        if (Array.isArray(data) && data.length > 0) {
           setRepos(data);
-          if (data.length > 0) setSelectedRepo(data[0].fullName);
+          setSelectedRepo(data[0].fullName);
+          handleLoadInfo(false, data[0].fullName);
         }
       })
-      .catch(() => setLoadError("레포지토리 목록을 불러오지 못했습니다."))
+      .catch(() => {})
       .finally(() => setIsLoadingRepos(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isGithubConnected]);
 
   const handleGithubConnect = async () => {
@@ -116,34 +112,18 @@ export default function Page() {
       const res = await fetch("/api/auth/github/connect");
       const data = await res.json();
 
-      if (res.status === 401) {
-        setLoadError("로그인이 만료되었습니다. 다시 로그인해주세요.");
-        return;
-      }
-      if (res.status === 403) {
-        setLoadError(
-          "GitHub 연결 권한이 없습니다. 백엔드 설정을 확인해주세요.",
-        );
-        return;
-      }
-      if (!res.ok) {
-        setLoadError(
-          data?.error ?? "GitHub 연결에 실패했습니다. 다시 시도해주세요.",
-        );
-        return;
-      }
+      if (!res.ok) return;
       if (data.redirectUrl) window.location.href = data.redirectUrl;
     } catch {
-      setLoadError("GitHub 연결에 실패했습니다. 다시 시도해주세요.");
+      // ignore
     }
   };
 
-  const handleLoadInfo = async (forceAI = false) => {
-    if (!selectedRepo) return;
-    setLoadingStep("repo");
-    setLoadError("");
+  const handleLoadInfo = async (forceAI = false, repoOverride?: string) => {
+    const repo = repoOverride ?? selectedRepo;
+    if (!repo) return;
     try {
-      const res = await fetch(`/api/github/repo-info?repo=${selectedRepo}`);
+      const res = await fetch(`/api/github/repo-info?repo=${repo}`);
       if (!res.ok) throw new Error();
       const data = await res.json();
       const name = data.projectName ?? "";
@@ -153,11 +133,9 @@ export default function Page() {
       setMainFeatures(data.mainFeatures ?? "");
       setTechStack(stack);
       setDeployUrl(data.deployUrl ?? "");
-      setReadmeText(data.readmeText ?? "");
       setThumbnailUrl("");
 
-      if (useAiSummary || forceAI) {
-        setLoadingStep("ai");
+      if (forceAI) {
         const aiRes = await fetch("/api/ai/summarize", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -172,7 +150,6 @@ export default function Page() {
         setProjectDescription(aiData.projectDescription ?? "");
         setMainFeatures(aiData.mainFeatures ?? "");
 
-        setLoadingStep("thumbnail");
         setIsThumbnailLoading(true);
         const thumbRes = await fetch("/api/ai/thumbnail", {
           method: "POST",
@@ -181,6 +158,7 @@ export default function Page() {
             projectName: name,
             techStack: stack,
             projectDescription: aiData.projectDescription ?? "",
+            mainFeatures: aiData.mainFeatures ?? "",
           }),
         });
         if (!thumbRes.ok) throw new Error("thumbnail");
@@ -188,37 +166,8 @@ export default function Page() {
         setThumbnailUrl(thumbData.url ?? "");
         setIsThumbnailLoading(false);
       }
-    } catch (e) {
-      if (e instanceof Error && e.message === "ai") {
-        setLoadError("AI 요약에 실패했습니다.");
-      } else if (e instanceof Error && e.message === "thumbnail") {
-        setLoadError("AI 썸네일 생성에 실패했습니다.");
-      } else {
-        setLoadError("프로젝트 정보를 불러오지 못했습니다.");
-      }
-      setIsThumbnailLoading(false);
-    } finally {
-      setLoadingStep("idle");
-    }
-  };
-
-  const handleSummarize = async () => {
-    if (!projectName) return;
-    setIsSummarizing(true);
-    try {
-      const res = await fetch("/api/ai/summarize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectName, readmeText, techStack }),
-      });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setProjectDescription(data.projectDescription ?? "");
-      setMainFeatures(data.mainFeatures ?? "");
     } catch {
-      setLoadError("AI 요약에 실패했습니다.");
-    } finally {
-      setIsSummarizing(false);
+      setIsThumbnailLoading(false);
     }
   };
 
@@ -230,13 +179,18 @@ export default function Page() {
       const res = await fetch("/api/ai/thumbnail", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectName, techStack, projectDescription }),
+        body: JSON.stringify({
+          projectName,
+          techStack,
+          projectDescription,
+          mainFeatures,
+        }),
       });
       if (!res.ok) throw new Error();
       const data = await res.json();
       setThumbnailUrl(data.url ?? "");
     } catch {
-      setLoadError("AI 썸네일 생성에 실패했습니다.");
+      // ignore
     } finally {
       setIsThumbnailLoading(false);
     }
@@ -260,7 +214,7 @@ export default function Page() {
       const data = await res.json();
       setThumbnailUrl(data.url ?? "");
     } catch {
-      setLoadError("썸네일 업로드에 실패했습니다.");
+      // ignore
     } finally {
       setIsThumbnailLoading(false);
       e.target.value = "";
@@ -316,7 +270,7 @@ export default function Page() {
           <button
             type="button"
             onClick={() => handleLoadInfo()}
-            className="mt-3 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white"
+            className="mt-3 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white cursor-pointer"
           >
             프로젝트 정보 불러오기
           </button>
@@ -324,7 +278,7 @@ export default function Page() {
           <button
             type="button"
             onClick={() => handleLoadInfo(true)}
-            className="mt-2 w-full rounded-xl border border-gray-300 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+            className="mt-2 w-full rounded-xl border border-gray-300 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer"
           >
             AI로 작성하기
           </button>
@@ -337,7 +291,13 @@ export default function Page() {
           </p>
         </div>
 
-        {!isGithubConnected && (
+        {isCheckingGithub && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-white/60 backdrop-blur-sm">
+            <div className="text-sm text-gray-400">GitHub 연결 확인 중...</div>
+          </div>
+        )}
+
+        {!isCheckingGithub && !isGithubConnected && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-75 rounded-2xl bg-white p-5 shadow-lg">
               <h3 className="text-lg font-bold">GitHub 계정을 연결해주세요</h3>
@@ -469,22 +429,45 @@ export default function Page() {
               )}
 
               {thumbnailUrl && (
-                <Image
-                  key={thumbnailUrl}
-                  src={thumbnailUrl}
-                  alt="썸네일 미리보기"
-                  fill
-                  unoptimized
-                  sizes="(max-width: 672px) 100vw, 672px"
-                  className={`object-cover transition-opacity duration-300 ${
-                    isThumbnailLoading ? "opacity-0" : "opacity-100"
-                  }`}
-                  onLoad={() => setIsThumbnailLoading(false)}
-                  onError={() => {
-                    setIsThumbnailLoading(false);
-                    setThumbnailUrl("");
-                  }}
-                />
+                <>
+                  <Image
+                    key={thumbnailUrl}
+                    src={thumbnailUrl}
+                    alt="썸네일 미리보기"
+                    fill
+                    unoptimized
+                    sizes="(max-width: 672px) 100vw, 672px"
+                    className={`object-cover transition-opacity duration-300 ${
+                      isThumbnailLoading ? "opacity-0" : "opacity-100"
+                    }`}
+                    onLoad={() => setIsThumbnailLoading(false)}
+                    onError={() => {
+                      setIsThumbnailLoading(false);
+                      setThumbnailUrl("");
+                    }}
+                  />
+                  {!isThumbnailLoading && (
+                    <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-5">
+                      {projectName && (
+                        <p className="text-white font-bold text-xl leading-tight drop-shadow">
+                          {projectName}
+                        </p>
+                      )}
+                      {techStack.length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {techStack.slice(0, 5).map((tech) => (
+                            <span
+                              key={tech}
+                              className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm"
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
