@@ -83,6 +83,13 @@ export default function Page() {
   useEffect(() => { resizeTextarea(featuresRef); }, [mainFeatures]);
   useEffect(() => { resizeTextarea(recruitRef); }, [recruitDescription]);
 
+  useEffect(() => {
+    if (!isLoadingRepoData && !isAIWriting) {
+      resizeTextarea(descriptionRef);
+      resizeTextarea(featuresRef);
+    }
+  }, [isLoadingRepoData, isAIWriting]);
+
   // OAuth 콜백 복귀 감지 + GitHub 연결 여부 확인
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -368,6 +375,15 @@ export default function Page() {
               )}
             </select>
           </label>
+
+          {selectedRepo && (
+            <div className="mt-3">
+              <span className="mb-1 block text-sm font-semibold">GitHub 링크</span>
+              <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 select-all">
+                https://github.com/{selectedRepo}
+              </div>
+            </div>
+          )}
 
           <button
             type="button"
