@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { toggleBookmark, toggleLike } from "@/lib/post";
 import type { ResponsePosts } from "@/types/post";
-import { toggleLike, toggleBookmark } from "@/lib/post";
+import { PostType } from "@/types/post";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import ApplicationSection from "./ApplicationSection";
 import CommentSection from "./CommentSection";
 
@@ -31,7 +33,41 @@ export default function PostDetail({ post, relatedPosts }: Props) {
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-8">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[1fr_280px]">
         <section>
-          <div className="mb-6 aspect-video w-full rounded-2xl bg-gray-200" />
+          <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-2xl bg-gray-200">
+            {post.thumbnailUrl ? (
+              <>
+                <Image
+                  src={post.thumbnailUrl}
+                  alt={post.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 80vw, 1280px"
+                  className="object-cover"
+                />
+                <a
+                  href={post.deployUrl || undefined}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/70 via-black/20 to-transparent p-7 ${post.deployUrl ? "cursor-pointer" : "cursor-default"}`}
+                >
+                  <p className="text-3xl font-bold leading-tight text-white drop-shadow">
+                    {post.title}
+                  </p>
+                  {post.skills.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {post.skills.slice(0, 5).map((skill) => (
+                        <span
+                          key={skill}
+                          className="rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </a>
+              </>
+            ) : null}
+          </div>
 
           <h1 className="mb-2 text-3xl font-bold">{post.title}</h1>
 
@@ -48,14 +84,22 @@ export default function PostDetail({ post, relatedPosts }: Props) {
             ))}
           </div>
 
-          {post.isRecruiting && (
-            <div className="mb-6">
-              <h2 className="mb-2 text-sm font-semibold">모집 포지션</h2>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700">
-                {post.recruitPosition} 모집중
-              </span>
-            </div>
-          )}
+          {post.postType === PostType.RECRUIT &&
+            post.recruitPositions.length > 0 && (
+              <div className="mb-6">
+                <h2 className="mb-2 text-sm font-semibold">모집 포지션</h2>
+                <div className="flex flex-wrap gap-2">
+                  {post.recruitPositions.map((rp) => (
+                    <span
+                      key={rp.positionType}
+                      className="rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700"
+                    >
+                      {rp.positionType} ({rp.currentCount}/{rp.maxCount})
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
 
           <div className="mb-6 flex items-center justify-between border-t border-gray-200 pt-4">
             <div className="flex items-center gap-4">
@@ -95,8 +139,8 @@ export default function PostDetail({ post, relatedPosts }: Props) {
 
           <ApplicationSection
             postUuid={post.uuid}
-            recruitPosition={post.recruitPosition}
-            isRecruiting={post.isRecruiting}
+            postType={post.postType}
+            recruitPositions={post.recruitPositions}
           />
 
           <CommentSection postUuid={post.uuid} />
