@@ -82,7 +82,24 @@ export default function PostDetail({ post, relatedPosts }: Props) {
 
           <h1 className="mb-2 text-3xl font-bold">{post.title}</h1>
 
-          <p className="mb-5 text-sm leading-6 text-gray-600">{post.content}</p>
+          {(() => {
+            const [description, features] = post.content.split("\n\n## 주요 기능\n");
+            return (
+              <>
+                <p className="whitespace-pre-line text-sm leading-7 text-gray-600">
+                  {description}
+                </p>
+                {features && (
+                  <div className="mt-6 border-t border-gray-100 pt-6">
+                    <h2 className="mb-3 text-sm font-semibold text-gray-900">주요 기능</h2>
+                    <p className="whitespace-pre-line text-sm leading-7 text-gray-600">
+                      {features}
+                    </p>
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           <div className="mb-5 flex flex-wrap gap-2">
             {post.tags.map((tag) => (
