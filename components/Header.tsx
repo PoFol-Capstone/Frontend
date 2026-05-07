@@ -2,7 +2,7 @@
 
 import ProfileMenu from "@/components/ProfileMenu";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Notification = {
   id: number;
@@ -36,6 +36,32 @@ export default function Header({ session }: { session: string | null }) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+  const notificationRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(target)
+      ) {
+        setIsNotificationOpen(false);
+      }
+
+      if (profileRef.current && !profileRef.current.contains(target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <header className="border-b border-gray-200 bg-white px-10 py-4">
       <div className="mx-auto flex items-center justify-between">
@@ -44,67 +70,80 @@ export default function Header({ session }: { session: string | null }) {
         </Link>
 
         {isLoggedIn ? (
-          <div className="flex items-center gap-4">
-            <Link href="/board/write" className="text-xl">
-              ➕
-            </Link>
+          <>
+            <div className="flex flex-1 justify-center px-10">
+              <div className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2">
+                <span className="text-lg">⌕</span>
+                <input
+                  type="text"
+                  placeholder="Search Project..."
+                  className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
+                />
+              </div>
+            </div>
 
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsNotificationOpen((prev) => !prev);
-                  setIsProfileOpen(false);
-                }}
-                className="text-xl"
-                aria-label="알림 열기"
-              >
-                🔔
-              </button>
+            <div className="flex items-center gap-4">
+              <Link href="/board/write" className="text-xl">
+                ➕
+              </Link>
 
-              {isNotificationOpen && (
-                <div className="absolute right-0 top-9 z-50 w-64 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-                  <div className="flex flex-col">
-                    {notifications.map((notification) => (
-                      <button
-                        key={notification.id}
-                        type="button"
-                        className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-gray-50"
+              <div ref={notificationRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsNotificationOpen((prev) => !prev);
+                    setIsProfileOpen(false);
+                  }}
+                  className="text-xl"
+                  aria-label="알림 열기"
+                >
+                  🔔
+                </button>
+
+                {isNotificationOpen && (
+                  <div className="absolute right-0 top-9 z-50 w-64 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+                    <div className="flex flex-col">
+                      {notifications.map((notification) => (
+                        <button
+                          key={notification.id}
+                          type="button"
+                          className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-gray-50"
+                        >
+                          <span>{getNotificationMessage(notification)}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="border-t border-gray-100">
+                      <Link
+                        href="/notifications"
+                        onClick={() => setIsNotificationOpen(false)}
+                        className="block px-4 py-3 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-gray-50"
                       >
-                        <span>{getNotificationMessage(notification)}</span>
-                      </button>
-                    ))}
+                        전체 보기
+                      </Link>
+                    </div>
                   </div>
+                )}
+              </div>
 
-                  <div className="border-t border-gray-100">
-                    <Link
-                      href="/notifications"
-                      onClick={() => setIsNotificationOpen(false)}
-                      className="block px-4 py-3 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-gray-50"
-                    >
-                      전체 보기
-                    </Link>
-                  </div>
-                </div>
-              )}
+              <div ref={profileRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsProfileOpen((prev) => !prev);
+                    setIsNotificationOpen(false);
+                  }}
+                  className="text-xl"
+                  aria-label="프로필 메뉴 열기"
+                >
+                  👤
+                </button>
+
+                {isProfileOpen && <ProfileMenu />}
+              </div>
             </div>
-
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsProfileOpen((prev) => !prev);
-                  setIsNotificationOpen(false);
-                }}
-                className="text-xl"
-                aria-label="프로필 메뉴 열기"
-              >
-                👤
-              </button>
-
-              {isProfileOpen && <ProfileMenu />}
-            </div>
-          </div>
+          </>
         ) : (
           <div className="flex items-center gap-3">
             <Link
