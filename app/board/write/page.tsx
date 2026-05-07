@@ -1,8 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { createPost } from "@/lib/post";
+import { PostType } from "@/types/post";
+import type { Skill } from "@/types/skill";
 import { mockProjectData } from "./_data/mockData";
+import SkillPicker from "./_components/SkillPicker";
 
 const uploadIconLabel: Record<string, string> = {
   erd: "ERD",
@@ -14,6 +19,7 @@ const uploadIconLabel: Record<string, string> = {
 type Repo = { name: string; fullName: string };
 
 export default function Page() {
+  const router = useRouter();
   const [repos, setRepos] = useState<Repo[]>([]);
   const [selectedRepo, setSelectedRepo] = useState("");
 
@@ -25,6 +31,8 @@ export default function Page() {
   const [projectDescription, setProjectDescription] = useState("");
   const [mainFeatures, setMainFeatures] = useState("");
   const [techStack, setTechStack] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState<Skill[]>([]);
+  const [allSkills, setAllSkills] = useState<Skill[]>([]);
   const [deployUrl, setDeployUrl] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [isThumbnailLoading, setIsThumbnailLoading] = useState(false);
@@ -41,9 +49,6 @@ export default function Page() {
   );
   const [selectedRoles, setSelectedRoles] = useState<string[]>(
     mockProjectData.teamRecruitment.selectedRoles,
-  );
-  const [kakaoLink, setKakaoLink] = useState(
-    mockProjectData.teamRecruitment.kakaoLink,
   );
 
   const resizeTextarea = (ref: React.RefObject<HTMLTextAreaElement | null>) => {
@@ -62,6 +67,14 @@ export default function Page() {
   useEffect(() => {
     resizeTextarea(recruitRef);
   }, [recruitDescription]);
+
+  // 스킬 전체 목록 사전 로드 (GitHub 로드 시 자동 매칭용)
+  useEffect(() => {
+    fetch("/api/skills")
+      .then((r) => r.json())
+      .then(setAllSkills)
+      .catch(() => {});
+  }, []);
 
   // OAuth 콜백 복귀 감지 + GitHub 연결 여부 확인
   useEffect(() => {
@@ -134,6 +147,14 @@ export default function Page() {
       setTechStack(stack);
       setDeployUrl(data.deployUrl ?? "");
       setThumbnailUrl("");
+      setSelectedSkills(
+        stack.flatMap((name: string) => {
+          const found = allSkills.find(
+            (s) => s.name.toLowerCase() === name.toLowerCase(),
+          );
+          return found ? [found] : [];
+        }),
+      );
 
       if (forceAI) {
         const aiRes = await fetch("/api/ai/summarize", {
@@ -221,8 +242,34 @@ export default function Page() {
     }
   };
 
-  const removeTag = (tag: string) => {
-    setTechStack(techStack.filter((t) => t !== tag));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!projectName) return;
+    setIsSubmitting(true);
+    try {
+      const post = await createPost({
+        title: projectName,
+        content: projectDescription,
+        thumbnailUrl,
+        type: teamRecruitEnabled ? PostType.RECRUIT : PostType.DISPLAY,
+        repoUrl: selectedRepo ? `https://github.com/${selectedRepo}` : "",
+        deployUrl,
+        recruitNote: recruitDescription,
+        recruitPositions: selectedRoles.map((role) => ({
+          positionType: role.toUpperCase(),
+          maxCount: 1,
+        })),
+        isPublished: true,
+        skillIds: selectedSkills.map((s) => s.id),
+        tagNames: [],
+      });
+      router.push(`/board/${post.uuid}`);
+    } catch {
+      // ignore
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleRole = (role: string) => {
@@ -383,23 +430,10 @@ export default function Page() {
           {/* 기술 스택 */}
           <div className="space-y-1.5">
             <label className="text-sm font-medium">기술 스택</label>
-            <div className="flex flex-wrap gap-2">
-              {techStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
-                >
-                  {tech}
-                  <button
-                    onClick={() => removeTag(tech)}
-                    className="text-gray-400 hover:text-gray-600 text-base leading-none ml-0.5"
-                    aria-label={`${tech} 제거`}
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
+            <SkillPicker
+              selected={selectedSkills}
+              onChange={setSelectedSkills}
+            />
           </div>
 
           {/* 추천 썸네일 */}
@@ -453,14 +487,14 @@ export default function Page() {
                           {projectName}
                         </p>
                       )}
-                      {techStack.length > 0 && (
+                      {selectedSkills.length > 0 && (
                         <div className="mt-2 flex flex-wrap gap-1.5">
-                          {techStack.slice(0, 5).map((tech) => (
+                          {selectedSkills.slice(0, 5).map((skill) => (
                             <span
-                              key={tech}
+                              key={skill.id}
                               className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm"
                             >
-                              {tech}
+                              {skill.name}
                             </span>
                           ))}
                         </div>
@@ -594,24 +628,18 @@ export default function Page() {
               </div>
             </div>
 
-            {/* 오픈채팅방 링크 */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium">오픈채팅방 링크</label>
-              <input
-                type="text"
-                value={kakaoLink}
-                onChange={(e) => setKakaoLink(e.target.value)}
-                placeholder="https://open.kakao.com/..."
-                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
-              />
-            </div>
           </div>
         )}
       </section>
 
       {/* 게시글 등록 버튼 */}
-      <button className="w-full bg-black text-white py-4 rounded-xl font-semibold text-base hover:bg-gray-900 transition-colors">
-        게시글 등록
+      <button
+        type="button"
+        onClick={handleSubmit}
+        disabled={isSubmitting || !projectName}
+        className="w-full bg-black text-white py-4 rounded-xl font-semibold text-base hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? "등록 중..." : "게시글 등록"}
       </button>
     </div>
   );
