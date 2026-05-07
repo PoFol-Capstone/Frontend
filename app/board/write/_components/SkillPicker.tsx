@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
 import type { Skill } from "@/types/skill";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface SkillPickerProps {
   selected: Skill[];
@@ -26,7 +26,9 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
           : "/api/skills";
         const res = await fetch(url);
         const data: Skill[] = await res.json();
-        setResults(data.filter((s) => !selected.some((sel) => sel.id === s.id)));
+        setResults(
+          data.filter((s) => !selected.some((sel) => sel.id === s.id)),
+        );
       } catch {
         setResults([]);
       } finally {
@@ -72,7 +74,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
   return (
     <div ref={containerRef} className="relative">
       <div
-        className="flex flex-wrap gap-2 min-h-[42px] w-full border border-gray-300 rounded-lg px-3 py-2 cursor-text focus-within:ring-2 focus-within:ring-gray-200"
+        className="flex flex-wrap gap-2 min-h-10.5 w-full border border-gray-300 rounded-lg px-3 py-2 cursor-text focus-within:ring-2 focus-within:ring-gray-200"
         onClick={() => {
           inputRef.current?.focus();
           setIsOpen(true);
@@ -81,8 +83,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
         {selected.map((skill) => (
           <span
             key={skill.id}
-            className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium text-white"
-            style={{ backgroundColor: skill.badgeColor }}
+            className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700"
           >
             {skill.name}
             <button
@@ -104,7 +105,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsOpen(true)}
           placeholder={selected.length === 0 ? "기술 스택 검색..." : ""}
-          className="flex-1 min-w-[120px] text-sm outline-none bg-transparent placeholder:text-gray-400"
+          className="flex-1 min-w-30 text-sm outline-none bg-transparent placeholder:text-gray-400"
         />
       </div>
 
@@ -126,7 +127,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
                 className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-gray-50 text-left"
               >
                 <span
-                  className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+                  className="w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: skill.badgeColor }}
                 />
                 {skill.name}
