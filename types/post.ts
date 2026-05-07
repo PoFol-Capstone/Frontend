@@ -1,7 +1,23 @@
+import type { Skill } from "./skill";
+
 export enum PostType {
   RECRUIT = "RECRUIT",
   DISPLAY = "DISPLAY",
 }
+
+export enum LinkType {
+  GITHUB = "GITHUB",
+  DEPLOY = "DEPLOY",
+  FIGMA = "FIGMA",
+  ERD = "ERD",
+  CLASS = "CLASS",
+  EXTRA = "EXTRA",
+}
+
+export type PostLink = {
+  type: LinkType;
+  url: string;
+};
 
 export type ApplicationStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
@@ -40,8 +56,7 @@ export type RequestPosts = {
   content: string;
   thumbnailUrl: string;
   type: PostType;
-  repoUrl: string;
-  deployUrl: string;
+  links: PostLink[];
   recruitNote: string;
   recruitPositions: RecruitPositionRequest[];
   isPublished: boolean;
@@ -57,14 +72,13 @@ export type ResponsePosts = {
   postType: PostType;
   authorName: string;
   authorUuid: string;
-  repoUrl: string;
-  deployUrl: string;
+  links: PostLink[];
   recruitNote: string;
   recruitPositions: RecruitPositionResponse[];
   viewCount: number;
   likeCount: number;
   isPublished: boolean;
-  skills: string[];
+  skills: Skill[];
   tags: string[];
   createdAt: string;
 };
