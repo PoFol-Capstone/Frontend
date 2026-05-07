@@ -3,14 +3,15 @@
 import { login, register, verifyOtp } from "@/lib/auth";
 import { saveLogin } from "@/lib/session";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function SignupVerifyPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     const singupEmail = sessionStorage.getItem("signupEmail");
@@ -23,10 +24,57 @@ export default function SignupVerifyPage() {
     }
 
     setEmail(savedEmail);
+    inputRefs.current[0]?.focus();
   }, [router]);
 
-  const handleVerify = async () => {
-    if (code.trim().length !== 6) {
+  const handleChange = (index: number, value: string) => {
+    const char = value.replace(/\D/g, "").slice(-1);
+    const next = [...digits];
+    next[index] = char;
+    setDigits(next);
+
+    if (char && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      if (digits[index]) {
+        const next = [...digits];
+        next[index] = "";
+        setDigits(next);
+      } else if (index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowRight" && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const next = Array(6).fill("");
+    pasted.split("").forEach((char, i) => {
+      next[i] = char;
+    });
+    setDigits(next);
+    const focusIndex = Math.min(pasted.length, 5);
+    inputRefs.current[focusIndex]?.focus();
+  };
+
+  useEffect(() => {
+    if (digits.every((d) => d !== "")) {
+      verify(digits.join(""));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [digits]);
+
+  const verify = async (code: string) => {
+    if (code.length !== 6) {
       setMessage("6자리 인증번호를 입력해주세요.");
       return;
     }
@@ -80,33 +128,39 @@ export default function SignupVerifyPage() {
         <h1 className="mb-2 text-3xl font-bold">인증번호 확인</h1>
 
         <form
-          className="mt-2 flex w-full flex-col gap-4"
+          className="mt-8 flex w-full flex-col items-center gap-6"
           onSubmit={(e) => {
             e.preventDefault();
-            handleVerify();
+            verify(digits.join(""));
           }}
         >
-          <input
-            id="code"
-            type="text"
-            inputMode="numeric"
-            maxLength={6}
-            placeholder="6자리 인증번호를 입력하세요"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="rounded-lg border px-4 py-3 text-sm outline-none placeholder:text-gray-400"
-          />
+          <div className="flex gap-3">
+            {digits.map((digit, index) => (
+              <input
+                key={index}
+                ref={(el) => { inputRefs.current[index] = el; }}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                onPaste={handlePaste}
+                className="h-14 w-11 rounded-lg border-2 border-gray-200 text-center text-xl font-semibold outline-none transition-colors focus:border-black"
+              />
+            ))}
+          </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white disabled:opacity-50"
+            className="w-full rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white disabled:opacity-50"
           >
             {loading ? "확인 중..." : "인증 완료"}
           </button>
         </form>
 
-        {message && <p className="mt-4 text-sm text-gray-500">{message}</p>}
+        {message && <p className="mt-4 text-sm text-red-500">{message}</p>}
 
         <button
           type="button"
