@@ -2,7 +2,7 @@
 
 import { toggleBookmark, toggleLike } from "@/lib/post";
 import type { ResponsePosts } from "@/types/post";
-import { PostType } from "@/types/post";
+import { LinkType, PostType } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -14,10 +14,21 @@ type Props = {
   relatedPosts: ResponsePosts[];
 };
 
+const LINK_META: Record<LinkType, { label: string; icon: string }> = {
+  [LinkType.GITHUB]: { label: "GitHub", icon: "⌥" },
+  [LinkType.DEPLOY]: { label: "배포 사이트", icon: "↗" },
+  [LinkType.FIGMA]: { label: "Figma", icon: "▣" },
+  [LinkType.ERD]: { label: "ERD", icon: "⊞" },
+  [LinkType.CLASS]: { label: "클래스 다이어그램", icon: "⊟" },
+  [LinkType.EXTRA]: { label: "추가 자료", icon: "+" },
+};
+
 export default function PostDetail({ post, relatedPosts }: Props) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(false);
+
+  const deployLink = post.links?.find((l) => l.type === LinkType.DEPLOY)?.url;
 
   const handleLike = async () => {
     await toggleLike(post.uuid);
@@ -44,10 +55,10 @@ export default function PostDetail({ post, relatedPosts }: Props) {
                   className="object-cover"
                 />
                 <a
-                  href={post.deployUrl || undefined}
+                  href={deployLink || undefined}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/70 via-black/20 to-transparent p-7 ${post.deployUrl ? "cursor-pointer" : "cursor-default"}`}
+                  className={`absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/70 via-black/20 to-transparent p-7 ${deployLink ? "cursor-pointer" : "cursor-default"}`}
                 >
                   <p className="text-3xl font-bold leading-tight text-white drop-shadow">
                     {post.title}
@@ -56,10 +67,10 @@ export default function PostDetail({ post, relatedPosts }: Props) {
                     <div className="mt-3 flex flex-wrap gap-2">
                       {post.skills.slice(0, 5).map((skill) => (
                         <span
-                          key={skill}
+                          key={skill.id}
                           className="rounded-full bg-white/20 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm"
                         >
-                          {skill}
+                          {skill.name}
                         </span>
                       ))}
                     </div>
@@ -83,6 +94,23 @@ export default function PostDetail({ post, relatedPosts }: Props) {
               </span>
             ))}
           </div>
+
+          {post.links && post.links.length > 0 && (
+            <div className="mb-6 flex flex-wrap gap-2">
+              {post.links.map((link) => (
+                <a
+                  key={link.type}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-xs text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+                >
+                  <span>{LINK_META[link.type].icon}</span>
+                  <span>{LINK_META[link.type].label}</span>
+                </a>
+              ))}
+            </div>
+          )}
 
           {post.postType === PostType.RECRUIT &&
             post.recruitPositions.length > 0 && (
@@ -159,7 +187,7 @@ export default function PostDetail({ post, relatedPosts }: Props) {
                 <div className="mb-2 aspect-video w-full rounded-xl bg-gray-200" />
                 <p className="text-sm font-semibold leading-5">{item.title}</p>
                 <p className="mt-1 text-xs text-gray-500">
-                  {item.skills.join(", ")}
+                  {item.skills.map((s) => s.name).join(", ")}
                 </p>
               </Link>
             ))}

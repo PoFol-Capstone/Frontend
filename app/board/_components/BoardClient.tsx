@@ -61,7 +61,7 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
               href={`/board/${post.uuid}`}
               className="w-full rounded-2xl border border-gray-200 p-4 transition hover:shadow-sm"
             >
-              <div className="mb-4 aspect-video w-full overflow-hidden rounded-xl bg-gray-100">
+              <div className="relative mb-4 aspect-video w-full overflow-hidden rounded-xl bg-gray-100">
                 {post.thumbnailUrl && (
                   <Image
                     src={post.thumbnailUrl}
@@ -72,6 +72,28 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
                     unoptimized
                   />
                 )}
+                <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/60 via-black/10 to-transparent p-4">
+                  <p className="mb-2 text-base font-bold leading-tight text-white drop-shadow">
+                    {post.title}
+                  </p>
+                  {post.skills.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {post.skills.slice(0, 5).map((skill) => (
+                        <span
+                          key={skill.id}
+                          className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm"
+                        >
+                          {skill.name}
+                        </span>
+                      ))}
+                      {post.skills.length > 5 && (
+                        <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs text-white backdrop-blur-sm">
+                          +{post.skills.length - 5}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <h2 className="mb-1 text-lg font-semibold">{post.title}</h2>
@@ -79,7 +101,7 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
                 {post.content}
               </p>
 
-              <div className="mb-5 flex flex-wrap gap-2">
+              <div className="mb-4 flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
