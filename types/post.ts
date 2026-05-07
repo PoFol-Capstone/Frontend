@@ -3,12 +3,24 @@ export enum PostType {
   DISPLAY = "DISPLAY",
 }
 
-export type ApplicationStatus = "pending" | "accepted" | "rejected";
+export type ApplicationStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
 export type RecruitmentRole = {
   role: string;
   current: number;
   total: number;
+};
+
+export type RecruitPositionRequest = {
+  positionType: string;
+  maxCount: number;
+};
+
+export type RecruitPositionResponse = {
+  positionType: string;
+  maxCount: number;
+  currentCount: number;
+  isFull: boolean;
 };
 
 export type Post = {
@@ -30,9 +42,8 @@ export type RequestPosts = {
   type: PostType;
   repoUrl: string;
   deployUrl: string;
-  isRecruiting: boolean;
-  recruitPosition: string;
   recruitNote: string;
+  recruitPositions: RecruitPositionRequest[];
   isPublished: boolean;
   skillIds: number[];
   tagNames: string[];
@@ -48,8 +59,8 @@ export type ResponsePosts = {
   authorUuid: string;
   repoUrl: string;
   deployUrl: string;
-  isRecruiting: boolean;
-  recruitPosition: string;
+  recruitNote: string;
+  recruitPositions: RecruitPositionResponse[];
   viewCount: number;
   likeCount: number;
   isPublished: boolean;
@@ -59,30 +70,37 @@ export type ResponsePosts = {
 };
 
 export type PostListParams = {
+  page?: number;
+  size?: number;
   type?: PostType;
-  tag?: string;
-  skill?: string;
+  tagId?: number;
+  skillId?: number;
+};
+
+export type PagedResponse<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
 };
 
 export type RequestApplication = {
-  position: string;
-  message: string;
+  positionType: string;
+  introduction: string;
+  portfolioUrl?: string;
 };
 
 export type ResponseApplication = {
-  id: number;
-  postId: string;
-  userId: string;
+  uuid: string;
+  postUuid: string;
   applicantName: string;
   applicantUuid: string;
   avatarUrl: string;
-  position: string;
-  message: string;
+  positionType: string;
+  introduction: string;
+  portfolioUrl?: string;
   status: ApplicationStatus;
   createdAt: string;
   updatedAt: string;
-};
-
-export type PatchApplicationStatus = {
-  status: "accepted" | "rejected";
 };
