@@ -5,19 +5,23 @@ import {
   detectFromPomXml,
   detectFromGradle,
   detectFromPython,
-  detectFromGemfile,
-  detectFromGoMod,
-  detectFromCargoToml,
+  detectFromDockerfile,
+  detectFromGithubActions,
+  detectFromJenkinsfile,
+  detectFromPubspec,
 } from "@/lib/github";
+
+const KNOWN_LANGUAGES = new Set([
+  "JavaScript", "TypeScript", "Python", "Java", "Kotlin",
+  "Swift", "Dart", "Go", "C", "C++", "C#",
+]);
 
 const EXTRA_FILES = [
   "pom.xml",
   "build.gradle",
   "requirements.txt",
   "pyproject.toml",
-  "Gemfile",
-  "go.mod",
-  "Cargo.toml",
+  "pubspec.yaml",
 ] as const;
 
 type ExtraFile = (typeof EXTRA_FILES)[number];
@@ -46,13 +50,17 @@ export async function GET(req: NextRequest) {
   };
   const base = `https://api.github.com/repos/${fullName}`;
 
-  const [repoRes, langRes, readmeRes, pkgRes, ...extraRes] = await Promise.all([
-    fetch(base, { headers }),
-    fetch(`${base}/languages`, { headers }),
-    fetch(`${base}/readme`, { headers }),
-    fetch(`${base}/contents/package.json`, { headers }),
-    ...EXTRA_FILES.map((f) => fetch(`${base}/contents/${f}`, { headers })),
-  ]);
+  const [repoRes, langRes, readmeRes, pkgRes, dockerRes, ciRes, jenkinsRes, ...extraRes] =
+    await Promise.all([
+      fetch(base, { headers }),
+      fetch(`${base}/languages`, { headers }),
+      fetch(`${base}/readme`, { headers }),
+      fetch(`${base}/contents/package.json`, { headers }),
+      fetch(`${base}/contents/Dockerfile`, { headers }),
+      fetch(`${base}/contents/.github/workflows`, { headers }),
+      fetch(`${base}/contents/Jenkinsfile`, { headers }),
+      ...EXTRA_FILES.map((f) => fetch(`${base}/contents/${f}`, { headers })),
+    ]);
 
   if (!repoRes.ok) {
     return NextResponse.json(
@@ -64,7 +72,6 @@ export async function GET(req: NextRequest) {
   const repoData = await repoRes.json();
   const langData = langRes.ok ? await langRes.json() : {};
 
-  // 각 파일 내용을 병렬로 디코딩
   const fileContents = await Promise.all(
     EXTRA_FILES.map(async (file, i) => {
       const res = extraRes[i];
@@ -87,9 +94,13 @@ export async function GET(req: NextRequest) {
   if (fileMap["build.gradle"]) detectFromGradle(fileMap["build.gradle"]).forEach((f) => frameworkSet.add(f));
   if (fileMap["requirements.txt"]) detectFromPython(fileMap["requirements.txt"]).forEach((f) => frameworkSet.add(f));
   if (fileMap["pyproject.toml"]) detectFromPython(fileMap["pyproject.toml"]).forEach((f) => frameworkSet.add(f));
-  if (fileMap["Gemfile"]) detectFromGemfile(fileMap["Gemfile"]).forEach((f) => frameworkSet.add(f));
-  if (fileMap["go.mod"]) detectFromGoMod(fileMap["go.mod"]).forEach((f) => frameworkSet.add(f));
-  if (fileMap["Cargo.toml"]) detectFromCargoToml(fileMap["Cargo.toml"]).forEach((f) => frameworkSet.add(f));
+  if (fileMap["pubspec.yaml"]) detectFromPubspec(fileMap["pubspec.yaml"]).forEach((f) => frameworkSet.add(f));
+  if (dockerRes.ok) detectFromDockerfile().forEach((f) => frameworkSet.add(f));
+  if (ciRes.ok) detectFromGithubActions().forEach((f) => frameworkSet.add(f));
+  if (jenkinsRes.ok) detectFromJenkinsfile().forEach((f) => frameworkSet.add(f));
+
+  // 언어 fallback: DB에 있는 언어만 허용
+  const langFallback = Object.keys(langData).filter((l) => KNOWN_LANGUAGES.has(l));
 
   const frameworks = [...frameworkSet];
 
@@ -109,7 +120,7 @@ export async function GET(req: NextRequest) {
     projectName: repoData.name as string,
     projectDescription: description,
     mainFeatures,
-    techStack: frameworks.length > 0 ? frameworks : Object.keys(langData),
+    techStack: frameworks.length > 0 ? frameworks : langFallback,
     deployUrl: (repoData.homepage as string) ?? "",
     readmeText,
   });
