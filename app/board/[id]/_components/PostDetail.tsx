@@ -148,14 +148,19 @@ export default function PostDetail({ post, relatedPosts }: Props) {
 
           <div className="mb-6 flex items-center justify-between border-t border-gray-200 pt-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600">
-                {post.authorName.slice(0, 1)}
-              </div>
+              <Link href={`/profile/${post.authorUuid}`}>
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600 hover:opacity-80 transition">
+                  {post.authorName.slice(0, 1)}
+                </div>
+              </Link>
 
               <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-black">
+                <Link
+                  href={`/profile/${post.authorUuid}`}
+                  className="text-sm font-medium text-black hover:underline"
+                >
                   {post.authorName}
-                </span>
+                </Link>
 
                 <button
                   type="button"
