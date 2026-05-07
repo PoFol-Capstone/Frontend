@@ -1,8 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Profile } from "@/types/user";
+import FollowButton from "./FollowButton";
 
-export default function ProfileSidebar({ profile }: { profile: Profile }) {
+interface Props {
+  profile: Profile;
+  isOwner: boolean;
+}
+
+export default function ProfileSidebar({ profile, isOwner }: Props) {
   return (
     <aside className="h-fit border border-gray-300 px-8 py-7 text-center">
       <div className="mx-auto mb-4 flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-gray-100">
@@ -60,12 +66,16 @@ export default function ProfileSidebar({ profile }: { profile: Profile }) {
         <span>조회 {profile.totalViewCount.toLocaleString()}</span>
       </div>
 
-      <Link
-        href="/profile/edit"
-        className="mt-6 block w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800"
-      >
-        프로필 수정
-      </Link>
+      {isOwner ? (
+        <Link
+          href="/profile/edit"
+          className="mt-6 block w-full rounded-xl bg-black py-3 text-center text-sm font-semibold text-white hover:bg-gray-800"
+        >
+          프로필 수정
+        </Link>
+      ) : (
+        <FollowButton targetUuid={profile.uuid} />
+      )}
     </aside>
   );
 }

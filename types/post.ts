@@ -89,6 +89,7 @@ export type PostListParams = {
   type?: PostType;
   tagId?: number;
   skillId?: number;
+  authorUuid?: string;
 };
 
 export type PagedResponse<T> = {
