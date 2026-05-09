@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { posts } from "@/app/_data/posts";
+import { Eye, Heart } from "lucide-react";
 
 const categories = [
   "All",
@@ -66,9 +67,17 @@ export default function BoardPage() {
 
             <div className="flex items-center justify-between border-t border-gray-200 pt-3 text-xs text-gray-500">
               <span>{post.author}</span>
-              <span>
-                👁 {post.viewCount} / ♡ {post.likeCount}
-              </span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <Eye className="h-4 w-4" />
+                  <span>{post.viewCount}</span>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <Heart className="h-4 w-4" />
+                  <span>{post.likeCount}</span>
+                </div>
+              </div>
             </div>
           </Link>
         ))}

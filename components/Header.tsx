@@ -4,6 +4,13 @@ import ProfileMenu from "@/components/ProfileMenu";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import {
+  Bell,
+  Search,
+  CirclePlus,
+  User,
+} from "lucide-react";
+
 type Notification = {
   id: number;
   type: "follow" | "bookmark" | "apply" | "like";
@@ -73,7 +80,7 @@ export default function Header({ session }: { session: string | null }) {
           <>
             <div className="flex flex-1 justify-center px-10">
               <div className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2">
-                <span className="text-lg">⌕</span>
+                <Search className="h-4 w-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search Project..."
@@ -83,8 +90,12 @@ export default function Header({ session }: { session: string | null }) {
             </div>
 
             <div className="flex items-center gap-4">
-              <Link href="/board/write" className="text-xl">
-                ➕
+              <Link
+                href="/board/write"
+                className="flex items-center justify-center text-gray-600 transition hover:text-black"
+                aria-label="게시글 작성"
+              >
+                <CirclePlus className="h-5 w-5" />
               </Link>
 
               <div ref={notificationRef} className="relative">
@@ -94,10 +105,10 @@ export default function Header({ session }: { session: string | null }) {
                     setIsNotificationOpen((prev) => !prev);
                     setIsProfileOpen(false);
                   }}
-                  className="text-xl"
+                  className="flex items-center justify-center text-gray-600 transition hover:text-black"
                   aria-label="알림 열기"
                 >
-                  🔔
+                  <Bell className="h-5 w-5" />
                 </button>
 
                 {isNotificationOpen && (
@@ -134,10 +145,10 @@ export default function Header({ session }: { session: string | null }) {
                     setIsProfileOpen((prev) => !prev);
                     setIsNotificationOpen(false);
                   }}
-                  className="text-xl"
+                  className="flex items-center justify-center text-gray-600 transition hover:text-black"
                   aria-label="프로필 메뉴 열기"
                 >
-                  👤
+                  <User className="h-5 w-5" />
                 </button>
 
                 {isProfileOpen && <ProfileMenu />}

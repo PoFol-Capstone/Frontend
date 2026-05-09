@@ -1,75 +1,15 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-const recruitPosts = [
-  {
-    id: 1,
-    title: "감정 일기장 프로젝트",
-    description: "사용자의 감정을 기록하고 분석하는 프로젝트입니다.",
-    roles: ["Frontend", "Designer"],
-    status: "모집중",
-  },
-  {
-    id: 2,
-    title: "포트폴리오 자동 생성 플랫폼",
-    description: "GitHub 기반 프로젝트 정보를 불러와 포트폴리오를 자동 생성합니다.",
-    roles: ["Backend"],
-    status: "모집중",
-  },
-  {
-    id: 3,
-    title: "AI 공부 커뮤니티",
-    description: "AI 스터디 및 정보 공유 커뮤니티입니다.",
-    roles: ["Frontend", "Backend"],
-    status: "마감",
-  },
-];
-
+import { applicants as initialApplicants } from "@/app/_data/applicants";
+import { recruitPosts } from "@/app/_data/recruitPosts";
 
 export default function RecruitmentPage() {
   const router = useRouter();
   const [selectedPostId, setSelectedPostId] = useState(1);
 
   const selectedPost = recruitPosts.find((post) => post.id === selectedPostId);
-  const [applicants, setApplicants] = useState([
-  {
-    id: 1,
-    postId: 1,
-    name: "홍길동",
-    role: "Frontend",
-    tech: ["TypeScript", "Figma", "React"],
-    message: "React와 Next.js 프로젝트 경험이 있습니다.",
-    status: "pending",
-  },
-  {
-    id: 2,
-    postId: 1,
-    name: "굴렁쇠",
-    role: "Frontend",
-    tech: ["JavaScript", "Next.js", "Tailwind"],
-    message: "깔끔한 UI 구현과 반응형 웹에 관심이 많습니다.",
-    status: "pending",
-
-  },
-  {
-    id: 3,
-    postId: 2,
-    name: "김철수",
-    role: "Designer",
-    tech: ["Figma", "UI/UX"],
-    message: "사용자 중심 디자인을 중요하게 생각합니다.",
-    status: "pending",
-  },
-  {
-    id: 4,
-    postId: 3,
-    name: "최AI",
-    role: "Backend",
-    tech: ["Python", "FastAPI"],
-    message: "AI 백엔드 개발 경험 있습니다.",
-    status: "pending",
-  },]);
+  const [applicants, setApplicants] = useState(initialApplicants);
   
   const handleStatusChange = (id: number, newStatus: string) => {
   setApplicants((prev) =>

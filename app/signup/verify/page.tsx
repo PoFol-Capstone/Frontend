@@ -11,12 +11,22 @@ export default function SignupVerifyPage() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
+  const [toastMessage, setToastMessage] = useState("");
+  
   useEffect(() => {
     const singupEmail = sessionStorage.getItem("signupEmail");
     const loginEmail = sessionStorage.getItem("loginEmail");
     const savedEmail = singupEmail || loginEmail;
+    const  toast = sessionStorage.getItem("toastMessage");
 
+    if (toast) {
+      setToastMessage(toast);
+      sessionStorage.removeItem("toastMessage");
+
+    setTimeout(() => {
+      setToastMessage("");
+    }, 2500);
+  }
     if (!savedEmail) {
       router.push("/signup/email");
       return;
@@ -64,6 +74,11 @@ export default function SignupVerifyPage() {
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-16">
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white shadow-lg">
+          {toastMessage}
+        </div>
+      )}
       <section className="mx-auto flex w-full max-w-md flex-col items-center rounded-2xl px-8 py-12">
         <h1 className="mb-2 text-3xl font-bold">인증번호 확인</h1>
 

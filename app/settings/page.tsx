@@ -58,8 +58,7 @@ export default function SettingsPage() {
           <section className="rounded-xl border border-gray-300 bg-white px-5 py-4">
             <h2 className="text-lg font-bold text-black">알림 설정</h2>
             <p className="mt-2 text-sm text-gray-500">
-              팔로우, 좋아요, 북마크, 지원, 모집 관련 알림을 관리할 수
-              있습니다.
+              팔로우, 좋아요, 북마크, 지원, 모집 관련 알림을 관리할 수 있습니다.
             </p>
 
             <div className="mt-4 border-t border-gray-300 pt-3">

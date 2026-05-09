@@ -31,7 +31,8 @@ export default function SignupEmailPage() {
       await sendOtp(email);
 
       sessionStorage.setItem("signupEmail", email);
-      setMessage("인증 코드가 발송되었습니다.");
+      sessionStorage.setItem("toastMessage", "인증코드가 전송되었습니다.");
+
       router.push("/signup/verify");
     } catch (error) {
       console.error(error);
@@ -72,7 +73,7 @@ export default function SignupEmailPage() {
         </form>
 
         {message && (
-          <p className="mt-4 text-sm text-gray-500">{message}</p>
+          <p className="mt-4 text-sm text-red-500">{message}</p>
         )}
 
         <p className="mt-8 text-sm text-gray-500">

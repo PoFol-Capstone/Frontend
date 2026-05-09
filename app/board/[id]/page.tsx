@@ -4,17 +4,12 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { posts } from "@/app/_data/posts";
 import { comments } from "@/app/_data/comments";
+import { Eye, Heart, Bookmark, Share2 } from "lucide-react";
 
 type Application = {
   role: string;
   intro: string;
   github: string;
-};
-
-type RelatedPost = {
-  id: string;
-  title: string;
-  stack: string;
 };
 
 type CommentItem = {
@@ -29,16 +24,18 @@ type CommentItem = {
   isLiked: boolean;
 };
 
-const relatedPosts: RelatedPost[] = [
-  { id: "2", title: "채팅 어플리케이션", stack: "React, Socket.io" },
-  { id: "3", title: "모의주식", stack: "Next.js, Python" },
-  { id: "4", title: "Chatbot", stack: "TypeScript, OpenAI" },
-  { id: "5", title: "여행지 추천 앱", stack: "Flutter, Firebase" },
-];
-
 export default function PostDetailPage() {
   const params = useParams();
-  const post = posts.find((p) => p.id === params.id);
+
+  const currentPost = posts.find(
+  (post) => post.id === params.id);
+  const post = currentPost;
+  const relatedPosts = posts.filter(
+    (post) =>
+      post.category === currentPost?.category &&
+      post.id !== currentPost.id
+  );
+
   const postComments = comments.filter((comment) => comment.postId === post?.id);
 
   const [isApplyOpen, setIsApplyOpen] = useState(false);
@@ -51,6 +48,24 @@ export default function PostDetailPage() {
   const [github, setGithub] = useState("");
 
   const [application, setApplication] = useState<Application | null>(null);
+  const [copyMessage, setCopyMessage] = useState("");
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  const handleBookmark = async () => {
+    const next = !isBookmarked;
+
+    setIsBookmarked(next);
+  };
+
+  const handleShare = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+
+    setCopyMessage("URL이 복사되었습니다.");
+
+    setTimeout(() => {
+      setCopyMessage("");
+    }, 2500);
+  };
 
   if (!post) {
     return <div className="p-6">게시글 없음</div>;
@@ -74,6 +89,24 @@ export default function PostDetailPage() {
     setGithub(application.github);
     setIsViewOpen(false);
     setIsEditOpen(true);
+
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [copyMessage, setCopyMessage] = useState("");
+
+    const handleBookmark = async () => {
+      const next = !isBookmarked;
+
+      setIsBookmarked(next);
+    };
+
+    const handleShare = async () => {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopyMessage("URL이 복사되었습니다.");
+
+      setTimeout(() => {
+        setCopyMessage("");
+      }, 2500);
+    };
   };
 
   const saveApplication = () => {
@@ -83,6 +116,11 @@ export default function PostDetailPage() {
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-8">
+      {copyMessage && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white shadow-lg">
+          {copyMessage}
+        </div>
+      )}
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[1fr_280px]">
         <section>
           <div className="mb-6 aspect-video w-full rounded-2xl bg-gray-200" />
@@ -132,8 +170,7 @@ export default function PostDetailPage() {
             <div className="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
               <p className="font-semibold">지원 완료</p>
               <p className="mt-1">
-                이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수
-                있어요.
+                이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수 있어요.
               </p>
             </div>
           )}
@@ -164,10 +201,36 @@ export default function PostDetailPage() {
             </div>
 
             <div className="flex items-center gap-5 text-sm text-gray-500">
-              <span>👁 {post.viewCount}</span>
-              <span>♡ {post.likeCount}</span>
-              <span>🔖</span>
-              <span>↗</span>
+              <div className="flex items-center gap-1">
+                <Eye className="h-4 w-4" />
+                <span>{post.viewCount}</span>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <Heart className="h-4 w-4" />
+                <span>{post.likeCount}</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleBookmark}
+                className="transition hover:text-black"
+                aria-label="북마크"
+              >
+                <Bookmark
+                  className="h-4 w-4"
+                  fill={isBookmarked ? "currentColor" : "none"}
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={handleShare}
+                className="transition hover:text-black"
+                aria-label="공유"
+              >
+                <Share2 className="h-4 w-4" />
+              </button>
             </div>
           </div>
 
@@ -193,7 +256,7 @@ export default function PostDetailPage() {
               >
                 <div className="mb-2 aspect-video w-full rounded-xl bg-gray-200" />
                 <p className="text-sm font-semibold leading-5">{item.title}</p>
-                <p className="mt-1 text-xs text-gray-500">{item.stack}</p>
+                <p className="mt-1 text-xs text-gray-500">{item.tags.join(", ")}</p>
               </div>
             ))}
           </div>
@@ -533,7 +596,11 @@ function CommentSection({
                     comment.isLiked ? "text-red-500" : ""
                   }`}
                 >
-                  {comment.isLiked ? "♥" : "♡"} {comment.likeCount}
+                <Heart
+                  className="h-4 w-4"
+                  fill={comment.isLiked ? "currentColor" : "none"}
+                />
+                <span>{comment.likeCount}</span>
                 </button>
 
                 <button type="button" className="hover:text-black">
