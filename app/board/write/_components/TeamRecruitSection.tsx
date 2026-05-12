@@ -8,8 +8,8 @@ type Props = {
   onEnabledChange: (v: boolean) => void;
   description: string;
   onDescriptionChange: (v: string) => void;
-  selectedRoles: string[];
-  onRolesChange: (roles: string[]) => void;
+  roleCounts: Record<string, number>;
+  onRoleCountsChange: (roleCounts: Record<string, number>) => void;
 };
 
 export default function TeamRecruitSection({
@@ -17,8 +17,8 @@ export default function TeamRecruitSection({
   onEnabledChange,
   description,
   onDescriptionChange,
-  selectedRoles,
-  onRolesChange,
+  roleCounts,
+  onRoleCountsChange,
 }: Props) {
   const recruitRef = useRef<HTMLTextAreaElement>(null);
 
@@ -30,11 +30,18 @@ export default function TeamRecruitSection({
   }, [description]);
 
   const toggleRole = (role: string) => {
-    onRolesChange(
-      selectedRoles.includes(role)
-        ? selectedRoles.filter((r) => r !== role)
-        : [...selectedRoles, role],
-    );
+    if (role in roleCounts) {
+      const next = { ...roleCounts };
+      delete next[role];
+      onRoleCountsChange(next);
+    } else {
+      onRoleCountsChange({ ...roleCounts, [role]: 1 });
+    }
+  };
+
+  const updateCount = (role: string, value: number) => {
+    if (value < 1) return;
+    onRoleCountsChange({ ...roleCounts, [role]: value });
   };
 
   return (
@@ -71,23 +78,51 @@ export default function TeamRecruitSection({
             />
           </div>
 
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium">모집 역할 선택</label>
-            <div className="flex gap-2">
-              {RECRUIT_ROLES.map((role) => (
-                <button
-                  key={role}
-                  type="button"
-                  onClick={() => toggleRole(role)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                    selectedRoles.includes(role)
-                      ? "bg-black text-white border-black"
-                      : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                  }`}
-                >
-                  {role}
-                </button>
-              ))}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">모집 역할 및 인원</label>
+            <div className="flex flex-wrap gap-3">
+              {RECRUIT_ROLES.map((role) => {
+                const isSelected = role in roleCounts;
+                return (
+                  <div key={role} className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => toggleRole(role)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                        isSelected
+                          ? "bg-black text-white border-black"
+                          : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                      }`}
+                    >
+                      {role}
+                    </button>
+                    {isSelected && (
+                      <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => updateCount(role, roleCounts[role] - 1)}
+                          className="px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+                        >
+                          -
+                        </button>
+                        <span className="px-2 py-1.5 text-sm min-w-8 text-center select-none">
+                          {roleCounts[role]}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => updateCount(role, roleCounts[role] + 1)}
+                          className="px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
+                    {isSelected && (
+                      <span className="text-sm text-gray-500">명</span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

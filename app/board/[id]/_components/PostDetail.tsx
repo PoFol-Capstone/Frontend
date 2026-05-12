@@ -130,11 +130,11 @@ export default function PostDetail({ post, relatedPosts }: Props) {
           )}
 
           {post.postType === PostType.RECRUIT &&
-            post.recruitPositions.length > 0 && (
+            post.recruitPositionInfos.length > 0 && (
               <div className="mb-6">
                 <h2 className="mb-2 text-sm font-semibold">모집 포지션</h2>
                 <div className="flex flex-wrap gap-2">
-                  {post.recruitPositions.map((rp) => (
+                  {post.recruitPositionInfos.map((rp) => (
                     <span
                       key={rp.positionType}
                       className="rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700"
@@ -190,7 +190,7 @@ export default function PostDetail({ post, relatedPosts }: Props) {
           <ApplicationSection
             postUuid={post.uuid}
             postType={post.postType}
-            recruitPositions={post.recruitPositions}
+            recruitPositions={post.recruitPositionInfos}
           />
 
           <CommentSection postUuid={post.uuid} />

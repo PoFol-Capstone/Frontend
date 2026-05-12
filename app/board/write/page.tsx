@@ -24,7 +24,7 @@ export default function Page() {
   });
   const [teamRecruitEnabled, setTeamRecruitEnabled] = useState(false);
   const [recruitDescription, setRecruitDescription] = useState("");
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [roleCounts, setRoleCounts] = useState<Record<string, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRepoChange = (repo: string) => {
@@ -61,9 +61,9 @@ export default function Page() {
         type: teamRecruitEnabled ? PostType.RECRUIT : PostType.DISPLAY,
         links,
         recruitNote: recruitDescription,
-        recruitPositions: selectedRoles.map((role) => ({
+        recruitPositions: Object.entries(roleCounts).map(([role, count]) => ({
           positionType: role.toUpperCase(),
-          maxCount: 1,
+          maxCount: count,
         })),
         isPublished: true,
         skillIds: project.selectedSkills.map((s) => s.id),
@@ -129,8 +129,8 @@ export default function Page() {
         onEnabledChange={setTeamRecruitEnabled}
         description={recruitDescription}
         onDescriptionChange={setRecruitDescription}
-        selectedRoles={selectedRoles}
-        onRolesChange={setSelectedRoles}
+        roleCounts={roleCounts}
+        onRoleCountsChange={setRoleCounts}
       />
 
       <button

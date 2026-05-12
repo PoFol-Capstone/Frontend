@@ -74,7 +74,8 @@ export type ResponsePosts = {
   authorUuid: string;
   links: PostLink[];
   recruitNote: string;
-  recruitPositions: RecruitPositionResponse[];
+  recruitPositionInfos: RecruitPositionResponse[];
+  totalApplicantCount: number;
   viewCount: number;
   likeCount: number;
   isPublished: boolean;
@@ -96,8 +97,29 @@ export type PagedResponse<T> = {
   content: T[];
   totalElements: number;
   totalPages: number;
-  number: number;
   size: number;
+  number: number;
+  numberOfElements: number;
+  first: boolean;
+  last: boolean;
+  empty: boolean;
+  sort: {
+    empty: boolean;
+    sorted: boolean;
+    unsorted: boolean;
+  };
+  pageable: {
+    offset: number;
+    sort: {
+      empty: boolean;
+      sorted: boolean;
+      unsorted: boolean;
+    };
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
 };
 
 export type RequestApplication = {
