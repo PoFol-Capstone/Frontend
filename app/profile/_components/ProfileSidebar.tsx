@@ -1,7 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Eye, Users, Mail, Globe } from "lucide-react";
+import { FaGithub } from "react-icons/fa";
+import { RiNotionFill } from "react-icons/ri";
 import { Profile } from "@/types/user";
 import FollowButton from "./FollowButton";
+
+function LinkIcon({ type }: { type: string }) {
+  const t = type.toUpperCase();
+  if (t === "GITHUB") return <FaGithub className="h-4 w-4 shrink-0 text-gray-700" />;
+  if (t === "NOTION") return <RiNotionFill className="h-4 w-4 shrink-0 text-gray-700" />;
+  if (t === "EMAIL") return <Mail className="h-4 w-4 shrink-0 text-gray-700" />;
+  return <Globe className="h-4 w-4 shrink-0 text-gray-700" />;
+}
 
 interface Props {
   profile: Profile;
@@ -47,23 +58,30 @@ export default function ProfileSidebar({ profile, isOwner }: Props) {
         ))}
       </div>
 
-      <div className="mt-6 space-y-1 text-left text-sm">
+      <div className="mt-6 space-y-2 text-left text-sm">
         {profile.links.map((link) => (
           <a
             key={link.url}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block text-blue-600 hover:underline"
+            className="flex items-center gap-2 text-gray-700 hover:underline"
           >
-            {link.type}
+            <LinkIcon type={link.type} />
+            <span className="truncate">{link.url}</span>
           </a>
         ))}
       </div>
 
-      <div className="mt-6 flex items-center justify-center gap-8 text-sm font-bold">
-        <span>팔로워 {profile.followerCount.toLocaleString()}</span>
-        <span>조회 {profile.totalViewCount.toLocaleString()}</span>
+      <div className="mt-6 flex items-center justify-center gap-5 text-sm font-semibold">
+        <div className="flex items-center gap-1">
+          <Users className="h-4 w-4" />
+          <span>{profile.followerCount.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <Eye className="h-4 w-4" />
+          <span>{profile.totalViewCount.toLocaleString()}</span>
+        </div>
       </div>
 
       {isOwner ? (

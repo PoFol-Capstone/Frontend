@@ -3,6 +3,7 @@
 import { toggleBookmark, toggleLike } from "@/lib/post";
 import type { ResponsePosts } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
+import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -27,6 +28,7 @@ export default function PostDetail({ post, relatedPosts }: Props) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const deployLink = post.links?.find((l) => l.type === LinkType.DEPLOY)?.url;
 
@@ -38,6 +40,11 @@ export default function PostDetail({ post, relatedPosts }: Props) {
 
   const handleBookmark = async () => {
     await toggleBookmark(post.uuid);
+    setIsBookmarked((prev) => !prev);
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
   };
 
   return (
@@ -177,12 +184,19 @@ export default function PostDetail({ post, relatedPosts }: Props) {
             </div>
 
             <div className="flex items-center gap-5 text-sm text-gray-500">
-              <span>👁 {post.viewCount}</span>
-              <button type="button" onClick={handleLike}>
-                {isLiked ? "♥" : "♡"} {likeCount}
+              <div className="flex items-center gap-1">
+                <Eye className="h-4 w-4" />
+                <span>{post.viewCount}</span>
+              </div>
+              <button type="button" onClick={handleLike} className="flex items-center gap-1 transition hover:text-black">
+                <Heart className="h-4 w-4" fill={isLiked ? "currentColor" : "none"} />
+                <span>{likeCount}</span>
               </button>
-              <button type="button" onClick={handleBookmark}>
-                🔖
+              <button type="button" onClick={handleBookmark} className="transition hover:text-black" aria-label="북마크">
+                <Bookmark className="h-4 w-4" fill={isBookmarked ? "currentColor" : "none"} />
+              </button>
+              <button type="button" onClick={handleShare} className="transition hover:text-black" aria-label="공유">
+                <Share2 className="h-4 w-4" />
               </button>
             </div>
           </div>

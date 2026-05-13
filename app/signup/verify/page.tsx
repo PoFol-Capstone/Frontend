@@ -11,12 +11,23 @@ export default function SignupVerifyPage() {
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     const singupEmail = sessionStorage.getItem("signupEmail");
     const loginEmail = sessionStorage.getItem("loginEmail");
     const savedEmail = singupEmail || loginEmail;
+    const toast = sessionStorage.getItem("toastMessage");
+
+    if (toast) {
+      setToastMessage(toast);
+      sessionStorage.removeItem("toastMessage");
+
+      setTimeout(() => {
+        setToastMessage("");
+      }, 2500);
+    }
 
     if (!savedEmail) {
       router.push("/signup/email");
@@ -38,7 +49,10 @@ export default function SignupVerifyPage() {
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (e.key === "Backspace") {
       if (digits[index]) {
         const next = [...digits];
@@ -56,7 +70,10 @@ export default function SignupVerifyPage() {
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
     const next = Array(6).fill("");
     pasted.split("").forEach((char, i) => {
       next[i] = char;
@@ -70,7 +87,7 @@ export default function SignupVerifyPage() {
     if (digits.every((d) => d !== "")) {
       verify(digits.join(""));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [digits]);
 
   const verify = async (code: string) => {
@@ -124,6 +141,11 @@ export default function SignupVerifyPage() {
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-16">
+      {toastMessage && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white shadow-lg">
+          {toastMessage}
+        </div>
+      )}
       <section className="mx-auto flex w-full max-w-md flex-col items-center rounded-2xl px-8 py-12">
         <h1 className="mb-2 text-3xl font-bold">인증번호 확인</h1>
 
@@ -138,7 +160,9 @@ export default function SignupVerifyPage() {
             {digits.map((digit, index) => (
               <input
                 key={index}
-                ref={(el) => { inputRefs.current[index] = el; }}
+                ref={(el) => {
+                  inputRefs.current[index] = el;
+                }}
                 type="text"
                 inputMode="numeric"
                 maxLength={1}
