@@ -1,43 +1,48 @@
-import { http } from "./http";
+"use server";
+
 import type {
+  PagedResponse,
   PostListParams,
   RequestPosts,
   ResponsePosts,
-  RequestApplication,
-  ResponseApplication,
-  PatchApplicationStatus,
-} from "@/app/types/post";
+} from "@/types/post";
+import { http } from "./http";
 
-export async function getPosts(params?: PostListParams): Promise<ResponsePosts[]> {
-  const res = await http.get("/api/post", { params });
+export async function getPosts(
+  params?: PostListParams,
+): Promise<PagedResponse<ResponsePosts>> {
+  const res = await http.get("/api/posts", { params });
   return res.data;
 }
 
 export async function createPost(body: RequestPosts): Promise<ResponsePosts> {
-  const res = await http.post("/api/post", body);
+  const res = await http.post("/api/posts", body);
   return res.data;
 }
 
 export async function getPost(uuid: string): Promise<ResponsePosts> {
-  const res = await http.get(`/api/post/${uuid}`);
+  const res = await http.get(`/api/posts/${uuid}`);
   return res.data;
 }
 
-export async function updatePost(uuid: string, body: Partial<RequestPosts>): Promise<ResponsePosts> {
-  const res = await http.patch(`/api/post/${uuid}`, body);
+export async function updatePost(
+  uuid: string,
+  body: Partial<RequestPosts>,
+): Promise<ResponsePosts> {
+  const res = await http.patch(`/api/posts/${uuid}`, body);
   return res.data;
 }
 
 export async function deletePost(uuid: string): Promise<void> {
-  await http.delete(`/api/post/${uuid}`);
+  await http.delete(`/api/posts/${uuid}`);
 }
 
 export async function toggleLike(uuid: string): Promise<void> {
-  await http.post(`/api/post/${uuid}/like`);
+  await http.post(`/api/posts/${uuid}/like`);
 }
 
 export async function toggleBookmark(uuid: string): Promise<void> {
-  await http.post(`/api/post/${uuid}/bookmark`);
+  await http.post(`/api/posts/${uuid}/bookmark`);
 }
 
 export async function getBookmarkedPosts(): Promise<ResponsePosts[]> {
@@ -46,30 +51,6 @@ export async function getBookmarkedPosts(): Promise<ResponsePosts[]> {
 }
 
 export async function getRelatedPosts(uuid: string): Promise<ResponsePosts[]> {
-  const res = await http.get(`/api/post/${uuid}/related`);
-  return res.data;
-}
-
-export async function applyToPost(uuid: string, body: RequestApplication): Promise<ResponseApplication> {
-  const res = await http.post(`/api/post/${uuid}/applications`, body);
-  return res.data;
-}
-
-export async function getApplications(uuid: string): Promise<ResponseApplication[]> {
-  const res = await http.get(`/api/post/${uuid}/applications`);
-  return res.data;
-}
-
-export async function updateApplicationStatus(
-  uuid: string,
-  applicationId: number,
-  body: PatchApplicationStatus,
-): Promise<ResponseApplication> {
-  const res = await http.patch(`/api/post/${uuid}/applications/${applicationId}`, body);
-  return res.data;
-}
-
-export async function getMyApplications(): Promise<ResponseApplication[]> {
-  const res = await http.get("/api/user/me/applications");
+  const res = await http.get(`/api/posts/${uuid}/related`);
   return res.data;
 }

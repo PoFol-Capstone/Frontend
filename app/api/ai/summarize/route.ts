@@ -27,17 +27,26 @@ ${(readmeText as string).slice(0, 3000)}
   "mainFeatures": "주요 기능을 줄바꿈으로 구분된 목록 (앞에 번호나 기호 없이)"
 }`;
 
-  const completion = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }],
-    response_format: { type: "json_object" },
-    temperature: 0.5,
-  });
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      response_format: { type: "json_object" },
+      temperature: 0.5,
+    });
 
-  const result = JSON.parse(completion.choices[0].message.content ?? "{}");
+    const result = JSON.parse(completion.choices[0].message.content ?? "{}");
 
-  return NextResponse.json({
-    projectDescription: result.projectDescription ?? "",
-    mainFeatures: result.mainFeatures ?? "",
-  });
+    return NextResponse.json({
+      projectDescription: result.projectDescription ?? "",
+      mainFeatures: result.mainFeatures ?? "",
+    });
+  } catch (error: unknown) {
+    const err = error as { message?: string; status?: number };
+    console.error("AI 요약 에러:", err);
+    return NextResponse.json(
+      { error: err.message ?? "AI 요약에 실패했습니다." },
+      { status: err.status ?? 500 },
+    );
+  }
 }
