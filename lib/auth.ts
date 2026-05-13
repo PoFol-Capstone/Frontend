@@ -1,4 +1,6 @@
-import { RefreshResponse } from "@/app/types/auth";
+"use server";
+
+import { AuthResponse } from "@/types/auth";
 import { http } from "./http";
 
 export async function sendOtp(email: string): Promise<void> {
@@ -17,18 +19,27 @@ export async function verifyOtp(
   return res.data;
 }
 
-export async function register(email: string, name: string): Promise<void> {
-  await http.post("/api/auth/register", { email, name });
+export async function login(
+  email: string,
+  code: string,
+): Promise<AuthResponse> {
+  const res = await http.post<AuthResponse>("/api/auth/login", { email, code });
+  return res.data;
 }
 
-export async function logout(): Promise<void> {
-  await http.post("/api/auth/logout");
+export async function register(
+  email: string,
+  name: string,
+): Promise<AuthResponse> {
+  const res = await http.post<AuthResponse>("/api/auth/register", {
+    email,
+    name,
+  });
+  return res.data;
 }
 
-export async function refresh(refreshToken: string): Promise<string> {
-  const res = await http.post<RefreshResponse>("/api/auth/refresh", {
+export async function logout(refreshToken: string): Promise<void> {
+  await http.post("/api/auth/logout", {
     refreshToken,
   });
-
-  return res.data.accessToken;
 }

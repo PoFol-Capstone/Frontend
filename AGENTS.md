@@ -84,7 +84,26 @@ export async function createPost(formData: FormData) {
 }
 ```
 
-### 5. Instant navigation — export `unstable_instant`
+### 5. `middleware.ts` → `proxy.ts`
+
+In Next.js 16, the middleware entry point is **`proxy.ts`** (project root, Node.js runtime). Do **not** use `middleware.ts`.
+
+```ts
+// proxy.ts  ✅
+import { NextRequest, NextResponse } from "next/server";
+
+export function proxy(request: NextRequest) {
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};
+```
+
+> **Turbopack caveat**: Turbopack's `[middleware-edge]` chunk always references `middleware.ts`, causing a `Could not parse module` crash. The dev server must run with `--webpack` to avoid this: `"dev": "next dev --webpack"` in `package.json`.
+
+### 6. Instant navigation — export `unstable_instant`
 
 To make client-side navigations instant (especially with Suspense/streaming), export `unstable_instant` from the route:
 

@@ -1,87 +1,27 @@
-"use client";
+import { getPosts } from "@/lib/post";
+import BoardClient from "./_components/BoardClient";
 
-import Link from "next/link";
-import { useState } from "react";
-import { posts } from "@/app/_data/posts";
-import { Eye, Heart } from "lucide-react";
+interface Props {
+  searchParams: Promise<{ page?: string; size?: string }>;
+}
 
-const categories = [
-  "All",
-  "Frontend",
-  "Backend",
-  "Design",
-  "AI",
-  "School",
-  "Bookmarks",
-];
+export default async function BoardPage({ searchParams }: Props) {
+  const { page, size } = await searchParams;
 
-export default function BoardPage() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const currentPage = Math.max(0, Number(page ?? 0));
+  const pageSize = Number(size ?? 10);
 
-  const filteredPosts =
-    selectedCategory === "All"
-      ? posts
-      : posts.filter((post) => post.category === selectedCategory);
+  const result = await getPosts({ page: currentPage, size: pageSize }).catch(
+    () => ({ content: [], totalElements: 0, totalPages: 0, number: 0, size: pageSize }),
+  );
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">
-      <section className="mb-6 flex flex-wrap gap-3">
-        {categories.map((category) => (
-          <button
-            key={category}
-            type="button"
-            onClick={() => setSelectedCategory(category)}
-            className={`rounded-full px-4 py-2 text-sm transition ${
-              selectedCategory === category
-                ? "bg-black text-white"
-                : "border border-gray-200 text-black hover:bg-gray-50"
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </section>
-
-      <section className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
-        {filteredPosts.map((post) => (
-          <Link
-            key={post.id}
-            href={`/board/${post.id}`}
-            className="w-full rounded-2xl border border-gray-200 p-4 transition hover:shadow-sm"
-          >
-            <div className="mb-4 aspect-video w-full rounded-xl bg-gray-100" />
-
-            <h2 className="mb-1 text-lg font-semibold">{post.title}</h2>
-            <p className="mb-4 text-sm text-gray-500">{post.description}</p>
-
-            <div className="mb-5 flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-between border-t border-gray-200 pt-3 text-xs text-gray-500">
-              <span>{post.author}</span>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                  <Eye className="h-4 w-4" />
-                  <span>{post.viewCount}</span>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <Heart className="h-4 w-4" />
-                  <span>{post.likeCount}</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </section>
+      <BoardClient
+        posts={result.content}
+        currentPage={result.number}
+        totalPages={result.totalPages}
+      />
     </main>
   );
 }

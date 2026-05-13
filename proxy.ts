@@ -31,6 +31,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // 미들웨어가 실행될 경로 (정적 파일, API 제외)
+  // 프록시가 실행될 경로 (정적 파일, API 제외)
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

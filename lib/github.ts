@@ -49,23 +49,21 @@ export function parseReadme(markdown: string): {
 const NPM_MAP: Record<string, string> = {
   next: "Next.js",
   react: "React",
+  "react-native": "React Native",
   vue: "Vue",
-  nuxt: "Nuxt",
+  nuxt: "Nuxt.js",
   "@angular/core": "Angular",
   svelte: "Svelte",
-  astro: "Astro",
-  remix: "Remix",
-  gatsby: "Gatsby",
   express: "Express",
-  fastify: "Fastify",
   "@nestjs/core": "NestJS",
-  koa: "Koa",
   prisma: "Prisma",
-  drizzle: "Drizzle",
-  mongoose: "Mongoose",
   tailwindcss: "Tailwind CSS",
-  "@mui/material": "MUI",
-  "framer-motion": "Framer Motion",
+  mysql2: "MySQL",
+  pg: "PostgreSQL",
+  mongodb: "MongoDB",
+  mongoose: "MongoDB",
+  ioredis: "Redis",
+  redis: "Redis",
 };
 
 export function detectFromPackageJson(content: string): string[] {
@@ -80,16 +78,12 @@ export function detectFromPackageJson(content: string): string[] {
 export function detectFromPomXml(content: string): string[] {
   const found: string[] = [];
   if (/spring-boot/i.test(content)) found.push("Spring Boot");
-  if (/quarkus/i.test(content)) found.push("Quarkus");
-  if (/micronaut/i.test(content)) found.push("Micronaut");
   return found;
 }
 
 export function detectFromGradle(content: string): string[] {
   const found: string[] = [];
   if (/spring.?boot/i.test(content)) found.push("Spring Boot");
-  if (/quarkus/i.test(content)) found.push("Quarkus");
-  if (/micronaut/i.test(content)) found.push("Micronaut");
   return found;
 }
 
@@ -100,38 +94,23 @@ export function detectFromPython(content: string): string[] {
   if (lower.includes("django")) found.push("Django");
   if (lower.includes("flask")) found.push("Flask");
   if (lower.includes("fastapi")) found.push("FastAPI");
-  if (lower.includes("tornado")) found.push("Tornado");
-  if (lower.includes("aiohttp")) found.push("aiohttp");
   return found;
 }
 
-// Ruby (Gemfile)
-export function detectFromGemfile(content: string): string[] {
-  const lower = content.toLowerCase();
-  const found: string[] = [];
-  if (lower.includes("rails")) found.push("Rails");
-  if (lower.includes("sinatra")) found.push("Sinatra");
-  if (lower.includes("hanami")) found.push("Hanami");
-  return found;
+
+export function detectFromDockerfile(): string[] {
+  return ["Docker"];
 }
 
-// Go (go.mod)
-export function detectFromGoMod(content: string): string[] {
-  const found: string[] = [];
-  if (content.includes("gin-gonic/gin")) found.push("Gin");
-  if (content.includes("labstack/echo")) found.push("Echo");
-  if (content.includes("gofiber/fiber")) found.push("Fiber");
-  if (content.includes("go-chi/chi")) found.push("Chi");
-  if (content.includes("beego/beego")) found.push("Beego");
-  return found;
+export function detectFromGithubActions(): string[] {
+  return ["GitHub Actions"];
 }
 
-// Rust (Cargo.toml)
-export function detectFromCargoToml(content: string): string[] {
-  const found: string[] = [];
-  if (content.includes("actix")) found.push("Actix");
-  if (content.includes("axum")) found.push("Axum");
-  if (content.includes("rocket")) found.push("Rocket");
-  if (content.includes("warp")) found.push("Warp");
-  return found;
+export function detectFromJenkinsfile(): string[] {
+  return ["Jenkins"];
+}
+
+export function detectFromPubspec(content: string): string[] {
+  if (/^name:/m.test(content) && content.includes("flutter")) return ["Flutter"];
+  return [];
 }
