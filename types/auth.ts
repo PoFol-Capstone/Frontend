@@ -4,7 +4,3 @@ export type AuthResponse = {
   uuid: string;
   name: string;
 };
-
-export type RefreshResponse = {
-  accessToken: string;
-};

@@ -12,17 +12,11 @@ export default function OAuthCallbackPage() {
     const accessToken = params.get("accessToken") ?? "";
     const refreshToken = params.get("refreshToken") ?? "";
     const uuid = params.get("uuid") ?? "";
-    const name = params.get("name") ?? "";
 
     if (!accessToken || !uuid) {
       router.replace("/board/write?github_error=true");
       return;
     }
-
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
-    localStorage.setItem("uuid", uuid);
-    localStorage.setItem("name", name);
 
     saveAccessToken(uuid, accessToken, refreshToken).then(() => {
       router.replace("/board/write?github_connected=true");

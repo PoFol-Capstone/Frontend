@@ -54,7 +54,7 @@ export type Post = {
 export type RequestPosts = {
   title: string;
   content: string;
-  thumbnailUrl: string;
+  thumbnailUrl?: string | null;
   type: PostType;
   links: PostLink[];
   recruitNote: string;

@@ -57,7 +57,7 @@ export default function Page() {
       const post = await createPost({
         title: project.projectName,
         content,
-        thumbnailUrl: project.thumbnailUrl,
+        thumbnailUrl: project.thumbnailUrl || null,
         type: teamRecruitEnabled ? PostType.RECRUIT : PostType.DISPLAY,
         links,
         recruitNote: recruitDescription,
@@ -70,7 +70,9 @@ export default function Page() {
         tagNames: tags,
       });
       router.push(`/board/${post.uuid}`);
-    } catch { /* ignore */ }
+    } catch {
+      // 에러는 서버 로그에서 확인
+    }
     finally { setIsSubmitting(false); }
   };
 

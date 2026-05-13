@@ -1,6 +1,6 @@
 "use server";
 
-import { AuthResponse, RefreshResponse } from "@/types/auth";
+import { AuthResponse } from "@/types/auth";
 import { http } from "./http";
 
 export async function sendOtp(email: string): Promise<void> {
@@ -42,12 +42,4 @@ export async function logout(refreshToken: string): Promise<void> {
   await http.post("/api/auth/logout", {
     refreshToken,
   });
-}
-
-export async function refresh(refreshToken: string): Promise<string> {
-  const res = await http.post<RefreshResponse>("/api/auth/refresh", {
-    refreshToken,
-  });
-
-  return res.data.accessToken;
 }

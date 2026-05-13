@@ -16,18 +16,8 @@ export async function getPosts(
 }
 
 export async function createPost(body: RequestPosts): Promise<ResponsePosts> {
-  try {
-    const res = await http.post("/api/posts", body);
-    return res.data;
-  } catch (error: unknown) {
-    const err = error as { response?: { status: number; data: unknown } };
-    console.error(
-      "[createPost] 백엔드 에러:",
-      err.response?.status,
-      err.response?.data,
-    );
-    throw error;
-  }
+  const res = await http.post("/api/posts", body);
+  return res.data;
 }
 
 export async function getPost(uuid: string): Promise<ResponsePosts> {

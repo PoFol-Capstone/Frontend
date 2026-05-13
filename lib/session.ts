@@ -68,11 +68,6 @@ export async function getSessionUuid() {
   return cookieStore.get("uuid")?.value ?? null;
 }
 
-export async function getRefreshToken() {
-  const cookieStore = await cookies();
-  return cookieStore.get("refresh_token")?.value ?? null;
-}
-
 // GitHub OAuth 후 토큰 갱신 (email은 기존 쿠키 유지)
 export async function saveAccessToken(
   uuid: string,
