@@ -1,7 +1,10 @@
 "use client";
 
 import { cancelApply, getApply, submitApply, updateApply } from "@/lib/apply";
-import type { RecruitPositionResponse, ResponseApplication } from "@/types/post";
+import type {
+  RecruitPositionResponse,
+  ResponseApplication,
+} from "@/types/post";
 import { PostType } from "@/types/post";
 import { useEffect, useState } from "react";
 
@@ -11,8 +14,14 @@ type Props = {
   recruitPositions: RecruitPositionResponse[];
 };
 
-export default function ApplicationSection({ postUuid, postType, recruitPositions }: Props) {
-  const [application, setApplication] = useState<ResponseApplication | null>(null);
+export default function ApplicationSection({
+  postUuid,
+  postType,
+  recruitPositions,
+}: Props) {
+  const [application, setApplication] = useState<ResponseApplication | null>(
+    null,
+  );
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -32,7 +41,11 @@ export default function ApplicationSection({ postUuid, postType, recruitPosition
   };
 
   const handleSubmit = async () => {
-    const updated = await submitApply(postUuid, { positionType: selectedPosition, introduction, portfolioUrl });
+    const updated = await submitApply(postUuid, {
+      positionType: selectedPosition,
+      introduction,
+      portfolioUrl,
+    });
     setApplication(updated);
     setIsApplyOpen(false);
   };
@@ -64,7 +77,9 @@ export default function ApplicationSection({ postUuid, postType, recruitPosition
       {application && (
         <div className="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
           <p className="font-semibold">지원 완료</p>
-          <p className="mt-1">이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수 있어요.</p>
+          <p className="mt-1">
+            이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수 있어요.
+          </p>
         </div>
       )}
 
@@ -95,7 +110,9 @@ export default function ApplicationSection({ postUuid, postType, recruitPosition
           </label>
 
           <label className="mb-5 block">
-            <span className="mb-2 block text-sm font-medium">포트폴리오 / GitHub</span>
+            <span className="mb-2 block text-sm font-medium">
+              포트폴리오 / GitHub
+            </span>
             <input
               placeholder="https://github.com/username"
               value={portfolioUrl}
@@ -128,7 +145,9 @@ export default function ApplicationSection({ postUuid, postType, recruitPosition
           <div className="mb-5 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
             <p className="font-semibold">지원 완료</p>
             <p className="mt-1">
-              {isPending ? "마감 전까지 수정할 수 있어요." : "수정이 불가능한 상태입니다."}
+              {isPending
+                ? "마감 전까지 수정할 수 있어요."
+                : "수정이 불가능한 상태입니다."}
             </p>
           </div>
 
@@ -199,7 +218,9 @@ export default function ApplicationSection({ postUuid, postType, recruitPosition
           </label>
 
           <label className="mb-5 block">
-            <span className="mb-2 block text-sm font-medium">포트폴리오 / GitHub</span>
+            <span className="mb-2 block text-sm font-medium">
+              포트폴리오 / GitHub
+            </span>
             <input
               value={portfolioUrl}
               onChange={(e) => setPortfolioUrl(e.target.value)}
@@ -243,7 +264,11 @@ function Modal({
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-lg">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-lg font-bold">{title}</h2>
-          <button type="button" onClick={onClose} className="text-xl text-gray-400 hover:text-black">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-xl text-gray-400 hover:text-black"
+          >
             ×
           </button>
         </div>

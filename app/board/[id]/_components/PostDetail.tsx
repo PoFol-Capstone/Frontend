@@ -29,6 +29,7 @@ export default function PostDetail({ post, relatedPosts }: Props) {
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [copyMessage, setCopyMessage] = useState("");
 
   const deployLink = post.links?.find((l) => l.type === LinkType.DEPLOY)?.url;
 
@@ -43,12 +44,19 @@ export default function PostDetail({ post, relatedPosts }: Props) {
     setIsBookmarked((prev) => !prev);
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
+  const handleShare = async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    setCopyMessage("URL이 복사되었습니다.");
+    setTimeout(() => setCopyMessage(""), 2500);
   };
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-8">
+      {copyMessage && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-gray-800 px-5 py-2.5 text-sm text-white shadow-lg">
+          {copyMessage}
+        </div>
+      )}
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[1fr_280px]">
         <section>
           <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-2xl bg-gray-200">
@@ -90,7 +98,8 @@ export default function PostDetail({ post, relatedPosts }: Props) {
           <h1 className="mb-2 text-3xl font-bold">{post.title}</h1>
 
           {(() => {
-            const [description, features] = post.content.split("\n\n## 주요 기능\n");
+            const [description, features] =
+              post.content.split("\n\n## 주요 기능\n");
             return (
               <>
                 <p className="whitespace-pre-line text-sm leading-7 text-gray-600">
@@ -98,7 +107,9 @@ export default function PostDetail({ post, relatedPosts }: Props) {
                 </p>
                 {features && (
                   <div className="mt-6 border-t border-gray-100 pt-6">
-                    <h2 className="mb-3 text-sm font-semibold text-gray-900">주요 기능</h2>
+                    <h2 className="mb-3 text-sm font-semibold text-gray-900">
+                      주요 기능
+                    </h2>
                     <p className="whitespace-pre-line text-sm leading-7 text-gray-600">
                       {features}
                     </p>
@@ -188,14 +199,34 @@ export default function PostDetail({ post, relatedPosts }: Props) {
                 <Eye className="h-4 w-4" />
                 <span>{post.viewCount}</span>
               </div>
-              <button type="button" onClick={handleLike} className="flex items-center gap-1 transition hover:text-black">
-                <Heart className="h-4 w-4" fill={isLiked ? "currentColor" : "none"} />
+              <button
+                type="button"
+                onClick={handleLike}
+                className="flex items-center gap-1 transition hover:text-black"
+              >
+                <Heart
+                  className="h-4 w-4"
+                  fill={isLiked ? "currentColor" : "none"}
+                />
                 <span>{likeCount}</span>
               </button>
-              <button type="button" onClick={handleBookmark} className="transition hover:text-black" aria-label="북마크">
-                <Bookmark className="h-4 w-4" fill={isBookmarked ? "currentColor" : "none"} />
+              <button
+                type="button"
+                onClick={handleBookmark}
+                className="transition hover:text-black"
+                aria-label="북마크"
+              >
+                <Bookmark
+                  className="h-4 w-4"
+                  fill={isBookmarked ? "currentColor" : "none"}
+                />
               </button>
-              <button type="button" onClick={handleShare} className="transition hover:text-black" aria-label="공유">
+              <button
+                type="button"
+                onClick={handleShare}
+                className="transition hover:text-black"
+                aria-label="공유"
+              >
                 <Share2 className="h-4 w-4" />
               </button>
             </div>
