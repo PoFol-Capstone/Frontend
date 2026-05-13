@@ -1,7 +1,38 @@
 "use client";
 
+import { CornerDownRight, Heart, Send } from "lucide-react";
 import { useState } from "react";
 import type { Comment } from "@/types/comment";
+
+const MOCK_COMMENTS: Comment[] = [
+  {
+    id: "mock-1",
+    postId: "mock-post",
+    author: { id: "user-1", name: "김민준" },
+    content: "프로젝트 구성이 정말 깔끔하네요! 특히 기술 스택 선택이 인상적입니다.",
+    createdAt: "2025-05-10T09:23:00Z",
+    likeCount: 5,
+    isLiked: false,
+  },
+  {
+    id: "mock-2",
+    postId: "mock-post",
+    author: { id: "user-2", name: "이서연" },
+    content: "UI 디자인이 세련됐어요. 혹시 Figma 디자인 파일도 공유 가능한가요?",
+    createdAt: "2025-05-11T14:05:00Z",
+    likeCount: 3,
+    isLiked: true,
+  },
+  {
+    id: "mock-3",
+    postId: "mock-post",
+    author: { id: "user-3", name: "박지훈" },
+    content: "백엔드 아키텍처가 궁금한데 ERD 링크가 있으면 좋겠습니다!",
+    createdAt: "2025-05-12T18:47:00Z",
+    likeCount: 1,
+    isLiked: false,
+  },
+];
 
 type Props = {
   postUuid: string;
@@ -10,7 +41,7 @@ type Props = {
 
 export default function CommentSection({
   postUuid,
-  initialComments = [],
+  initialComments = MOCK_COMMENTS,
 }: Props) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [commentInput, setCommentInput] = useState("");
@@ -65,8 +96,9 @@ export default function CommentSection({
           <button
             type="button"
             onClick={addComment}
-            className="rounded-full bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800"
+            className="flex items-center gap-1 rounded-full bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800"
           >
+            <Send className="h-3 w-3" />
             등록
           </button>
         )}
@@ -90,11 +122,13 @@ export default function CommentSection({
                 <button
                   type="button"
                   onClick={() => toggleCommentLike(comment.id)}
-                  className={`hover:text-black ${comment.isLiked ? "text-red-500" : ""}`}
+                  className={`flex items-center gap-1 transition hover:text-black ${comment.isLiked ? "text-red-500" : ""}`}
                 >
-                  {comment.isLiked ? "♥" : "♡"} {comment.likeCount}
+                  <Heart className="h-4 w-4" fill={comment.isLiked ? "currentColor" : "none"} />
+                  <span>{comment.likeCount}</span>
                 </button>
-                <button type="button" className="hover:text-black">
+                <button type="button" className="flex items-center gap-1 transition hover:text-black">
+                  <CornerDownRight className="h-4 w-4" />
                   답글
                 </button>
               </div>
