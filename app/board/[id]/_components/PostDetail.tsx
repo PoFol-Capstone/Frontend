@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useState } from "react";
 import ApplicationSection from "./ApplicationSection";
 import CommentSection from "./CommentSection";
+import RelatedPosts from "./RelatedPosts";
 
 type Props = {
   post: ResponsePosts;
@@ -241,25 +242,7 @@ export default function PostDetail({ post, relatedPosts }: Props) {
           <CommentSection postUuid={post.uuid} />
         </section>
 
-        <aside className="h-fit pt-1">
-          <h2 className="mb-4 text-sm font-bold">관련 프로젝트</h2>
-
-          <div className="space-y-5">
-            {relatedPosts.map((item) => (
-              <Link
-                key={item.uuid}
-                href={`/board/${item.uuid}`}
-                className="block transition hover:opacity-80"
-              >
-                <div className="mb-2 aspect-video w-full rounded-xl bg-gray-200" />
-                <p className="text-sm font-semibold leading-5">{item.title}</p>
-                <p className="mt-1 text-xs text-gray-500">
-                  {item.skills.map((s) => s.name).join(", ")}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </aside>
+        <RelatedPosts relatedPosts={relatedPosts} />
       </div>
     </main>
   );

@@ -1,4 +1,4 @@
-import { getPost } from "@/lib/post";
+import { getPost, getRelatedPosts } from "@/lib/post";
 import PostDetail from "./_components/PostDetail";
 
 export default async function PostDetailPage({
@@ -7,7 +7,10 @@ export default async function PostDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const post = await getPost(id);
+  const [post, relatedPosts] = await Promise.all([
+    getPost(id),
+    getRelatedPosts(id),
+  ]);
 
-  return <PostDetail post={post} relatedPosts={[]} />;
+  return <PostDetail post={post} relatedPosts={relatedPosts} />;
 }
