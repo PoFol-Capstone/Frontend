@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useRef } from "react";
 import type { Skill } from "@/types/skill";
 import SkillPicker from "./SkillPicker";
+import { X } from "lucide-react";
 
 type Props = {
   projectName: string;
@@ -24,6 +25,8 @@ type Props = {
   onThumbnailLoad: () => void;
   onThumbnailError: () => void;
   thumbnailInputRef: React.RefObject<HTMLInputElement | null>;
+
+  onClose: () => void;
 };
 
 export default function ProjectInfoSection({
@@ -46,6 +49,7 @@ export default function ProjectInfoSection({
   onThumbnailLoad,
   onThumbnailError,
   thumbnailInputRef,
+  onClose,
 }: Props) {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const featuresRef = useRef<HTMLTextAreaElement>(null);
@@ -68,16 +72,28 @@ export default function ProjectInfoSection({
 
   return (
     <section className="relative border border-gray-200 rounded-2xl p-6 space-y-5 bg-white">
-      <span className="absolute right-4 top-4 text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">
-        수정 가능
-      </span>
+      <div className="mb-1 flex items-start justify-between">
+        <div className="flex items-center gap-3">
+          <h2 className="text-2xl font-bold">AI 분석 결과</h2>
 
-      <div className="space-y-1">
-        <h2 className="text-base font-semibold">AI 분석 결과</h2>
-        <p className="text-xs text-gray-400">
-          GitHub 레포지토리와 README를 기반으로 자동 생성된 정보입니다. 수정할 수 있어요.
-        </p>
+          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-500">
+            수정 가능
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          // onClick={() => setIsAiModalOpen(false)}
+          className="text-gray-400 hover:text-black"
+        >
+          <X size={22} />
+        </button>
       </div>
+
+      <p className="mb-8 text-xs text-gray-400">
+        GitHub 레포지토리와 README를 기반으로 자동 생성된 정보입니다. 수정할 수 있어요.
+      </p>
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium">프로젝트 이름</label>
@@ -237,19 +253,25 @@ export default function ProjectInfoSection({
             type="button"
             onClick={onGenerateThumbnail}
             disabled={!projectName || isThumbnailLoading}
-            className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-          >
+            className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40">
             {isThumbnailLoading ? "생성 중..." : "AI 썸네일 재생성"}
           </button>
           <button
             type="button"
             onClick={() => thumbnailInputRef.current?.click()}
             disabled={isThumbnailLoading}
-            className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-          >
+            className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40">
             직접 업로드
           </button>
         </div>
+      </div>
+      <div className="mt-6 flex justify-center">
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-xl bg-black px-6 py-2.5 text-sm font-semibold text-white hover:bg-gray-900">
+          저장하기
+        </button>
       </div>
     </section>
   );
