@@ -83,16 +83,16 @@ export default function Page() {
       <h1 className="text-2xl font-bold">프로젝트 등록</h1>
 
       <GithubSection
-        repos={github.repos} //백 연결시
-        selectedRepo={github.selectedRepo} //백 연결시
-        isLoadingRepos={github.isLoadingRepos} //백 연결시
-        isGithubConnected={github.isGithubConnected} //백 연결시
-        isCheckingGithub={github.isCheckingGithub} //백 연결시
-          // repos={[{ name: "Gyohak1Team", fullName: "T1-hotae/Gyohak1Team" }]} //백 연결 X
-          // selectedRepo={github.selectedRepo || "T1-hotae/Gyohak1Team"} //백 연결 X
-          // isLoadingRepos={false} //백 연결 X
-          // isGithubConnected={true} //백 연결 X
-          // isCheckingGithub={false} //백 연결 X
+        // repos={github.repos} //백 연결시
+        // selectedRepo={github.selectedRepo} //백 연결시
+        // isLoadingRepos={github.isLoadingRepos} //백 연결시
+        // isGithubConnected={github.isGithubConnected} //백 연결시
+        // isCheckingGithub={github.isCheckingGithub} //백 연결시
+         repos={[{ name: "Gyohak1Team", fullName: "T1-hotae/Gyohak1Team" }]} //백 연결 X
+         selectedRepo={github.selectedRepo || "T1-hotae/Gyohak1Team"} //백 연결 X
+         isLoadingRepos={false} //백 연결 X
+         isGithubConnected={true} //백 연결 X
+         isCheckingGithub={false} //백 연결 X
         isLoadingRepoData={project.isLoadingRepoData}
         isAIWriting={project.isAIWriting}
         aiError={project.aiError}
@@ -103,15 +103,15 @@ export default function Page() {
               setIsAiModalOpen(true);
               return;
             }
-          await project.handleLoadInfo(github.selectedRepo, true);
-          setIsAiModalOpen(true); //백 연결시
+          // await project.handleLoadInfo(github.selectedRepo, true);
+          // setIsAiModalOpen(true); //백 연결시
           // 밑 강제연결
-          // project.setProjectName("Gyohak1Team"); //백 연결 X
-          // project.setProjectDescription( //백 연결 X
-          //   "교학팀의 핵심 업무 중 하나인 강의실 점검표를 자동으로 생성하는 사이트입니다."); //백 연결 X
-          // project.setMainFeatures("강의실 점검표 자동 생성, 데이터 저장, 관리자 확인"); //백 연결 X
-          // project.setDeployUrl("https://gyohak1-team.vercel.app"); //백 연결 X
-          // setIsAiModalOpen(true); //백 연결 X
+          project.setProjectName("Gyohak1Team"); //백 연결 X
+          project.setProjectDescription( //백 연결 X
+          "교학팀의 핵심 업무 중 하나인 강의실 점검표를 자동으로 생성하는 사이트입니다."); //백 연결 X
+          project.setMainFeatures("강의실 점검표 자동 생성, 데이터 저장, 관리자 확인"); //백 연결 X
+          project.setDeployUrl("https://gyohak1-team.vercel.app"); //백 연결 X
+          setIsAiModalOpen(true); //백 연결 X
         }}
         onGithubConnect={github.handleGithubConnect}
       />

@@ -74,7 +74,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
   return (
     <div ref={containerRef} className="relative">
       <div
-        className="flex flex-wrap gap-2 min-h-10.5 w-full border border-gray-300 rounded-lg px-3 py-2 cursor-text focus-within:ring-2 focus-within:ring-gray-200"
+        className="flex flex-wrap gap-2 min-h-10.5 w-full border border-gray-300 rounded-lg px-3 py-2 cursor-text focus-within:border-black"
         onClick={() => {
           inputRef.current?.focus();
           setIsOpen(true);
