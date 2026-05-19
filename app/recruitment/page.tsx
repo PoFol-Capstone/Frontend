@@ -30,7 +30,7 @@ export default async function RecruitmentPage({
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] px-8 py-10">
-      <section className="mx-auto max-w-[1120px]">
+      <section className="mx-auto max-w-280">
         <div className="mb-8 flex items-end justify-between">
           <div>
             <p className="mb-2 text-sm font-medium text-gray-500">
