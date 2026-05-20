@@ -1,6 +1,6 @@
 import { getSessionUuid } from "@/lib/session";
 import getUser from "@/lib/user";
-import { getPosts } from "@/lib/post";
+import { getUserPosts } from "@/lib/post";
 import { redirect } from "next/navigation";
 import ProfileSidebar from "./_components/ProfileSidebar";
 import PostCarousel from "./_components/PostCarousel";
@@ -11,7 +11,7 @@ export default async function ProfilePage() {
 
   const [profile, postsResult] = await Promise.all([
     getUser(uuid),
-    getPosts({ authorUuid: uuid, size: 10 }).catch(() => ({
+    getUserPosts(uuid, { size: 10 }).catch(() => ({
       content: [],
       totalElements: 0,
       totalPages: 0,

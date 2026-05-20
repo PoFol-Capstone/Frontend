@@ -64,3 +64,11 @@ export async function getRelatedPosts(uuid: string): Promise<ResponsePosts[]> {
   const res = await http.get(`/api/posts/${uuid}/related`);
   return res.data;
 }
+
+export async function getUserPosts(
+  authorUuid: string,
+  params?: { type?: string; page?: number; size?: number },
+): Promise<PagedResponse<ResponsePosts>> {
+  const res = await http.get(`/api/user/${authorUuid}/posts`, { params });
+  return res.data;
+}
