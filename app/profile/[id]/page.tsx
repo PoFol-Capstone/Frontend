@@ -20,13 +20,10 @@ export default async function UserProfilePage({ params }: Props) {
   if (!profile) notFound();
   if (sessionUuid === id) redirect("/profile");
 
-  const postsResult = await getUserPosts(id, { size: 10 }).catch(() => ({
-    content: [],
-    totalElements: 0,
-    totalPages: 0,
-    number: 0,
-    size: 10,
-  }));
+  const postsResult = await getUserPosts(id, { size: 10 }).catch((err) => {
+    console.error("[profile/id] getUserPosts 실패:", err?.response?.status, err?.message);
+    return { content: [], totalElements: 0, totalPages: 0, number: 0, size: 10 };
+  });
 
   const carouselPosts = postsResult.content.map((p) => ({
     id: p.uuid,

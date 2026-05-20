@@ -11,13 +11,10 @@ export default async function ProfilePage() {
 
   const [profile, postsResult] = await Promise.all([
     getUser(uuid),
-    getUserPosts(uuid, { size: 10 }).catch(() => ({
-      content: [],
-      totalElements: 0,
-      totalPages: 0,
-      number: 0,
-      size: 10,
-    })),
+    getUserPosts(uuid, { size: 10 }).catch((err) => {
+      console.error("[profile] getUserPosts 실패:", err?.response?.status, err?.message);
+      return { content: [], totalElements: 0, totalPages: 0, number: 0, size: 10 };
+    }),
   ]);
 
   const sitePosts = postsResult.content.map((p) => ({
