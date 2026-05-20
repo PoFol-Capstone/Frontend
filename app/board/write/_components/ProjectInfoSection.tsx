@@ -111,7 +111,7 @@ export default function ProjectInfoSection({
               type="text"
               value={projectName}
               onChange={(e) => onProjectNameChange(e.target.value)}
-className="w-full resize-none overflow-hidden rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-black"/>
+              className="w-full resize-none overflow-hidden rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-black"/>
           )}
         </div>
 

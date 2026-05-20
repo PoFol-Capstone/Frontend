@@ -1,5 +1,6 @@
 import { getPosts } from "@/lib/post";
 import BoardClient from "./_components/BoardClient";
+import { posts } from "@/app/_data/posts"; //DB 있으면 삭제
 
 interface Props {
   searchParams: Promise<{ page?: string; size?: string }>;
