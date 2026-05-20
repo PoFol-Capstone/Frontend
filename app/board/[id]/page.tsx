@@ -1,4 +1,4 @@
-import { getPost } from "@/lib/post";
+import { getPost, getRelatedPosts } from "@/lib/post";
 import PostDetail from "./_components/PostDetail";
 
 export default async function PostDetailPage({
@@ -7,7 +7,14 @@ export default async function PostDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const post = await getPost(id);
+  const [postResult, relatedPostsResult] = await Promise.allSettled([
+    getPost(id),
+    getRelatedPosts(id),
+  ]);
+  if (postResult.status === "rejected") throw postResult.reason;
+  const post = postResult.value;
+  const relatedPosts =
+    relatedPostsResult.status === "fulfilled" ? relatedPostsResult.value : [];
 
-  return <PostDetail post={post} relatedPosts={[]} />;
+  return <PostDetail post={post} relatedPosts={relatedPosts} />;
 }
