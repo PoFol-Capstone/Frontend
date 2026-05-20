@@ -1,11 +1,12 @@
 "use client";
 
-import { toggleBookmark, toggleLike } from "@/lib/post";
+import { deletePost, toggleBookmark, toggleLike } from "@/lib/post";
 import type { ResponsePosts } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
-import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
+import { Bookmark, Eye, Heart, Pencil, Share2, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ApplicationSection from "./ApplicationSection";
 import CommentSection from "./CommentSection";
@@ -14,6 +15,7 @@ import RelatedPosts from "./RelatedPosts";
 type Props = {
   post: ResponsePosts;
   relatedPosts: ResponsePosts[];
+  currentUserUuid?: string | null;
 };
 
 const LINK_META: Record<LinkType, { label: string; icon: string }> = {
@@ -25,12 +27,28 @@ const LINK_META: Record<LinkType, { label: string; icon: string }> = {
   [LinkType.EXTRA]: { label: "추가 자료", icon: "+" },
 };
 
-export default function PostDetail({ post, relatedPosts }: Props) {
+export default function PostDetail({ post, relatedPosts, currentUserUuid }: Props) {
+  const router = useRouter();
+  const isAuthor = !!currentUserUuid && currentUserUuid === post.authorUuid;
+
   const [isFollowing, setIsFollowing] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [copyMessage, setCopyMessage] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await deletePost(post.uuid);
+      router.push("/board");
+    } catch {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
 
   const deployLink = post.links?.find((l) => l.type === LinkType.DEPLOY)?.url;
 
@@ -56,6 +74,33 @@ export default function PostDetail({ post, relatedPosts }: Props) {
       {copyMessage && (
         <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full bg-gray-800 px-5 py-2.5 text-sm text-white shadow-lg">
           {copyMessage}
+        </div>
+      )}
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl mx-4">
+            <h2 className="text-base font-semibold">게시글을 삭제할까요?</h2>
+            <p className="mt-1.5 text-sm text-gray-500">삭제한 게시글은 복구할 수 없습니다.</p>
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={isDeleting}
+                className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-50"
+              >
+                {isDeleting ? "삭제 중..." : "삭제"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[1fr_280px]">
@@ -96,7 +141,29 @@ export default function PostDetail({ post, relatedPosts }: Props) {
             ) : null}
           </div>
 
-          <h1 className="mb-2 text-3xl font-bold">{post.title}</h1>
+          <div className="mb-2 flex items-center gap-2">
+            <h1 className="text-3xl font-bold">{post.title}</h1>
+            {isAuthor && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => router.push(`/board/${post.uuid}/edit`)}
+                  className="rounded-full p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+                  aria-label="게시글 수정"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="rounded-full p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
+                  aria-label="게시글 삭제"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </>
+            )}
+          </div>
 
           {(() => {
             const [description, features] =
