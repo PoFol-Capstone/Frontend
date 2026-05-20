@@ -7,10 +7,14 @@ export default async function PostDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [post, relatedPosts] = await Promise.all([
+  const [postResult, relatedPostsResult] = await Promise.allSettled([
     getPost(id),
     getRelatedPosts(id),
   ]);
+  if (postResult.status === "rejected") throw postResult.reason;
+  const post = postResult.value;
+  const relatedPosts =
+    relatedPostsResult.status === "fulfilled" ? relatedPostsResult.value : [];
 
   return <PostDetail post={post} relatedPosts={relatedPosts} />;
 }

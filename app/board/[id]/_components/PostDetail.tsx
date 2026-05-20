@@ -120,7 +120,7 @@ export default function PostDetail({ post, relatedPosts }: Props) {
             );
           })()}
 
-          <div className="mb-5 flex flex-wrap gap-2">
+          <div className="my-5 border-t border-gray-100 pt-5 flex flex-wrap gap-2">
             {post.tags.map((tag) => (
               <span
                 key={tag}
