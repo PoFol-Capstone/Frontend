@@ -164,7 +164,7 @@ export default function RecruitmentClient({
               : false;
             return (
               <article
-                key={applicant.uuid}
+                key={applicant.uuid ?? applicant.applicantUuid}
                 className="rounded-[18px] border border-gray-200 bg-gray-50 p-4"
               >
                 <div className="mb-4">
