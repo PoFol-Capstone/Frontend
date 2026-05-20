@@ -18,6 +18,8 @@ export default function Page() {
   const github = useGithubRepos();
   const project = useProjectForm();
 
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+
   const [tags, setTags] = useState<string[]>([]);
   const [uploadLinks, setUploadLinks] = useState<Record<UploadSectionId, string>>({
     erd: "", figma: "", class: "", extra: "",
@@ -29,7 +31,7 @@ export default function Page() {
 
   const handleRepoChange = (repo: string) => {
     github.setSelectedRepo(repo);
-    if (repo) project.handleLoadInfo(repo);
+    // if (repo) project.handleLoadInfo(repo); //백 연결시
   };
 
   const handleSubmit = async () => {
@@ -81,42 +83,67 @@ export default function Page() {
       <h1 className="text-2xl font-bold">프로젝트 등록</h1>
 
       <GithubSection
-        repos={github.repos}
-        selectedRepo={github.selectedRepo}
-        isLoadingRepos={github.isLoadingRepos}
-        isGithubConnected={github.isGithubConnected}
-        isCheckingGithub={github.isCheckingGithub}
+        // repos={github.repos} //백 연결시
+        // selectedRepo={github.selectedRepo} //백 연결시
+        // isLoadingRepos={github.isLoadingRepos} //백 연결시
+        // isGithubConnected={github.isGithubConnected} //백 연결시
+        // isCheckingGithub={github.isCheckingGithub} //백 연결시
+         repos={[{ name: "Gyohak1Team", fullName: "T1-hotae/Gyohak1Team" }]} //백 연결 X
+         selectedRepo={github.selectedRepo || "T1-hotae/Gyohak1Team"} //백 연결 X
+         isLoadingRepos={false} //백 연결 X
+         isGithubConnected={true} //백 연결 X
+         isCheckingGithub={false} //백 연결 X
         isLoadingRepoData={project.isLoadingRepoData}
         isAIWriting={project.isAIWriting}
         aiError={project.aiError}
         onRepoChange={handleRepoChange}
         onLoadInfo={() => project.handleLoadInfo(github.selectedRepo)}
-        onAILoad={() => project.handleLoadInfo(github.selectedRepo, true)}
+        onAILoad={async () => {
+            if (project.projectName) {
+              setIsAiModalOpen(true);
+              return;
+            }
+          // await project.handleLoadInfo(github.selectedRepo, true);
+          // setIsAiModalOpen(true); //백 연결시
+          // 밑 강제연결
+          project.setProjectName("Gyohak1Team"); //백 연결 X
+          project.setProjectDescription( //백 연결 X
+          "교학팀의 핵심 업무 중 하나인 강의실 점검표를 자동으로 생성하는 사이트입니다."); //백 연결 X
+          project.setMainFeatures("강의실 점검표 자동 생성, 데이터 저장, 관리자 확인"); //백 연결 X
+          project.setDeployUrl("https://gyohak1-team.vercel.app"); //백 연결 X
+          setIsAiModalOpen(true); //백 연결 X
+        }}
         onGithubConnect={github.handleGithubConnect}
       />
 
-      {github.isGithubConnected && github.selectedRepo && (
-        <ProjectInfoSection
-          projectName={project.projectName}
-          onProjectNameChange={project.setProjectName}
-          projectDescription={project.projectDescription}
-          onProjectDescriptionChange={project.setProjectDescription}
-          mainFeatures={project.mainFeatures}
-          onMainFeaturesChange={project.setMainFeatures}
-          deployUrl={project.deployUrl}
-          onDeployUrlChange={project.setDeployUrl}
-          selectedSkills={project.selectedSkills}
-          onSkillsChange={project.handleSkillsChange}
-          thumbnailUrl={project.thumbnailUrl}
-          isThumbnailLoading={project.isThumbnailLoading}
-          isLoadingRepoData={project.isLoadingRepoData}
-          isAIWriting={project.isAIWriting}
-          onGenerateThumbnail={project.handleGenerateThumbnail}
-          onThumbnailFileChange={project.handleThumbnailFileChange}
-          onThumbnailLoad={project.handleThumbnailLoad}
-          onThumbnailError={project.handleThumbnailError}
-          thumbnailInputRef={project.thumbnailInputRef}
-        />
+      {isAiModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/40 px-4">
+          <div className="relative max-h-[85vh] w-full max-w-3xl overflow-y-auto border-0 shadow-none p-0">
+
+            <ProjectInfoSection
+              projectName={project.projectName}
+              onProjectNameChange={project.setProjectName}
+              projectDescription={project.projectDescription}
+              onProjectDescriptionChange={project.setProjectDescription}
+              mainFeatures={project.mainFeatures}
+              onMainFeaturesChange={project.setMainFeatures}
+              deployUrl={project.deployUrl}
+              onDeployUrlChange={project.setDeployUrl}
+              selectedSkills={project.selectedSkills}
+              onSkillsChange={project.handleSkillsChange}
+              thumbnailUrl={project.thumbnailUrl}
+              isThumbnailLoading={project.isThumbnailLoading}
+              isLoadingRepoData={project.isLoadingRepoData}
+              isAIWriting={project.isAIWriting}
+              onGenerateThumbnail={project.handleGenerateThumbnail}
+              onThumbnailFileChange={project.handleThumbnailFileChange}
+              onThumbnailLoad={project.handleThumbnailLoad}
+              onThumbnailError={project.handleThumbnailError}
+              thumbnailInputRef={project.thumbnailInputRef}
+              onClose={() => setIsAiModalOpen(false)}
+            />
+          </div>
+        </div>
       )}
 
       <UploadLinksSection
@@ -139,8 +166,7 @@ export default function Page() {
         type="button"
         onClick={handleSubmit}
         disabled={isSubmitting || !project.projectName}
-        className="w-full bg-black text-white py-4 rounded-xl font-semibold text-base hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-      >
+        className="w-full bg-black text-white py-4 rounded-xl font-semibold text-base hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
         {isSubmitting ? "등록 중..." : "게시글 등록"}
       </button>
     </div>

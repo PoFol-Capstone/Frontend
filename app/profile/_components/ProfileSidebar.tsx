@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, Users, Mail, Globe } from "lucide-react";
@@ -5,6 +7,8 @@ import { FaGithub } from "react-icons/fa";
 import { RiNotionFill } from "react-icons/ri";
 import { Profile } from "@/types/user";
 import FollowButton from "./FollowButton";
+import { useRef, useState } from "react";
+import ProfileEditModal from "./ProfileEditModal";
 
 function LinkIcon({ type }: { type: string }) {
   const t = type.toUpperCase();
@@ -20,6 +24,12 @@ interface Props {
 }
 
 export default function ProfileSidebar({ profile, isOwner }: Props) {
+  const githubUrl = profile.links.find((link) => link.type === "GITHUB")?.url;
+  const notionUrl = profile.links.find((link) => link.type === "NOTION")?.url;
+  const emailUrl = profile.links.find((link) => link.type === "EMAIL")?.url;
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  
   return (
     <aside className="h-fit border border-gray-300 px-8 py-7 text-center">
       <div className="mx-auto mb-4 flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-gray-100">
@@ -38,13 +48,13 @@ export default function ProfileSidebar({ profile, isOwner }: Props) {
 
       <h1 className="text-3xl font-bold">{profile.name}</h1>
 
-      <p className="mt-2 text-sm font-medium">
-        {profile.position} · {profile.positionMonths}개월차
-      </p>
+<div className="mt-2 text-sm font-medium">
+  {profile.position} · {profile.positionMonths}개월차
+</div>
 
-      <p className="mt-4 text-left text-sm leading-6">
-        {profile.bio || "소개 글을 등록해주세요"}
-      </p>
+<p className="mt-4 text-left text-sm leading-6">
+  {profile.bio || "소개 글을 등록해주세요"}
+</p>
 
       <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-300 pt-3">
         {profile.skills.map((skill) => (
@@ -58,20 +68,28 @@ export default function ProfileSidebar({ profile, isOwner }: Props) {
         ))}
       </div>
 
-      <div className="mt-6 space-y-2 text-left text-sm">
-        {profile.links.map((link) => (
-          <a
-            key={link.url}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-gray-700 hover:underline"
-          >
-            <LinkIcon type={link.type} />
-            <span className="truncate">{link.url}</span>
-          </a>
-        ))}
-      </div>
+      <div className="mt-6 space-y-3 text-left text-sm">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-700">
+            <FaGithub className="h-4 w-4" />
+            <span>{githubUrl || "GitHub: "}</span>
+          </div>
+        </div>
+
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-2 text-gray-700">
+      <RiNotionFill className="h-4 w-4" />
+      <span>{notionUrl || "Notion: "}</span>
+    </div>
+  </div>
+
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-2 text-gray-700">
+      <Mail className="h-4 w-4" />
+      <span>{emailUrl || "Email: "}</span>
+    </div>
+  </div>
+</div>
 
       <div className="mt-6 flex items-center justify-center gap-5 text-sm font-semibold">
         <div className="flex items-center gap-1">
@@ -84,15 +102,18 @@ export default function ProfileSidebar({ profile, isOwner }: Props) {
         </div>
       </div>
 
-      {isOwner ? (
-        <Link
-          href="/profile/edit"
-          className="mt-6 block w-full rounded-xl bg-black py-3 text-center text-sm font-semibold text-white hover:bg-gray-800"
-        >
+      {isOwner && (
+        <button
+          type="button"
+          onClick={() => setIsEditModalOpen(true)}
+          className="mt-6 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800">
           프로필 수정
-        </Link>
-      ) : (
-        <FollowButton targetUuid={profile.uuid} />
+        </button>
+      )}
+      {isEditModalOpen && (
+        <ProfileEditModal
+          onClose={() => setIsEditModalOpen(false)}
+        />
       )}
     </aside>
   );

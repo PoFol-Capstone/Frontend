@@ -36,15 +36,15 @@ export function useGithubRepos() {
       .then(async (data) => {
         const connected = data.connected ?? false;
         setIsGithubConnected(connected);
-        if (!connected && !hasGithubError.current) {
-          try {
-            const res = await fetch("/api/auth/github/connect");
-            const connectData = await res.json();
-            if (res.ok && connectData.redirectUrl) {
-              window.location.href = connectData.redirectUrl;
-            }
-          } catch { /* ignore */ }
-        }
+        // if (!connected && !hasGithubError.current) {
+        //   try {
+        //     const res = await fetch("/api/auth/github/connect");
+        //     const connectData = await res.json();
+        //     if (res.ok && connectData.redirectUrl) {
+        //       window.location.href = connectData.redirectUrl;
+        //     }
+        //   } catch { /* ignore */ }
+        // }
       })
       .catch(() => {})
       .finally(() => setIsCheckingGithub(false));
