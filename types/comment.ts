@@ -1,13 +1,14 @@
-export type Comment = {
-  id: string;
-  postId: string;
-  author: {
-    id: string;
-    name: string;
-    profileImageUrl?: string;
-  };
+export interface Author {
+  uuid: string;
+  name: string;
+}
+
+export interface Comment {
+  uuid: string;
   content: string;
-  createdAt: string;
+  author: Author;
+  deleted: boolean;
   likeCount: number;
-  isLiked: boolean;
-};
+  replies: Comment[];
+  createdAt: string;
+}
