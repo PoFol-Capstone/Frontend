@@ -3,6 +3,7 @@
 import { deletePostAction } from "../../actions";
 import type { ResponsePosts } from "@/types/post";
 import { LinkType } from "@/types/post";
+import type { Comment } from "@/types/comment";
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,10 +18,11 @@ import RelatedPosts from "../RelatedPosts";
 type Props = {
   post: ResponsePosts;
   relatedPosts: ResponsePosts[];
+  initialComments: Comment[];
   currentUserUuid?: string | null;
 };
 
-export default function PostDetail({ post, relatedPosts, currentUserUuid }: Props) {
+export default function PostDetail({ post, relatedPosts, initialComments, currentUserUuid }: Props) {
   const router = useRouter();
   const isAuthor = !!currentUserUuid && currentUserUuid === post.authorUuid;
 
@@ -104,7 +106,11 @@ export default function PostDetail({ post, relatedPosts, currentUserUuid }: Prop
             recruitPositions={post.recruitPositionInfos}
           />
 
-          <CommentSection postUuid={post.uuid} />
+          <CommentSection
+            postUuid={post.uuid}
+            initialComments={initialComments}
+            currentUserUuid={currentUserUuid ?? null}
+          />
         </section>
 
         <RelatedPosts relatedPosts={relatedPosts} />
