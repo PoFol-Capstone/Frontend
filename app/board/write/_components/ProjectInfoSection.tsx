@@ -96,8 +96,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-6">
-        <div>
-          <label className="mb-2.5 block text-base font-semibold text-gray-900">
+         <label className="mb-2.5 block text-base font-semibold text-gray-900">
             프로젝트 이름
           </label>
           {isLoadingRepoData ? (

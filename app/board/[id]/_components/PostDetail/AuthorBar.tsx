@@ -3,7 +3,7 @@
 import { toggleBookmark, toggleLike } from "@/lib/post";
 import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   postUuid: string;
@@ -26,6 +26,11 @@ export default function AuthorBar({
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [copyMessage, setCopyMessage] = useState("");
 
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    setIsBookmarked(saved.includes(postUuid));
+  }, [postUuid]);
+
   const handleLike = async () => {
     await toggleLike(postUuid);
     setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
@@ -34,7 +39,20 @@ export default function AuthorBar({
 
   const handleBookmark = async () => {
     await toggleBookmark(postUuid);
-    setIsBookmarked((prev) => !prev);
+
+    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+
+    let nextBookmarks: string[];
+
+    if (saved.includes(postUuid)) {
+      nextBookmarks = saved.filter((id: string) => id !== postUuid);
+      setIsBookmarked(false);
+    } else {
+      nextBookmarks = [...saved, postUuid];
+      setIsBookmarked(true);
+    }
+
+    localStorage.setItem("bookmarks", JSON.stringify(nextBookmarks));
   };
 
   const handleShare = async () => {
