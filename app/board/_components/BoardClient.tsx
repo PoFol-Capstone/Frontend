@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import EmptyView from "./empty-view";
@@ -21,13 +21,24 @@ interface Props {
 
 export default function BoardClient({ posts, currentPage, totalPages }: Props) {
   const [selected, setSelected] = useState("All");
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    setBookmarkedIds(saved);
+  }, []);
   const router = useRouter();
 
   const filtered =
     selected === "All"
       ? posts
-      : posts.filter((p) => p.tags.includes(selected));
-  return (
+      : selected === "Bookmarks"
+        ? posts.filter((p) => bookmarkedIds.includes(p.uuid))
+        : selected === "Recruiting"
+          ? posts.filter((p) => p.postType === "RECRUIT")
+          : posts.filter((p) => p.tags.includes(selected));
+
+      return (
     <>
       <section className="mb-8 flex flex-wrap gap-2">
         {categories.map((category) => (

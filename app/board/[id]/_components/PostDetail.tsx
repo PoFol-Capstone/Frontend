@@ -6,7 +6,7 @@ import { LinkType, PostType } from "@/types/post";
 import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ApplicationSection from "./ApplicationSection";
 import CommentSection from "./CommentSection";
 
@@ -29,6 +29,10 @@ export default function PostDetail({ post, relatedPosts }: Props) {
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    setIsBookmarked(saved.includes(post.uuid));
+  }, [post.uuid]);
   const [copyMessage, setCopyMessage] = useState("");
 
   const deployLink = post.links?.find((l) => l.type === LinkType.DEPLOY)?.url;
@@ -41,7 +45,20 @@ export default function PostDetail({ post, relatedPosts }: Props) {
 
   const handleBookmark = async () => {
     await toggleBookmark(post.uuid);
-    setIsBookmarked((prev) => !prev);
+
+    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+
+    let nextBookmarks: string[];
+
+    if (saved.includes(post.uuid)) {
+      nextBookmarks = saved.filter((id: string) => id !== post.uuid);
+      setIsBookmarked(false);
+    } else {
+      nextBookmarks = [...saved, post.uuid];
+      setIsBookmarked(true);
+    }
+
+    localStorage.setItem("bookmarks", JSON.stringify(nextBookmarks));
   };
 
   const handleShare = async () => {
@@ -213,12 +230,11 @@ export default function PostDetail({ post, relatedPosts }: Props) {
               <button
                 type="button"
                 onClick={handleBookmark}
-                className="transition hover:text-black"
-                aria-label="북마크"
+                className="flex items-center gap-1 text-sm text-gray-500 hover:text-black"
               >
                 <Bookmark
-                  className="h-4 w-4"
-                  fill={isBookmarked ? "currentColor" : "none"}
+                  size={18}
+                  className={isBookmarked ? "fill-black text-black" : "text-gray-500"}
                 />
               </button>
               <button
