@@ -69,8 +69,9 @@ http.interceptors.response.use(
     return response;
   },
   async (error) => {
+    const status = error.response?.status;
     if (
-      error.response?.status === 401 &&
+      (status === 401 || status === 403) &&
       !error.config?._retry &&
       error.config &&
       (await retryWithNewToken(error.config))

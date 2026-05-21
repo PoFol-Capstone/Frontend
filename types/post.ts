@@ -141,3 +141,15 @@ export type ResponseApplication = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type ApplicantResponse = {
+  uuid: string;
+  applicantName: string;
+  applicantUuid: string;
+  avatarUrl: string;
+  positionType: string;
+  introduction: string;
+  portfolioUrl?: string;
+  status: ApplicationStatus;
+  createdAt: string;
+};
