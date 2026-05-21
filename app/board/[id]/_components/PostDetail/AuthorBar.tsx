@@ -31,10 +31,33 @@ export default function AuthorBar({
     setIsBookmarked(saved.includes(postUuid));
   }, [postUuid]);
 
+  useEffect(() => {
+    const savedLikes: string[] = JSON.parse(
+      localStorage.getItem("likes") || "[]"
+    );
+    setIsLiked(savedLikes.includes(postUuid));
+  }, [postUuid]);
+
   const handleLike = async () => {
     await toggleLike(postUuid);
-    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
-    setIsLiked((prev) => !prev);
+    
+    const savedLikes: string[] = JSON.parse(
+      localStorage.getItem("likes") || "[]"
+    );
+
+    let nextLikes: string[];
+
+    if (savedLikes.includes(postUuid)){
+      nextLikes = savedLikes.filter((id) => id !== postUuid);
+      setIsLiked(false);
+      setLikeCount((prev) => Math.max(0, prev - 1));
+    } else {
+      nextLikes = [...savedLikes, postUuid];
+      setIsLiked(true);
+      setLikeCount((prev) => prev + 1);
+    }
+
+    localStorage.setItem("likes", JSON.stringify(nextLikes));
   };
 
   const handleBookmark = async () => {

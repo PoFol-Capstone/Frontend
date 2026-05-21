@@ -23,6 +23,7 @@ type Props = {
 };
 
 export default function PostDetail({ post, relatedPosts, initialComments, currentUserUuid }: Props) {
+  console.log(post);
   const router = useRouter();
   const isAuthor = !!currentUserUuid && currentUserUuid === post.authorUuid;
 
