@@ -8,6 +8,16 @@ import type {
 } from "@/types/post";
 import { http } from "./http";
 
+/**
+ *
+ * @param page?: number | undefined; - 몇 번째 페이지를 가져올지
+ * @param size?: number | undefined; - 한 페이지에 몇 개의 항목을 담을지
+ * @param type?: PostType | undefined; - Enum: RECRUIT, DISPLAY
+ * @param tagId?: number;
+ * @param skillId?: number;
+ * @param authorUuid?: string; - 사용자 Uuid
+ * @returns
+ */
 export async function getPosts(
   params?: PostListParams,
 ): Promise<PagedResponse<ResponsePosts>> {
@@ -52,5 +62,13 @@ export async function getBookmarkedPosts(): Promise<ResponsePosts[]> {
 
 export async function getRelatedPosts(uuid: string): Promise<ResponsePosts[]> {
   const res = await http.get(`/api/posts/${uuid}/related`);
+  return res.data;
+}
+
+export async function getUserPosts(
+  authorUuid: string,
+  params?: { type?: string; page?: number; size?: number },
+): Promise<PagedResponse<ResponsePosts>> {
+  const res = await http.get(`/api/user/${authorUuid}/posts`, { params });
   return res.data;
 }
