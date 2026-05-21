@@ -1,41 +1,18 @@
 "use client";
 
+import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import {
-  Bell,
-  Search,
-  CirclePlus,
-  User,
-} from "lucide-react";
+import { Bell, Search, CirclePlus, User } from "lucide-react";
 
 type Notification = {
   id: number;
   type: "follow" | "bookmark" | "apply" | "like";
   username: string;
+  read: boolean;
 };
-
-const notifications: Notification[] = [
-  { id: 1, type: "follow", username: "user" },
-  { id: 2, type: "bookmark", username: "user" },
-  { id: 3, type: "apply", username: "user" },
-  { id: 4, type: "like", username: "user" },
-];
-
-function getNotificationMessage(notification: Notification) {
-  switch (notification.type) {
-    case "follow":
-      return `${notification.username}님이 팔로우했습니다.`;
-    case "bookmark":
-      return `${notification.username}님이 게시글을 저장했습니다.`;
-    case "apply":
-      return `${notification.username}님이 프로젝트에 지원했습니다.`;
-    case "like":
-      return `${notification.username}님이 좋아요를 눌렀습니다.`;
-  }
-}
 
 export default function Header({ session }: { session: string | null }) {
   const isLoggedIn = !!session;
@@ -43,19 +20,31 @@ export default function Header({ session }: { session: string | null }) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const notificationRef = useRef<HTMLDivElement>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([
+    { id: 1, type: "follow", username: "user", read: false },
+    { id: 2, type: "bookmark", username: "user", read: false },
+    { id: 3, type: "apply", username: "user", read: true },
+    { id: 4, type: "like", username: "user", read: true },
+  ]);
+
   const profileRef = useRef<HTMLDivElement>(null);
+
+  const unreadCount = notifications.filter(
+    (notification) => !notification.read,
+  ).length;
+
+  const handleMarkAllRead = () => {
+    setNotifications((prev) =>
+      prev.map((notification) => ({
+        ...notification,
+        read: true,
+      })),
+    );
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
-
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(target)
-      ) {
-        setIsNotificationOpen(false);
-      }
 
       if (profileRef.current && !profileRef.current.contains(target)) {
         setIsProfileOpen(false);
@@ -98,45 +87,24 @@ export default function Header({ session }: { session: string | null }) {
                 <CirclePlus className="h-5 w-5" />
               </Link>
 
-              <div ref={notificationRef} className="relative">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsNotificationOpen((prev) => !prev);
-                    setIsProfileOpen(false);
-                  }}
-                  className="flex items-center justify-center text-gray-600 transition hover:text-black"
-                  aria-label="알림 열기"
-                >
-                  <Bell className="h-5 w-5" />
-                </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsNotificationOpen(true);
+                  setIsProfileOpen(false);
+                }}
+                className="relative flex items-center justify-center text-gray-600 transition hover:text-black"
+                aria-label="알림 열기"
+              >
+                <Bell className="h-5 w-5" />
 
-                {isNotificationOpen && (
-                  <div className="absolute right-0 top-9 z-50 w-64 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-                    <div className="flex flex-col">
-                      {notifications.map((notification) => (
-                        <button
-                          key={notification.id}
-                          type="button"
-                          className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors hover:bg-gray-50"
-                        >
-                          <span>{getNotificationMessage(notification)}</span>
-                        </button>
-                      ))}
-                    </div>
-
-                    <div className="border-t border-gray-100">
-                      <Link
-                        href="/notifications"
-                        onClick={() => setIsNotificationOpen(false)}
-                        className="block px-4 py-3 text-center text-sm font-medium text-blue-600 transition-colors hover:bg-gray-50"
-                      >
-                        전체 보기
-                      </Link>
-                    </div>
-                  </div>
+                {unreadCount > 0 && (
+                  // <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-black px-1 text-[10px] font-semibold text-white">
+                  //   {unreadCount}
+                  // </span>
+                  <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-black" />
                 )}
-              </div>
+              </button>
 
               <div ref={profileRef} className="relative">
                 <button
@@ -154,6 +122,13 @@ export default function Header({ session }: { session: string | null }) {
                 {isProfileOpen && <ProfileMenu />}
               </div>
             </div>
+
+            <NotificationDrawer
+              isOpen={isNotificationOpen}
+              onClose={() => setIsNotificationOpen(false)}
+              notifications={notifications}
+              onMarkAllRead={handleMarkAllRead}
+            />
           </>
         ) : (
           <div className="flex items-center gap-3">

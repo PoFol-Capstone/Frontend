@@ -6,13 +6,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import EmptyView from "./empty-view";
-
+import type { ResponsePosts } from "@/types/post";
 const categories = [
   "All",
-  "Frontend",
-  "Backend",
-  "Design",
-  "AI",
+  "Recruiting",
   "School",
   "Bookmarks",
 ];
@@ -28,8 +25,9 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
   const router = useRouter();
 
   const filtered =
-    selected === "All" ? posts : posts.filter((p) => p.tags.includes(selected));
-
+    selected === "All"
+      ? posts
+      : posts.filter((p) => p.tags.includes(selected));
   return (
     <>
       <section className="mb-8 flex flex-wrap gap-2">
@@ -55,7 +53,7 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
         <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((post) => (
             <div
-              key={post.uuid}
+              key={post.uuid} //DB 있을 때
               onClick={() => router.push(`/board/${post.uuid}`)}
               className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >

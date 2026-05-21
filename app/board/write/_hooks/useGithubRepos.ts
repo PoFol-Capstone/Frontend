@@ -36,6 +36,7 @@ export function useGithubRepos() {
       .then(async (data) => {
         const connected = data.connected ?? false;
         setIsGithubConnected(connected);
+        //git 연결 후
         // if (!connected && !hasGithubError.current) {
         //   try {
         //     const res = await fetch("/api/auth/github/connect");

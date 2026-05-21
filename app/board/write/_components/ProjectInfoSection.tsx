@@ -95,10 +95,21 @@ export default function ProjectInfoSection({
         </button>
       </div>
 
-      <p className="mb-8 text-xs text-gray-400">
-        GitHub 레포지토리와 README를 기반으로 자동 생성된 정보입니다. 수정할 수
-        있어요.
-      </p>
+      <div className="space-y-6">
+        <div>
+          <label className="mb-2.5 block text-base font-semibold text-gray-900">
+            프로젝트 이름
+          </label>
+          {isLoadingRepoData ? (
+            <div className="h-13 w-full animate-pulse rounded-xl bg-gray-200" />
+          ) : (
+            <input
+              type="text"
+              value={projectName}
+              onChange={(e) => onProjectNameChange(e.target.value)}
+              className="w-full resize-none overflow-hidden rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-black"/>
+          )}
+        </div>
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium">프로젝트 이름</label>

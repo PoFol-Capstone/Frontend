@@ -22,6 +22,7 @@ export default function ApplicationSection({
   const [application, setApplication] = useState<ResponseApplication | null>(
     null,
   );
+  const [toast, setToast] = useState("");
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -32,6 +33,18 @@ export default function ApplicationSection({
   useEffect(() => {
     getApply(postUuid).then(setApplication);
   }, [postUuid]);
+      useEffect(() => {
+  const savedToast = sessionStorage.getItem("toastMessage");
+    if (savedToast) {
+      setToast(savedToast);
+
+      sessionStorage.removeItem("toastMessage");
+
+      setTimeout(() => {
+        setToast("");
+      }, 2500);
+    }
+  }, []);
 
   if (postType !== PostType.RECRUIT) return null;
 
@@ -59,9 +72,25 @@ export default function ApplicationSection({
   };
 
   const handleSave = async () => {
-    const updated = await updateApply(postUuid, { introduction, portfolioUrl });
-    setApplication(updated);
-    setIsEditOpen(false);
+    try {
+      const updated = await updateApply(postUuid, {
+        introduction,
+        portfolioUrl,
+      });
+
+      setApplication(updated);
+
+      sessionStorage.setItem(
+        "toastMessage",
+        "지원서가 저장되었습니다.",
+      );
+
+      setIsEditOpen(false);
+
+      window.location.reload();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleCancel = async () => {
@@ -245,6 +274,11 @@ export default function ApplicationSection({
             </button>
           </div>
         </Modal>
+      )}
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white shadow-lg">
+          {toast}
+        </div>
       )}
     </>
   );
