@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getPosts } from "@/lib/post";
+import type { ResponsePosts } from "@/types/post";
 
 export default function BookmarkPage() {
-  const [bookmarkedPosts, setBookmarkedPosts] = useState<any[]>([]);
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<ResponsePosts[]>([]);
 
   useEffect(() => {
     const loadBookmarks = async () => {
@@ -15,7 +16,7 @@ export default function BookmarkPage() {
 
       const response = await getPosts();
 
-      const filteredPosts = response.content.filter((post: any) =>
+      const filteredPosts = response.content.filter((post: ResponsePosts) =>
         savedBookmarks.includes(post.uuid)
       );
 
