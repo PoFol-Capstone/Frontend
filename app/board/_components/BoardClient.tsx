@@ -2,8 +2,8 @@
 
 import type { ResponsePosts } from "@/types/post";
 import { PostType } from "@/types/post";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import CategoryFilter from "./CategoryFilter";
 import EmptyView from "./empty-view";
 import PostCard from "./PostCard";
@@ -16,14 +16,21 @@ interface Props {
 
 export default function BoardClient({ posts, currentPage, totalPages }: Props) {
   const [selected, setSelected] = useState("All");
+  const [bookmarkedIds] = useState<string[]>(() => {
+    if (typeof window === "undefined") return [];
+    return JSON.parse(localStorage.getItem("bookmarks") || "[]");
+  });
+
   const router = useRouter();
 
   const filtered =
     selected === "All"
       ? posts
-      : selected === "Recruiting"
-        ? posts.filter((p) => p.postType === PostType.RECRUIT)
-        : posts.filter((p) => p.tags.includes(selected));
+      : selected === "Bookmarks"
+        ? posts.filter((p) => bookmarkedIds.includes(p.uuid))
+        : selected === "Recruiting"
+          ? posts.filter((p) => p.postType === PostType.RECRUIT)
+          : posts.filter((p) => p.tags.includes(selected));
 
   return (
     <>

@@ -7,6 +7,7 @@ import {
   updateComment,
 } from "@/lib/comment";
 import type { Comment } from "@/types/comment";
+import type { Profile } from "@/types/user";
 import { CornerDownRight, Heart, Pencil, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -14,6 +15,7 @@ type Props = {
   postUuid: string;
   initialComments: Comment[];
   currentUserUuid: string | null;
+  currentUser?: Profile | null;
 };
 
 function formatDate(iso: string) {
@@ -24,7 +26,11 @@ function formatDate(iso: string) {
   });
 }
 
-function applyLikeToggle(comments: Comment[], uuid: string, liked: boolean): Comment[] {
+function applyLikeToggle(
+  comments: Comment[],
+  uuid: string,
+  liked: boolean,
+): Comment[] {
   return comments.map((c) => {
     if (c.uuid === uuid) {
       return {
@@ -51,7 +57,11 @@ function applyDelete(comments: Comment[], uuid: string): Comment[] {
   });
 }
 
-function applyUpdate(comments: Comment[], uuid: string, content: string): Comment[] {
+function applyUpdate(
+  comments: Comment[],
+  uuid: string,
+  content: string,
+): Comment[] {
   return comments.map((c) => {
     if (c.uuid === uuid) return { ...c, content };
     if (c.replies.length > 0) {
@@ -61,7 +71,11 @@ function applyUpdate(comments: Comment[], uuid: string, content: string): Commen
   });
 }
 
-function appendReply(comments: Comment[], parentUuid: string, reply: Comment): Comment[] {
+function appendReply(
+  comments: Comment[],
+  parentUuid: string,
+  reply: Comment,
+): Comment[] {
   return comments.map((c) => {
     if (c.uuid === parentUuid) return { ...c, replies: [...c.replies, reply] };
     return c;
@@ -129,7 +143,9 @@ function CommentItem({
           {!comment.deleted && (
             <div className="mb-1 flex items-center gap-2">
               <p className="text-sm font-semibold">{comment.author.name}</p>
-              <span className="text-xs text-gray-400">{formatDate(comment.createdAt)}</span>
+              <span className="text-xs text-gray-400">
+                {formatDate(comment.createdAt)}
+              </span>
               {isOwner && !isEditing && (
                 <div className="ml-auto flex items-center gap-1">
                   <button
@@ -253,7 +269,12 @@ function CommentItem({
   );
 }
 
-export default function CommentSection({ postUuid, initialComments, currentUserUuid }: Props) {
+export default function CommentSection({
+  postUuid,
+  initialComments,
+  currentUserUuid,
+  currentUser,
+}: Props) {
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [commentInput, setCommentInput] = useState("");
 
@@ -289,7 +310,18 @@ export default function CommentSection({ postUuid, initialComments, currentUserU
 
       {currentUserUuid && (
         <div className="mb-6 flex items-center gap-3">
-          <div className="h-9 w-9 rounded-full bg-cyan-300" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-xs font-semibold text-gray-600">
+            {currentUser?.avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={currentUser.avatarUrl}
+                alt={currentUser.name}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              (currentUser?.name?.slice(0, 1) ?? "?")
+            )}
+          </div>
           <input
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}

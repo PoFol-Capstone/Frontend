@@ -4,6 +4,7 @@ import { deletePostAction } from "../../actions";
 import type { ResponsePosts } from "@/types/post";
 import { LinkType } from "@/types/post";
 import type { Comment } from "@/types/comment";
+import type { Profile } from "@/types/user";
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -20,9 +21,11 @@ type Props = {
   relatedPosts: ResponsePosts[];
   initialComments: Comment[];
   currentUserUuid?: string | null;
+  currentUser?: Profile | null;
 };
 
 export default function PostDetail({ post, relatedPosts, initialComments, currentUserUuid }: Props) {
+  console.log(post);
   const router = useRouter();
   const isAuthor = !!currentUserUuid && currentUserUuid === post.authorUuid;
 
@@ -110,6 +113,7 @@ export default function PostDetail({ post, relatedPosts, initialComments, curren
             postUuid={post.uuid}
             initialComments={initialComments}
             currentUserUuid={currentUserUuid ?? null}
+            currentUser={currentUser ?? null}
           />
         </section>
 
