@@ -1,6 +1,5 @@
 import { getPosts } from "@/lib/post";
 import BoardClient from "./_components/BoardClient";
-import { posts } from "@/app/_data/posts"; //DB 있으면 삭제
 
 interface Props {
   searchParams: Promise<{ page?: string; size?: string }>;
@@ -13,7 +12,13 @@ export default async function BoardPage({ searchParams }: Props) {
   const pageSize = Number(size ?? 10);
 
   const result = await getPosts({ page: currentPage, size: pageSize }).catch(
-    () => ({ content: [], totalElements: 0, totalPages: 0, number: 0, size: pageSize }),
+    () => ({
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      number: 0,
+      size: pageSize,
+    }),
   );
 
   return (

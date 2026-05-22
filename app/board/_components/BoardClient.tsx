@@ -1,18 +1,13 @@
 "use client";
 
 import type { ResponsePosts } from "@/types/post";
+import { PostType } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import CategoryFilter from "./CategoryFilter";
 import EmptyView from "./empty-view";
-import type { ResponsePosts } from "@/types/post";
-const categories = [
-  "All",
-  "Recruiting",
-  "School",
-  "Bookmarks",
-];
 
 interface Props {
   posts: ResponsePosts[];
@@ -27,25 +22,13 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
   const filtered =
     selected === "All"
       ? posts
-      : posts.filter((p) => p.tags.includes(selected));
+      : selected === "Recruiting"
+        ? posts.filter((p) => p.postType === PostType.RECRUIT)
+        : posts.filter((p) => p.tags.includes(selected));
+
   return (
     <>
-      <section className="mb-8 flex flex-wrap gap-2">
-        {categories.map((category) => (
-          <button
-            key={category}
-            type="button"
-            onClick={() => setSelected(category)}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
-              selected === category
-                ? "bg-black text-white"
-                : "border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-black"
-            }`}
-          >
-            {category}
-          </button>
-        ))}
-      </section>
+      <CategoryFilter selected={selected} onSelect={setSelected} />
 
       {filtered.length === 0 ? (
         <EmptyView />
