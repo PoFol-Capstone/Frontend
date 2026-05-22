@@ -1,13 +1,19 @@
 "use client";
 
-import type { ResponsePosts } from "@/types/post";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+
 import EmptyView from "./empty-view";
 
-const categories = ["All", "Recruiting", "School", "Bookmarks"];
+import type { ResponsePosts } from "@/types/post";
+const categories = [
+  "All",
+  "Recruiting",
+  "School",
+  "Bookmarks",
+];
 
 interface Props {
   posts: ResponsePosts[];
@@ -17,11 +23,24 @@ interface Props {
 
 export default function BoardClient({ posts, currentPage, totalPages }: Props) {
   const [selected, setSelected] = useState("All");
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    setBookmarkedIds(saved);
+  }, []);
   const router = useRouter();
 
   const filtered =
-    selected === "All" ? posts : posts.filter((p) => p.tags.includes(selected));
-  return (
+    selected === "All"
+      ? posts
+      : selected === "Bookmarks"
+        ? posts.filter((p) => bookmarkedIds.includes(p.uuid))
+        : selected === "Recruiting"
+          ? posts.filter((p) => p.postType === "RECRUIT")
+          : posts.filter((p) => p.tags.includes(selected));
+
+      return (
     <>
       <section className="mb-8 flex flex-wrap gap-2">
         {categories.map((category) => (
