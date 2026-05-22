@@ -6,7 +6,6 @@ import Link from "next/link";
 const MENU_ITEMS = [
   { label: "Profile", href: "/profile" },
   { label: "Recruitment", href: "/recruitment" },
-  { label: "Bookmarks", href: "/bookmark" },
   { label: "Settings", href: "/settings" },
 ];
 
