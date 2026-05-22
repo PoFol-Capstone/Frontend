@@ -60,7 +60,7 @@ export default function PostCard({ post }: Props) {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col px-4 pt-4">
         <p className="mb-3 line-clamp-2 flex-1 text-xs leading-relaxed text-gray-500">
           {post.content}
         </p>
@@ -83,7 +83,7 @@ export default function PostCard({ post }: Props) {
           </div>
         )}
 
-        <div className="flex items-center justify-between border-t border-gray-100 pt-3">
+        <div className="mt-auto flex h-9 items-center justify-between border-t border-gray-100">
           <Link
             href={`/profile/${post.authorUuid}`}
             onClick={(e) => e.stopPropagation()}
