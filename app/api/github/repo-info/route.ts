@@ -10,6 +10,7 @@ import {
   detectFromJenkinsfile,
   detectFromPubspec,
 } from "@/lib/github";
+import { http } from "@/lib/http";
 
 const KNOWN_LANGUAGES = new Set([
   "JavaScript", "TypeScript", "Python", "Java", "Kotlin",
@@ -26,12 +27,21 @@ const EXTRA_FILES = [
 
 type ExtraFile = (typeof EXTRA_FILES)[number];
 
+async function fetchGithubToken(): Promise<string | null> {
+  try {
+    const res = await http.get<{ accessToken: string }>("/api/github/token");
+    return res.data.accessToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(req: NextRequest) {
-  const token = process.env.GITHUB_TOKEN;
+  const token = await fetchGithubToken();
   if (!token) {
     return NextResponse.json(
-      { error: "GITHUB_TOKEN이 설정되지 않았습니다." },
-      { status: 500 },
+      { error: "GitHub 연동이 필요합니다." },
+      { status: 401 },
     );
   }
 
