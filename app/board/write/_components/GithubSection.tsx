@@ -10,6 +10,8 @@ type Props = {
   isLoadingRepoData: boolean;
   isAIWriting: boolean;
   aiError: string;
+  isConnecting: boolean;
+  connectError: string;
   onRepoChange: (repo: string) => void;
   onLoadInfo: () => void;
   onAILoad: () => void;
@@ -25,6 +27,8 @@ export default function GithubSection({
   isLoadingRepoData,
   isAIWriting,
   aiError,
+  isConnecting,
+  connectError,
   onRepoChange,
   onLoadInfo,
   onAILoad,
@@ -91,7 +95,17 @@ export default function GithubSection({
 
         {aiError && <p className="mt-2 text-xs text-red-500">{aiError}</p>}
 
-        <p className="mt-3 text-xs text-gray-400">GitHub 계정이 연결되어 있습니다.</p>
+        <div className="mt-3 flex items-center justify-between">
+          <p className="text-xs text-gray-400">GitHub 계정이 연결되어 있습니다.</p>
+          <button
+            type="button"
+            onClick={onGithubConnect}
+            disabled={isConnecting}
+            className="text-xs text-gray-400 underline hover:text-gray-600 disabled:opacity-50"
+          >
+            {isConnecting ? "연결 중..." : "재연동"}
+          </button>
+        </div>
         <p className="mt-1 text-xs text-gray-400">
           연결된 GitHub 계정의 레포지토리 정보를 자동으로 불러옵니다.
         </p>
@@ -110,12 +124,16 @@ export default function GithubSection({
             <p className="mt-3 text-sm leading-5 text-gray-500">
               레포지토리를 불러와 프로젝트 정보를 자동으로 채울 수 있습니다.
             </p>
+            {connectError && (
+              <p className="mt-2 text-xs text-red-500">{connectError}</p>
+            )}
             <button
               type="button"
               onClick={onGithubConnect}
-              className="mt-4 rounded-full border border-gray-300 px-4 py-2 text-sm text-blue-600 hover:bg-gray-50"
+              disabled={isConnecting}
+              className="mt-4 rounded-full border border-gray-300 px-4 py-2 text-sm text-blue-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              GitHub 계정 연결하기
+              {isConnecting ? "연결 중..." : "GitHub 계정 연결하기"}
             </button>
           </div>
         </div>

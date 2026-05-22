@@ -111,11 +111,8 @@ export default function Page() {
         isLoadingRepos={github.isLoadingRepos}
         isGithubConnected={github.isGithubConnected}
         isCheckingGithub={github.isCheckingGithub}
-        // repos={[{ name: "Gyohak1Team", fullName: "T1-hotae/Gyohak1Team" }]} //백 연결 X
-        // selectedRepo={github.selectedRepo || "T1-hotae/Gyohak1Team"} //백 연결 X
-        // isLoadingRepos={false} //백 연결 X
-        // isGithubConnected={true} //백 연결 X
-        // isCheckingGithub={false} //백 연결 X
+        isConnecting={github.isConnecting}
+        connectError={github.connectError}
         isLoadingRepoData={project.isLoadingRepoData}
         isAIWriting={project.isAIWriting}
         aiError={project.aiError}
