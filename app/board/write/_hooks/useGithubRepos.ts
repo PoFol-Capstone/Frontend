@@ -23,7 +23,9 @@ export function useGithubRepos() {
       setConnectError(
         githubError === "already_linked"
           ? "이미 다른 계정에 연결된 GitHub 계정입니다."
-          : "GitHub 연결에 실패했습니다. 다시 시도해주세요.",
+          : githubError === "state_expired"
+            ? "GitHub 연결 시간이 초과되었습니다. 다시 시도해주세요."
+            : "GitHub 연결에 실패했습니다. 다시 시도해주세요.",
       );
       url.searchParams.delete("github_error");
       window.history.replaceState({}, "", url.toString());
