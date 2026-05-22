@@ -1,6 +1,7 @@
 import { getComments } from "@/lib/comment";
 import { getPost, getRelatedPosts } from "@/lib/post";
 import { getSessionUuid } from "@/lib/session";
+import getUser from "@/lib/user";
 import PostDetail from "./_components/PostDetail";
 
 export default async function PostDetailPage({
@@ -33,12 +34,17 @@ export default async function PostDetailPage({
   const initialComments =
     commentsResult.status === "fulfilled" ? commentsResult.value : [];
 
+  const currentUser = currentUserUuid
+    ? await getUser(currentUserUuid).catch(() => null)
+    : null;
+
   return (
     <PostDetail
       post={post}
       relatedPosts={relatedPosts}
       initialComments={initialComments}
       currentUserUuid={currentUserUuid}
+      currentUser={currentUser}
     />
   );
 }

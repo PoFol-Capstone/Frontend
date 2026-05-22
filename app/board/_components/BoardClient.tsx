@@ -6,13 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import EmptyView from "./empty-view";
-import type { ResponsePosts } from "@/types/post";
-const categories = [
-  "All",
-  "Recruiting",
-  "School",
-  "Bookmarks",
-];
+
+const categories = ["All", "Recruiting", "School", "Bookmarks"];
 
 interface Props {
   posts: ResponsePosts[];
@@ -25,9 +20,7 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
   const router = useRouter();
 
   const filtered =
-    selected === "All"
-      ? posts
-      : posts.filter((p) => p.tags.includes(selected));
+    selected === "All" ? posts : posts.filter((p) => p.tags.includes(selected));
   return (
     <>
       <section className="mb-8 flex flex-wrap gap-2">
