@@ -1,23 +1,25 @@
 "use client";
 
+import { getPosts } from "@/lib/post";
+import type { ResponsePosts } from "@/types/post";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getPosts } from "@/lib/post";
 
 export default function BookmarkPage() {
-  const [bookmarkedPosts, setBookmarkedPosts] = useState<any[]>([]);
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<ResponsePosts[]>([]);
 
   useEffect(() => {
     const loadBookmarks = async () => {
       const savedBookmarks: string[] = JSON.parse(
-        localStorage.getItem("bookmarks") || "[]"
+        localStorage.getItem("bookmarks") || "[]",
       );
 
       const response = await getPosts();
 
-      const filteredPosts = response.content.filter((post: any) =>
-        savedBookmarks.includes(post.uuid)
+      const filteredPosts = response.content.filter((post: ResponsePosts) =>
+        savedBookmarks.includes(post.uuid),
       );
+      console.log(filteredPosts);
 
       setBookmarkedPosts(filteredPosts);
     };
