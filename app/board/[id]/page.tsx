@@ -2,6 +2,7 @@ import { getComments } from "@/lib/comment";
 import { getPost, getRelatedPosts } from "@/lib/post";
 import { getSessionUuid } from "@/lib/session";
 import PostDetail from "./_components/PostDetail/index";
+import getUser from "@/lib/user";
 
 export default async function PostDetailPage({
   params,
