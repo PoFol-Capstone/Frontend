@@ -1,10 +1,17 @@
 "use server";
 
-import { Profile } from "@/types/user";
+import { Profile, FollowerUser } from "@/types/user";
 import { http } from "./http";
 
 export default async function getUser(uuid: string): Promise<Profile> {
   const res = await http.get(`/api/user/${uuid}`);
+  return res.data;
+}
+
+export async function getFollowers(
+  uuid: string,
+): Promise<FollowerUser[]> {
+  const res = await http.get(`/api/users/${uuid}/followers`);
   return res.data;
 }
 

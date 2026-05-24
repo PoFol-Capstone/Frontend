@@ -24,3 +24,9 @@ export type Profile = {
   links: ProfileLink[];
   skills: ProfileSkill[];
 };
+
+export type FollowerUser = {
+  id: number;
+  name: string;
+  isFollowing: boolean;
+};
