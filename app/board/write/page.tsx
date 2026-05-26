@@ -145,6 +145,8 @@ export default function Page() {
         isLoadingRepoData={project.isLoadingRepoData}
         isAIWriting={project.isAIWriting}
         aiError={project.aiError}
+        isConnecting={github.isConnecting}
+        connectError={github.connectError}
         onRepoChange={handleRepoChange}
         onLoadInfo={() => project.handleLoadInfo(github.selectedRepo)}
         onAILoad={async () => {

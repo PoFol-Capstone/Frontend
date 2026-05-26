@@ -3,7 +3,7 @@
 import { toggleBookmark, toggleLike } from "@/lib/post";
 import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Props = {
   postUuid: string;
@@ -22,21 +22,17 @@ export default function AuthorBar({
 }: Props) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
-  const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [copyMessage, setCopyMessage] = useState("");
-
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
-    setIsBookmarked(saved.includes(postUuid));
-  }, [postUuid]);
-
-  useEffect(() => {
-    const savedLikes: string[] = JSON.parse(
-      localStorage.getItem("likes") || "[]"
+  const [isLiked, setIsLiked] = useState(() => {
+    const saved: string[] = JSON.parse(localStorage.getItem("likes") || "[]");
+    return saved.includes(postUuid);
+  });
+  const [isBookmarked, setIsBookmarked] = useState(() => {
+    const saved: string[] = JSON.parse(
+      localStorage.getItem("bookmarks") || "[]"
     );
-    setIsLiked(savedLikes.includes(postUuid));
-  }, [postUuid]);
+    return saved.includes(postUuid);
+  });
+  const [copyMessage, setCopyMessage] = useState("");
 
   const handleLike = async () => {
     await toggleLike(postUuid);
