@@ -111,21 +111,7 @@ export default function ProjectInfoSection({
         </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">프로젝트 이름</label>
-        {isLoadingRepoData ? (
-          <div className="animate-pulse h-10 w-full rounded-lg bg-gray-200" />
-        ) : (
-          <input
-            type="text"
-            value={projectName}
-            onChange={(e) => onProjectNameChange(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
-          />
-        )}
-      </div>
-
-      <div className="space-y-1.5">
-        <label className="text-sm font-medium">프로젝트 설명</label>
+        <label className="text-sm font-semibold">프로젝트 설명</label>
         {isLoadingRepoData || isAIWriting ? (
           <div className="animate-pulse space-y-2 rounded-lg border border-gray-200 px-3 py-3">
             <div className="h-3.5 w-full rounded bg-gray-200" />
@@ -144,7 +130,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">주요 기능</label>
+        <label className="text-sm font-semibold">주요 기능</label>
         {isLoadingRepoData || isAIWriting ? (
           <div className="animate-pulse space-y-2 rounded-lg border border-gray-200 px-3 py-3">
             <div className="h-3.5 w-full rounded bg-gray-200" />
@@ -164,7 +150,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">배포된 사이트</label>
+        <label className="text-sm font-semibold">배포된 사이트</label>
         {isLoadingRepoData ? (
           <div className="animate-pulse h-10 w-full rounded-lg bg-gray-200" />
         ) : (
@@ -179,7 +165,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-medium">기술 스택</label>
+        <label className="text-sm font-semibold">기술 스택</label>
         {isLoadingRepoData ? (
           <div className="animate-pulse flex flex-wrap gap-2 min-h-10.5 rounded-lg border border-gray-200 px-3 py-2">
             <div className="h-7 w-20 rounded-full bg-gray-200" />
@@ -192,7 +178,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-3">
-        <label className="text-sm font-medium">추천 썸네일</label>
+        <label className="text-sm font-semibold">추천 썸네일</label>
 
         <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
           {!thumbnailUrl && !isThumbnailLoading && (

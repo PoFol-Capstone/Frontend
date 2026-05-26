@@ -4,6 +4,7 @@ import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Bell, Search, CirclePlus, User } from "lucide-react";
 
@@ -19,6 +20,18 @@ export default function Header({ session }: { session: string | null }) {
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  
+  const router = useRouter();
+  const [keyword, setKeyword] = useState("");
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const trimmed = keyword.trim();
+    if (!trimmed) return;
+
+    router.push('/search?q=${encodeURIComponent(trimmed)}');
+  };
 
   const [notifications, setNotifications] = useState<Notification[]>([
     { id: 1, type: "follow", username: "user", read: false },
@@ -68,14 +81,18 @@ export default function Header({ session }: { session: string | null }) {
         {isLoggedIn ? (
           <>
             <div className="flex flex-1 justify-center px-10">
-              <div className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2">
-                <Search className="h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search Project..."
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
-                />
-              </div>
+              <form
+                onSubmit={handleSearch}
+                className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2">
+                  <Search className="h-4 w-4 text-gray-400" />
+                  <input
+                    type="text"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    placeholder="Search Project..."
+                    className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
+                  />
+              </form>
             </div>
 
             <div className="flex items-center gap-4">

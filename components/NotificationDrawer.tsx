@@ -40,7 +40,7 @@ export default function NotificationDrawer({
       />
 
       <aside
-        className={`absolute right-0 top-0 flex h-full w-[380px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+        className={`fixed right-0 top-0 z-50 flex h-dvh w-[80vw] max-w-[380px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

@@ -1,5 +1,5 @@
 import { getSessionUuid } from "@/lib/session";
-import getUser from "@/lib/user";
+import getUser, { getFollowers } from "@/lib/user";
 import { getUserPosts } from "@/lib/post";
 import { redirect, notFound } from "next/navigation";
 import ProfileSidebar from "../_components/ProfileSidebar";
@@ -20,10 +20,15 @@ export default async function UserProfilePage({ params }: Props) {
   if (!profile) notFound();
   if (sessionUuid === id) redirect("/profile");
 
-  const postsResult = await getUserPosts(id, { size: 10 }).catch((err) => {
-    console.error("[profile/id] getUserPosts 실패:", err?.response?.status, err?.message);
-    return { content: [], totalElements: 0, totalPages: 0, number: 0, size: 10 };
-  });
+  const isOwner = sessionUuid === profile.uuid;
+
+  const [followers, postsResult] = await Promise.all([
+    getFollowers(profile.uuid).catch(() => []),
+    getUserPosts(id, { size: 10 }).catch((err) => {
+      console.error("[profile/id] getUserPosts 실패:", err?.response?.status, err?.message,);
+      return { content: [], totalElements: 0, totalPages: 0, number: 0, size: 10 };
+    }),
+  ]);
 
   const carouselPosts = postsResult.content.map((p) => ({
     id: p.uuid,
@@ -37,7 +42,11 @@ export default async function UserProfilePage({ params }: Props) {
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-10 py-8">
       <div className="mx-auto grid max-w-6xl grid-cols-[300px_1fr] gap-12">
-        <ProfileSidebar profile={profile} isOwner={false} />
+        <ProfileSidebar
+          profile={profile}
+          isOwner={isOwner}
+          followers={followers}
+        />
 
         <section className="space-y-12">
           <section>

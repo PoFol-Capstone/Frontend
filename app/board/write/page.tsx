@@ -35,6 +35,26 @@ export default function Page() {
   const [recruitDescription, setRecruitDescription] = useState("");
   const [roleCounts, setRoleCounts] = useState<Record<string, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const hasProject = !!project.projectName.trim();
+
+  const hasRecruit =
+    teamRecruitEnabled && !!recruitDescription.trim();
+
+  const canSubmit = hasProject || hasRecruit;
+
+  const selectedRoles = Object.entries(roleCounts)
+  .filter(([, count]) => count > 0)
+  .map(([role]) => role);
+
+  const recruitTitle =
+    selectedRoles.length > 0
+      ? `${selectedRoles.join(" · ")} 모집중`
+      : "모집중";
+  
+  const postTitle = hasProject
+    ? project.projectName
+    : recruitTitle;
 
   const handleRepoChange = (repo: string) => {
     github.setSelectedRepo(repo);
@@ -42,10 +62,12 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    if (!project.projectName) return;
+
+    if (!canSubmit) return;
+
     setIsSubmitting(true);
     try {
-      const content = [
+      const projectcontent = [
         project.projectDescription,
         project.mainFeatures ? `## 주요 기능\n${project.mainFeatures}` : "",
       ]
@@ -79,8 +101,8 @@ export default function Page() {
       ];
 
       const post = await createPost({
-        title: project.projectName,
-        content,
+        title: postTitle,
+        content: hasProject ? projectcontent : recruitDescription,
         thumbnailUrl: project.thumbnailUrl || null,
         type: teamRecruitEnabled ? PostType.RECRUIT : PostType.DISPLAY,
         links,
@@ -105,14 +127,21 @@ export default function Page() {
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-5">
       <h1 className="text-2xl font-bold">프로젝트 등록</h1>
 
+      <TeamRecruitSection
+        enabled={teamRecruitEnabled}
+        onEnabledChange={setTeamRecruitEnabled}
+        description={recruitDescription}
+        onDescriptionChange={setRecruitDescription}
+        roleCounts={roleCounts}
+        onRoleCountsChange={setRoleCounts}
+      />
+
       <GithubSection
         repos={github.repos}
         selectedRepo={github.selectedRepo}
         isLoadingRepos={github.isLoadingRepos}
         isGithubConnected={github.isGithubConnected}
         isCheckingGithub={github.isCheckingGithub}
-        isConnecting={github.isConnecting}
-        connectError={github.connectError}
         isLoadingRepoData={project.isLoadingRepoData}
         isAIWriting={project.isAIWriting}
         aiError={project.aiError}
@@ -125,13 +154,6 @@ export default function Page() {
           }
           await project.handleLoadInfo(github.selectedRepo, true);
           setIsAiModalOpen(true);
-          // project.setProjectName("Gyohak1Team"); //백 연결 X
-          // project.setProjectDescription( //백 연결 X
-          //   "교학팀의 핵심 업무 중 하나인 강의실 점검표를 자동으로 생성하는 사이트입니다.",
-          // );
-          // project.setMainFeatures("강의실 점검표 자동 생성, 데이터 저장, 관리자 확인"); //백 연결 X
-          // project.setDeployUrl("https://gyohak1-team.vercel.app"); //백 연결 X
-          // setIsAiModalOpen(true); //백 연결 X
         }}
         onGithubConnect={github.handleGithubConnect}
       />
@@ -165,6 +187,8 @@ export default function Page() {
         </div>
       )}
 
+      <TagsSection tags={tags} onChange={setTags} />
+
       <UploadLinksSection
         uploadLinks={uploadLinks}
         onChange={(id, url) =>
@@ -172,21 +196,10 @@ export default function Page() {
         }
       />
 
-      <TagsSection tags={tags} onChange={setTags} />
-
-      <TeamRecruitSection
-        enabled={teamRecruitEnabled}
-        onEnabledChange={setTeamRecruitEnabled}
-        description={recruitDescription}
-        onDescriptionChange={setRecruitDescription}
-        roleCounts={roleCounts}
-        onRoleCountsChange={setRoleCounts}
-      />
-
       <button
         type="button"
         onClick={handleSubmit}
-        disabled={isSubmitting || !project.projectName}
+        disabled={isSubmitting || !canSubmit}
         className="w-full bg-black text-white py-4 rounded-xl font-semibold text-base hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "등록 중..." : "게시글 등록"}
