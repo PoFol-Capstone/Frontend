@@ -1,6 +1,7 @@
 import { getComments } from "@/lib/comment";
 import { getPost, getRelatedPosts } from "@/lib/post";
 import { getSessionUuid } from "@/lib/session";
+import getUser from "@/lib/user";
 import PostDetail from "./_components/PostDetail/index";
 import getUser from "@/lib/user";
 
