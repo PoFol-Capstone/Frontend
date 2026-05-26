@@ -4,8 +4,6 @@ import { getPosts } from "@/lib/post";
 import type { ResponsePosts } from "@/types/post";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getPosts } from "@/lib/post";
-import type { ResponsePosts } from "@/types/post";
 
 export default function BookmarkPage() {
   const [bookmarkedPosts, setBookmarkedPosts] = useState<ResponsePosts[]>([]);
