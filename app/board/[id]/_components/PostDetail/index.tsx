@@ -1,20 +1,20 @@
 "use client";
 
-import { deletePostAction } from "../../actions";
+import type { Comment } from "@/types/comment";
 import type { ResponsePosts } from "@/types/post";
 import { LinkType } from "@/types/post";
-import type { Comment } from "@/types/comment";
 import type { Profile } from "@/types/user";
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { deletePostAction } from "../../actions";
 import ApplicationSection from "../ApplicationSection";
-import AuthorBar from "./AuthorBar";
 import CommentSection from "../CommentSection";
+import RelatedPosts from "../RelatedPosts";
+import AuthorBar from "./AuthorBar";
 import DeleteModal from "./DeleteModal";
 import PostContent from "./PostContent";
 import PostHero from "./PostHero";
-import RelatedPosts from "../RelatedPosts";
 
 type Props = {
   post: ResponsePosts;
@@ -24,9 +24,17 @@ type Props = {
   currentUser?: Profile | null;
 };
 
-export default function PostDetail({ post, relatedPosts, initialComments, currentUserUuid, currentUser }: Props) {
+export default function PostDetail({
+  post,
+  relatedPosts,
+  initialComments,
+  currentUserUuid,
+  currentUser,
+}: Props) {
   console.log(post);
   const router = useRouter();
+
+  // 작성자 확인
   const isAuthor = !!currentUserUuid && currentUserUuid === post.authorUuid;
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -107,6 +115,7 @@ export default function PostDetail({ post, relatedPosts, initialComments, curren
             postUuid={post.uuid}
             postType={post.postType}
             recruitPositions={post.recruitPositionInfos}
+            isAuthor={isAuthor}
           />
 
           <CommentSection

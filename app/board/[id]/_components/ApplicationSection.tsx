@@ -12,17 +12,26 @@ type Props = {
   postUuid: string;
   postType: PostType;
   recruitPositions: RecruitPositionResponse[];
+  isAuthor?: boolean;
 };
 
 export default function ApplicationSection({
   postUuid,
   postType,
   recruitPositions,
+  isAuthor = false,
 }: Props) {
   const [application, setApplication] = useState<ResponseApplication | null>(
     null,
   );
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState(() => {
+    const saved = sessionStorage.getItem("toastMessage");
+    if (saved) {
+      sessionStorage.removeItem("toastMessage");
+      return saved;
+    }
+    return "";
+  });
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -33,18 +42,12 @@ export default function ApplicationSection({
   useEffect(() => {
     getApply(postUuid).then(setApplication);
   }, [postUuid]);
-      useEffect(() => {
-  const savedToast = sessionStorage.getItem("toastMessage");
-    if (savedToast) {
-      setToast(savedToast);
 
-      sessionStorage.removeItem("toastMessage");
-
-      setTimeout(() => {
-        setToast("");
-      }, 2500);
-    }
-  }, []);
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(""), 2500);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   if (postType !== PostType.RECRUIT) return null;
 
@@ -80,10 +83,7 @@ export default function ApplicationSection({
 
       setApplication(updated);
 
-      sessionStorage.setItem(
-        "toastMessage",
-        "지원서가 저장되었습니다.",
-      );
+      sessionStorage.setItem("toastMessage", "지원서가 저장되었습니다.");
 
       setIsEditOpen(false);
 
@@ -103,22 +103,26 @@ export default function ApplicationSection({
 
   return (
     <>
-      {application && (
-        <div className="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
-          <p className="font-semibold">지원 완료</p>
-          <p className="mt-1">
-            이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수 있어요.
-          </p>
-        </div>
-      )}
+      {!isAuthor && (
+        <>
+          {application && (
+            <div className="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
+              <p className="font-semibold">지원 완료</p>
+              <p className="mt-1">
+                이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수 있어요.
+              </p>
+            </div>
+          )}
 
-      <button
-        type="button"
-        onClick={openApplicationModal}
-        className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800"
-      >
-        {application ? "지원서 확인" : "지원하기"}
-      </button>
+          <button
+            type="button"
+            onClick={openApplicationModal}
+            className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800"
+          >
+            {application ? "지원서 확인" : "지원하기"}
+          </button>
+        </>
+      )}
 
       {isApplyOpen && (
         <Modal title="지원하기" onClose={() => setIsApplyOpen(false)}>
@@ -276,7 +280,7 @@ export default function ApplicationSection({
         </Modal>
       )}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 z-[9999] -translate-x-1/2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white shadow-lg">
+        <div className="fixed bottom-6 left-1/2 z-9999 -translate-x-1/2 rounded-full bg-black px-5 py-3 text-sm font-medium text-white shadow-lg">
           {toast}
         </div>
       )}
