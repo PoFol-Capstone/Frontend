@@ -12,7 +12,13 @@ export default async function BoardPage({ searchParams }: Props) {
   const pageSize = Number(size ?? 10);
 
   const result = await getPosts({ page: currentPage, size: pageSize }).catch(
-    () => ({ content: [], totalElements: 0, totalPages: 0, number: 0, size: pageSize }),
+    () => ({
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      number: 0,
+      size: pageSize,
+    }),
   );
 
   return (
