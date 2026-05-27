@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import PostCard from "@/app/board/_components/PostCard";
 import type { ResponsePosts } from "@/types/post";
-import { Users } from "lucide-react";
+import { Users, Eye, Heart } from "lucide-react";
 
 const users = [
   {
@@ -174,9 +174,81 @@ export default function SearchPage() {
             <h2 className="text-xl font-bold">Project</h2>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-col gap-6">
             {projects.map((project) => (
-              <PostCard key={project.uuid} post={project as ResponsePosts} />
+              <Link
+                key={project.uuid}
+                href={`/board/${project.uuid}`}
+                className="group flex gap-4 rounded-2xl transition hover:bg-gray-50"
+              >
+                <div className="relative aspect-video w-[400px] shrink-0 overflow-hidden rounded-2xl bg-gray-100">
+                  {project.thumbnailUrl ? (
+                    <img
+                      src={project.thumbnailUrl}
+                      alt={project.title}
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-gray-300">
+                      <svg
+                        width="40"
+                        height="40"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="m21 15-5-5L5 21" />
+                      </svg>
+                    </div>
+                  )}
+
+                  <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-transparent" />
+                </div>
+
+                <div className="flex flex-1 flex-col justify-center">
+                  <h3 className="text-xl font-bold">{project.title}</h3>
+
+                  <p className="mt-3 line-clamp-2 text-sm text-gray-500">
+                    {project.content}
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {project.tags?.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-gray-100 px-3 py-1 text-xs px-2.5 py-0.5 text-gray-700"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-5 flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-700">
+                        {project.authorName?.slice(0, 1)}
+                      </div>
+
+                      <span>{project.authorName}</span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <Eye className="h-4 w-4" />
+                        {project.viewCount}
+                      </span>
+
+                      <span className="flex items-center gap-1">
+                        <Heart className="h-4 w-4" />
+                        {project.likeCount}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         </section>
