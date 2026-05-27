@@ -13,7 +13,6 @@ type Props = {
   isConnecting: boolean;
   connectError: string;
   onRepoChange: (repo: string) => void;
-  onLoadInfo: () => void;
   onAILoad: () => void;
   onGithubConnect: () => void;
 };
@@ -30,14 +29,13 @@ export default function GithubSection({
   isConnecting,
   connectError,
   onRepoChange,
-  onLoadInfo,
   onAILoad,
   onGithubConnect,
 }: Props) {
   return (
-    <section className="relative mb-5 rounded-2xl border border-gray-300 p-4">
+    <section className="relative rounded-2xl border border-gray-200 p-4">
       <div className={!isGithubConnected ? "pointer-events-none opacity-35" : ""}>
-        <h2 className="text-xl font-bold">GitHub 불러오기</h2>
+        <h2 className="text-base font-semibold">GitHub 불러오기</h2>
 
         <label className="mt-3 block">
           <span className="mb-1 block text-sm font-semibold">Repository 선택</span>
@@ -77,18 +75,9 @@ export default function GithubSection({
 
         <button
           type="button"
-          onClick={onLoadInfo}
-          disabled={isLoadingRepoData || isAIWriting}
-          className="mt-3 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isLoadingRepoData && !isAIWriting ? "불러오는 중..." : "프로젝트 정보 불러오기"}
-        </button>
-
-        <button
-          type="button"
           onClick={onAILoad}
           disabled={isLoadingRepoData || isAIWriting}
-          className="mt-2 w-full rounded-xl border border-gray-300 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-3 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isAIWriting ? "AI 작성 중..." : isLoadingRepoData ? "불러오는 중..." : "AI로 작성하기"}
         </button>
@@ -119,7 +108,7 @@ export default function GithubSection({
 
       {!isCheckingGithub && !isGithubConnected && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-75 rounded-2xl bg-white p-5 shadow-lg">
+          <div className="w-72 rounded-2xl bg-white p-5 shadow-lg">
             <h3 className="text-lg font-bold">GitHub 계정을 연결해주세요</h3>
             <p className="mt-3 text-sm leading-5 text-gray-500">
               레포지토리를 불러와 프로젝트 정보를 자동으로 채울 수 있습니다.
