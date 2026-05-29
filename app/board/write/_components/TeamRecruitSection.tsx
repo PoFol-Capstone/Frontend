@@ -10,6 +10,7 @@ type Props = {
   onDescriptionChange: (v: string) => void;
   roleCounts: Record<string, number>;
   onRoleCountsChange: (roleCounts: Record<string, number>) => void;
+  hideToggle?: boolean;
 };
 
 export default function TeamRecruitSection({
@@ -19,6 +20,7 @@ export default function TeamRecruitSection({
   onDescriptionChange,
   roleCounts,
   onRoleCountsChange,
+  hideToggle = false,
 }: Props) {
   const recruitRef = useRef<HTMLTextAreaElement>(null);
 
@@ -46,26 +48,28 @@ export default function TeamRecruitSection({
 
   return (
     <section className="border border-gray-200 rounded-2xl p-6 space-y-4 bg-white">
-      <div>
-        <div className="flex items-center gap-2.5">
-          <input
-            type="checkbox"
-            id="teamRecruit"
-            checked={enabled}
-            onChange={(e) => onEnabledChange(e.target.checked)}
-            className="w-5 h-5 rounded accent-black cursor-pointer"
-          />
-          <label htmlFor="teamRecruit" className="text-base font-semibold cursor-pointer">
-            팀원 모집
-          </label>
+      {!hideToggle && (
+        <div>
+          <div className="flex items-center gap-2.5">
+            <input
+              type="checkbox"
+              id="teamRecruit"
+              checked={enabled}
+              onChange={(e) => onEnabledChange(e.target.checked)}
+              className="w-5 h-5 rounded accent-black cursor-pointer"
+            />
+            <label htmlFor="teamRecruit" className="text-base font-semibold cursor-pointer">
+              팀원 모집
+            </label>
+          </div>
+          <p className="text-sm text-gray-500 mt-1.5 pl-7">
+            팀원 모집 기능을 설정하고 지원을 받아보세요.
+          </p>
         </div>
-        <p className="text-sm text-gray-500 mt-1.5 pl-7">
-          팀원 모집 기능을 설정하고 지원을 받아보세요.
-        </p>
-      </div>
+      )}
 
-      {enabled && (
-        <div className="space-y-4 border-t border-gray-200 pt-4">
+      {(enabled || hideToggle) && (
+        <div className={`space-y-4 ${!hideToggle ? "border-t border-gray-200 pt-4" : ""}`}>
           <div className="space-y-1.5">
             <label className="text-sm font-medium">프로젝트 설명</label>
             <textarea
