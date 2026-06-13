@@ -30,3 +30,11 @@ export type FollowerUser = {
   name: string;
   isFollowing: boolean;
 };
+
+export type ProfileUpdateRequest = {
+  name: string;
+  bio: string;
+  position: string;
+  positionMonths: number;
+  portfolioUrl: string;
+};

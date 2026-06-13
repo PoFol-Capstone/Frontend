@@ -1,6 +1,6 @@
 "use server";
 
-import { Profile, FollowerUser } from "@/types/user";
+import { Profile, FollowerUser, ProfileUpdateRequest } from "@/types/user";
 import { http } from "./http";
 
 export default async function getUser(uuid: string): Promise<Profile> {
@@ -21,4 +21,8 @@ export async function followUser(uuid: string): Promise<void> {
 
 export async function unfollowUser(uuid: string): Promise<void> {
   await http.delete(`/api/user/${uuid}/follow`);
+}
+
+export async function updateProfile(data: ProfileUpdateRequest): Promise<void> {
+  await http.patch("/api/user/me", data);
 }
