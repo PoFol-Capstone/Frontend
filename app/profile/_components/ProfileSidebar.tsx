@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { Eye, Users, Mail } from "lucide-react";
+import { Eye, Users, Mail, Link2 } from "lucide-react";
 import { useState } from "react";
 import { FaGithub } from "react-icons/fa";
-import { RiNotionFill } from "react-icons/ri";
+
 import { Profile } from "@/types/user";
 import ProfileEditModal from "./ProfileEditModal";
 import FollowerModal from "./FollowerModal";
@@ -24,8 +24,8 @@ export default function ProfileSidebar({
   onToggleFollow,
 }: Props) {
   const githubUrl = profile.links.find((link) => link.type === "GITHUB")?.url;
-  const notionUrl = profile.links.find((link) => link.type === "NOTION")?.url;
-  const emailUrl = profile.links.find((link) => link.type === "EMAIL")?.url;
+  const portfolioUrl = profile.links.find((link) => link.type !== "GITHUB")?.url;
+  const emailUrl = profile.email;
 
   const [isFollowerOpen, setIsFollowerOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -78,20 +78,54 @@ export default function ProfileSidebar({
         </div>
 
         <div className="mt-6 space-y-3 text-left text-sm">
-          <div className="flex items-center gap-2 text-gray-700">
-            <FaGithub className="h-4 w-4" />
-            <span>{githubUrl || "GitHub: "}</span>
-          </div>
+          {githubUrl ? (
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-gray-700 hover:text-black truncate transition"
+            >
+              <FaGithub className="h-4 w-4 shrink-0" />
+              <span className="truncate">{githubUrl}</span>
+            </a>
+          ) : (
+            <div className="flex items-center gap-2 text-gray-400">
+              <FaGithub className="h-4 w-4 shrink-0" />
+              <span>GitHub 미연동</span>
+            </div>
+          )}
 
-          <div className="flex items-center gap-2 text-gray-700">
-            <RiNotionFill className="h-4 w-4" />
-            <span>{notionUrl || "Notion: "}</span>
-          </div>
+          {portfolioUrl ? (
+            <a
+              href={portfolioUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-gray-700 hover:text-black truncate transition"
+            >
+              <Link2 className="h-4 w-4 shrink-0" />
+              <span className="truncate">{portfolioUrl}</span>
+            </a>
+          ) : (
+            <div className="flex items-center gap-2 text-gray-400">
+              <Link2 className="h-4 w-4 shrink-0" />
+              <span>포트폴리오 없음</span>
+            </div>
+          )}
 
-          <div className="flex items-center gap-2 text-gray-700">
-            <Mail className="h-4 w-4" />
-            <span>{emailUrl || "Email: "}</span>
-          </div>
+          {emailUrl ? (
+            <a
+              href={`mailto:${emailUrl}`}
+              className="flex items-center gap-2 text-gray-700 hover:text-black truncate transition"
+            >
+              <Mail className="h-4 w-4 shrink-0" />
+              <span className="truncate">{emailUrl}</span>
+            </a>
+          ) : (
+            <div className="flex items-center gap-2 text-gray-400">
+              <Mail className="h-4 w-4 shrink-0" />
+              <span>이메일 없음</span>
+            </div>
+          )}
         </div>
 
         <div className="mt-6 flex items-center justify-center gap-5 text-sm font-semibold">
@@ -121,7 +155,10 @@ export default function ProfileSidebar({
         )}
 
         {isEditModalOpen && (
-          <ProfileEditModal onClose={() => setIsEditModalOpen(false)} />
+          <ProfileEditModal
+            profile={profile}
+            onClose={() => setIsEditModalOpen(false)}
+          />
         )}
       </aside>
 
