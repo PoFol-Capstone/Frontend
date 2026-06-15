@@ -7,6 +7,14 @@ import { logout as authLogout } from "./auth";
  * cookies() : 브라우저 쿠키를 읽고 / 저장하고 / 삭제하는 Next.js 서버용 API
  */
 
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax" as const,
+  maxAge: 60 * 60 * 24 * 7, // 7일
+  path: "/",
+};
+
 // 로그인 할 때, 저장
 export async function saveLogin(
   email: string,
@@ -16,39 +24,10 @@ export async function saveLogin(
 ) {
   const cookieStore = await cookies();
 
-  // session 저장
-  cookieStore.set("session", email, {
-    httpOnly: true, // JS 접근 차단 (XSS 방어)
-    secure: process.env.NODE_ENV === "production", // 개발-편함 배포-안전 쿠키사용
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7, // 7일
-    path: "/",
-  });
-
-  // uuid 저장
-  cookieStore.set("uuid", uuid, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
-
-  cookieStore.set("access_token", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
-
-  cookieStore.set("refresh_token", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
+  cookieStore.set("session", email, COOKIE_OPTIONS);
+  cookieStore.set("uuid", uuid, COOKIE_OPTIONS);
+  cookieStore.set("access_token", accessToken, COOKIE_OPTIONS);
+  cookieStore.set("refresh_token", refreshToken, COOKIE_OPTIONS);
 }
 
 // 불러오기
@@ -71,30 +50,9 @@ export async function saveAccessToken(
 ) {
   const cookieStore = await cookies();
 
-  cookieStore.set("uuid", uuid, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
-
-  cookieStore.set("access_token", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
-
-  // 추가
-  cookieStore.set("refresh_token", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
+  cookieStore.set("uuid", uuid, COOKIE_OPTIONS);
+  cookieStore.set("access_token", accessToken, COOKIE_OPTIONS);
+  cookieStore.set("refresh_token", refreshToken, COOKIE_OPTIONS);
 }
 
 // 로그아웃 할 때, 삭제 후 로그인 페이지로 이동
