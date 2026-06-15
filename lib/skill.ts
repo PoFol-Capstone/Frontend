@@ -1,6 +1,6 @@
 "use server";
 
-import { http } from "./http";
+import { http } from "./http.server";
 import type { Skill } from "@/types/skill";
 
 export async function getSkills(q?: string): Promise<Skill[]> {

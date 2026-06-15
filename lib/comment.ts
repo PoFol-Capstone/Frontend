@@ -1,7 +1,7 @@
 "use server";
 
 import type { Comment } from "@/types/comment";
-import { http } from "./http";
+import { http } from "./http.server";
 
 export async function getComments(postUuid: string): Promise<Comment[]> {
   const res = await http.get(`/api/posts/${postUuid}/comments`);

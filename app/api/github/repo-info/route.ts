@@ -10,7 +10,7 @@ import {
   detectFromJenkinsfile,
   detectFromPubspec,
 } from "@/lib/github";
-import { http } from "@/lib/http";
+import { http } from "@/lib/http.server";
 
 const KNOWN_LANGUAGES = new Set([
   "JavaScript", "TypeScript", "Python", "Java", "Kotlin",
