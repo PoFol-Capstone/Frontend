@@ -10,8 +10,12 @@ export function proxy(request: NextRequest) {
   const session = request.cookies.get("session")?.value;
   const { pathname } = request.nextUrl;
 
-  const isProtected = PROTECTED.some((p) => pathname.startsWith(p));
-  const isAuthOnly = AUTH_ONLY.some((p) => pathname.startsWith(p));
+  const isProtected = PROTECTED.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+  const isAuthOnly = AUTH_ONLY.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
 
   // 비로그인인데, 보호페이지 접근
   if (isProtected && !session) {
