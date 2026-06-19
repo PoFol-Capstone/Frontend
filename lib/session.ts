@@ -3,10 +3,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { logout as authLogout } from "./auth";
 
-/**
- * cookies() : 브라우저 쿠키를 읽고 / 저장하고 / 삭제하는 Next.js 서버용 API
- */
-
 const COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -22,6 +18,9 @@ export async function saveLogin(
   accessToken: string,
   refreshToken: string,
 ) {
+  /**
+   * cookies() : 브라우저 쿠키를 읽고 / 저장하고 / 삭제하는 Next.js 서버용 API
+   */
   const cookieStore = await cookies();
 
   cookieStore.set("session", email, COOKIE_OPTIONS);

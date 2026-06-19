@@ -1,7 +1,7 @@
 "use server";
 
 import type { ApplicantResponse, RequestApplication, ResponseApplication } from "@/types/post";
-import { http } from "./http";
+import { http } from "./http.server";
 
 export async function getApply(
   postUuid: string,

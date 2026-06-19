@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { http } from "@/lib/http";
+import { http } from "@/lib/http.server";
 import axios from "axios";
 
 // 프론트에서 Authorization 헤더 전달 시 우선 사용, 없으면 쿠키(http.ts) 기반 fallback

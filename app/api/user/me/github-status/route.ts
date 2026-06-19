@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { http } from "@/lib/http";
+import { http } from "@/lib/http.server";
 
 export async function GET() {
   try {

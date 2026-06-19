@@ -6,7 +6,7 @@ import type {
   RequestPosts,
   ResponsePosts,
 } from "@/types/post";
-import { http } from "./http";
+import { http } from "./http.server";
 
 /**
  *

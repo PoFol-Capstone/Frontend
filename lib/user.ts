@@ -1,7 +1,7 @@
 "use server";
 
 import { Profile, FollowerUser, ProfileUpdateRequest } from "@/types/user";
-import { http } from "./http";
+import { http } from "./http.server";
 
 export default async function getUser(uuid: string): Promise<Profile> {
   const res = await http.get(`/api/user/${uuid}`);

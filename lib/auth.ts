@@ -1,7 +1,7 @@
 "use server";
 
 import { AuthResponse } from "@/types/auth";
-import { http } from "./http";
+import { http } from "./http.server";
 
 export async function sendOtp(email: string): Promise<void> {
   await http.post("/api/auth/email/send-otp", { email });
