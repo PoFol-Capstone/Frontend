@@ -44,7 +44,7 @@ export default async function HomePage() {
               </svg>
             </div>
             <div>
-              <p className="text-xs font-semibold tracking-widest text-gray-400 uppercase mb-2">01</p>
+              <p className="text-xs font-semibold tracking-widest text-gray-500 uppercase mb-2">01</p>
               <p className="text-xl font-bold mb-3">코드 리뷰</p>
               <p className="text-gray-600 leading-relaxed">
                 팀원의 코드에 인라인 댓글을 남기고 피드백을 주고받으세요.
@@ -66,7 +66,7 @@ export default async function HomePage() {
               </svg>
             </div>
             <div>
-              <p className="text-xs font-semibold tracking-widest text-stone-400 uppercase mb-2">02</p>
+              <p className="text-xs font-semibold tracking-widest text-stone-500 uppercase mb-2">02</p>
               <p className="text-xl font-bold mb-3">팀원 모집</p>
               <p className="text-gray-600 leading-relaxed">
                 기술 스택과 관심사를 기반으로 프로젝트에 맞는 동료를 찾으세요.
@@ -88,7 +88,7 @@ export default async function HomePage() {
               </svg>
             </div>
             <div>
-              <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase mb-2">03</p>
+              <p className="text-xs font-semibold tracking-widest text-slate-500 uppercase mb-2">03</p>
               <p className="text-xl font-bold mb-3">포트폴리오</p>
               <p className="text-gray-600 leading-relaxed">
                 완료된 프로젝트가 자동으로 나만의 포트폴리오로 정리됩니다.

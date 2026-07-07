@@ -42,7 +42,6 @@ export default function PostCarousel({ posts }: { posts: ProfilePost[] }) {
                   fill
                   sizes="(max-width: 768px) 50vw, 280px"
                   className="object-cover transition duration-300 group-hover:scale-[1.02]"
-                  unoptimized
                 />
               ) : (
                 <div className="flex h-full items-center justify-center text-gray-300">

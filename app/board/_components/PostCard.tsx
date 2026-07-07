@@ -25,7 +25,6 @@ export default function PostCard({ post }: Props) {
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover transition duration-300 group-hover:scale-[1.02]"
-            unoptimized
           />
         ) : (
           <div className="flex h-full items-center justify-center text-gray-300">
@@ -76,7 +75,7 @@ export default function PostCard({ post }: Props) {
               </span>
             ))}
             {post.tags.length > 3 && (
-              <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] text-gray-400">
+              <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] text-gray-500">
                 +{post.tags.length - 3}
               </span>
             )}
@@ -94,7 +93,7 @@ export default function PostCard({ post }: Props) {
             </span>
             {post.authorName}
           </Link>
-          <div className="flex items-center gap-2.5 text-[11px] text-gray-400">
+          <div className="flex items-center gap-2.5 text-[11px] text-gray-500">
             <span className="flex items-center gap-0.5">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />

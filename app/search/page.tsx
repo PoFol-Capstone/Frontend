@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import PostCard from "@/app/board/_components/PostCard";
 import type { ResponsePosts } from "@/types/post";
@@ -183,10 +184,12 @@ export default function SearchPage() {
               >
                 <div className="relative aspect-video w-[400px] shrink-0 overflow-hidden rounded-2xl bg-gray-100">
                   {project.thumbnailUrl ? (
-                    <img
+                    <Image
                       src={project.thumbnailUrl}
-                      alt={project.title}
-                      className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+                      alt={project.title ?? ""}
+                      fill
+                      sizes="400px"
+                      className="object-cover transition duration-300 group-hover:scale-[1.02]"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center text-gray-300">
