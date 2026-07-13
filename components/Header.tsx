@@ -5,25 +5,19 @@ import ProfileMenu from "@/components/ProfileMenu";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useNotifications } from "@/hooks/useNotifications";
 
 import { Bell, Search, CirclePlus, User } from "lucide-react";
-
-type Notification = {
-  id: number;
-  type: "follow" | "bookmark" | "apply" | "like";
-  username: string;
-  read: boolean;
-};
 
 export default function Header({ session }: { session: string | null }) {
   const isLoggedIn = !!session;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  
+
   const router = useRouter();
   const [keyword, setKeyword] = useState("");
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -33,26 +27,24 @@ export default function Header({ session }: { session: string | null }) {
     router.push('/search?q=${encodeURIComponent(trimmed)}');
   };
 
-  const [notifications, setNotifications] = useState<Notification[]>([
-    { id: 1, type: "follow", username: "user", read: false },
-    { id: 2, type: "bookmark", username: "user", read: false },
-    { id: 3, type: "apply", username: "user", read: true },
-    { id: 4, type: "like", username: "user", read: true },
-  ]);
+  const {
+    unreadCount,
+    notifications,
+    hasMore,
+    isLoading,
+    isLoaded,
+    loadFirstPage,
+    loadMore,
+    markOneRead,
+    markAllRead,
+  } = useNotifications();
 
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const unreadCount = notifications.filter(
-    (notification) => !notification.read,
-  ).length;
-
-  const handleMarkAllRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({
-        ...notification,
-        read: true,
-      })),
-    );
+  const handleOpenNotifications = () => {
+    setIsNotificationOpen(true);
+    setIsProfileOpen(false);
+    if (!isLoaded) loadFirstPage();
   };
 
   useEffect(() => {
@@ -106,10 +98,7 @@ export default function Header({ session }: { session: string | null }) {
 
               <button
                 type="button"
-                onClick={() => {
-                  setIsNotificationOpen(true);
-                  setIsProfileOpen(false);
-                }}
+                onClick={handleOpenNotifications}
                 className="relative flex items-center justify-center text-gray-600 transition hover:text-black"
                 aria-label="알림 열기"
               >
@@ -144,7 +133,12 @@ export default function Header({ session }: { session: string | null }) {
               isOpen={isNotificationOpen}
               onClose={() => setIsNotificationOpen(false)}
               notifications={notifications}
-              onMarkAllRead={handleMarkAllRead}
+              unreadCount={unreadCount}
+              isLoading={isLoading}
+              hasMore={hasMore}
+              onLoadMore={loadMore}
+              onItemRead={markOneRead}
+              onMarkAllRead={markAllRead}
             />
           </>
         ) : (

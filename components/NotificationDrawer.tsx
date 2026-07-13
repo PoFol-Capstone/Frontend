@@ -1,18 +1,17 @@
 "use client";
 
 import NotificationItem from "./NotificationItem";
-
-type Notification = {
-  id: number;
-  type: "follow" | "bookmark" | "apply" | "like";
-  username: string;
-  read: boolean;
-};
+import type { Notification } from "@/types/notification";
 
 type NotificationDrawerProps = {
   isOpen: boolean;
   onClose: () => void;
   notifications: Notification[];
+  unreadCount: number;
+  isLoading: boolean;
+  hasMore: boolean;
+  onLoadMore: () => void;
+  onItemRead: (uuid: string) => void;
   onMarkAllRead: () => void;
 };
 
@@ -20,12 +19,13 @@ export default function NotificationDrawer({
   isOpen,
   onClose,
   notifications,
+  unreadCount,
+  isLoading,
+  hasMore,
+  onLoadMore,
+  onItemRead,
   onMarkAllRead,
 }: NotificationDrawerProps) {
-  const unreadCount = notifications.filter(
-    (notification) => !notification.read,
-  ).length;
-
   return (
     <div
       className={`fixed inset-0 z-50 transition ${
@@ -40,36 +40,50 @@ export default function NotificationDrawer({
       />
 
       <aside
-        className={`fixed right-0 top-0 z-50 flex h-dvh w-[80vw] max-w-[380px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+        className={`fixed right-0 top-0 z-50 flex h-dvh w-[80vw] max-w-95 flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
           <div>
-            <h2 className="text-lg font-bold text-black">
-              알림
-            </h2>
+            <h2 className="text-lg font-bold text-black">알림</h2>
 
             <p className="text-sm text-gray-500">
               읽지 않은 알림 {unreadCount}개
             </p>
           </div>
         </div>
-      
+
         <div className="flex-1 overflow-y-auto">
           {notifications.length === 0 ? (
             <div className="flex h-full items-center justify-center">
               <p className="text-sm text-gray-400">
-                모든 알림을 확인했습니다.
+                {isLoading ? "불러오는 중..." : "모든 알림을 확인했습니다."}
               </p>
             </div>
           ) : (
-            notifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-              />
-            ))
+            <>
+              {notifications.map((notification) => (
+                <NotificationItem
+                  key={notification.uuid}
+                  notification={notification}
+                  onRead={onItemRead}
+                />
+              ))}
+
+              {hasMore && (
+                <div className="flex justify-center py-4">
+                  <button
+                    type="button"
+                    onClick={onLoadMore}
+                    disabled={isLoading}
+                    className="text-sm font-medium text-gray-500 transition hover:text-black disabled:opacity-50"
+                  >
+                    {isLoading ? "불러오는 중..." : "더보기"}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 
