@@ -143,13 +143,12 @@ export type ResponseApplication = {
 };
 
 export type ApplicantResponse = {
-  uuid: string;
-  applicantName: string;
+  applyUuid: string;
   applicantUuid: string;
-  avatarUrl: string;
+  applicantName: string;
+  applicantSkills: string[];
   positionType: string;
   introduction: string;
   portfolioUrl?: string;
   status: ApplicationStatus;
-  createdAt: string;
 };
