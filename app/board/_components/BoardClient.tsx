@@ -2,45 +2,58 @@
 
 import type { ResponsePosts } from "@/types/post";
 import { PostType } from "@/types/post";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import CategoryFilter from "./CategoryFilter";
 import EmptyView from "./empty-view";
 import PostCard from "./PostCard";
 
 interface Props {
   posts: ResponsePosts[];
-  currentPage: number;
-  totalPages: number;
 }
 
-export default function BoardClient({ posts, currentPage, totalPages }: Props) {
+const PAGE_SIZE = 9;
+
+export default function BoardClient({ posts }: Props) {
   const [selected, setSelected] = useState("All");
+  const [currentPage, setCurrentPage] = useState(0);
   const [bookmarkedIds] = useState<string[]>(() => {
     if (typeof window === "undefined") return [];
     return JSON.parse(localStorage.getItem("bookmarks") || "[]");
   });
 
-  const router = useRouter();
+  const handleSelect = (category: string) => {
+    setSelected(category);
+    setCurrentPage(0);
+  };
 
-  const filtered =
-    selected === "All"
-      ? posts
-      : selected === "Bookmarks"
-        ? posts.filter((p) => bookmarkedIds.includes(p.uuid))
-        : selected === "Recruiting"
-          ? posts.filter((p) => p.postType === PostType.RECRUIT)
-          : posts.filter((p) => p.tags.includes(selected));
+  const filtered = useMemo(() => {
+    switch (selected) {
+      case "All":
+        return posts;
+      case "Bookmarks":
+        return posts.filter((p) => bookmarkedIds.includes(p.uuid));
+      case "Recruiting":
+        return posts.filter((p) => p.postType === PostType.RECRUIT);
+      default:
+        return posts.filter((p) => p.tags.includes(selected));
+    }
+  }, [posts, selected, bookmarkedIds]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const pagePosts = filtered.slice(
+    currentPage * PAGE_SIZE,
+    currentPage * PAGE_SIZE + PAGE_SIZE,
+  );
 
   return (
     <>
-      <CategoryFilter selected={selected} onSelect={setSelected} />
+      <CategoryFilter selected={selected} onSelect={handleSelect} />
 
-      {filtered.length === 0 ? (
+      {pagePosts.length === 0 ? (
         <EmptyView />
       ) : (
         <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((post) => (
+          {pagePosts.map((post) => (
             <PostCard key={post.uuid} post={post} />
           ))}
         </section>
@@ -50,7 +63,7 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
         <div className="mt-10 flex items-center justify-center gap-3">
           <button
             type="button"
-            onClick={() => router.push(`/board?page=${currentPage - 1}`)}
+            onClick={() => setCurrentPage((p) => p - 1)}
             disabled={currentPage === 0}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-gray-400 hover:bg-gray-50 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
           >
@@ -73,7 +86,7 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
               <button
                 key={page}
                 type="button"
-                onClick={() => router.push(`/board?page=${page}`)}
+                onClick={() => setCurrentPage(page)}
                 className={`flex h-8 w-8 items-center justify-center rounded-full text-sm transition ${
                   page === currentPage
                     ? "bg-black font-semibold text-white"
@@ -87,7 +100,7 @@ export default function BoardClient({ posts, currentPage, totalPages }: Props) {
 
           <button
             type="button"
-            onClick={() => router.push(`/board?page=${currentPage + 1}`)}
+            onClick={() => setCurrentPage((p) => p + 1)}
             disabled={currentPage >= totalPages - 1}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-gray-400 hover:bg-gray-50 hover:text-black disabled:cursor-not-allowed disabled:opacity-30"
           >
