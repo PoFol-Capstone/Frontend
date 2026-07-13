@@ -15,7 +15,10 @@ export default function PostCard({ post, isSelected }: Props) {
 
   return (
     <article
-      className={`rounded-[18px] border p-5 transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] ${
+      onClick={() =>
+        router.push(`/recruitment?postId=${post.uuid}`, { scroll: false })
+      }
+      className={`cursor-pointer rounded-[18px] border p-5 transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] ${
         isSelected ? "border-gray-900 bg-white" : "border-gray-200 bg-white"
       }`}
     >
@@ -63,13 +66,10 @@ export default function PostCard({ post, isSelected }: Props) {
       {status !== "마감" && (
         <div className="mt-5 flex gap-2">
           <button
-            onClick={() => router.push(`/recruitment?postId=${post.uuid}`)}
-            className="rounded-xl bg-black px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800"
-          >
-            지원자 보기
-          </button>
-          <button
-            onClick={() => router.push(`/recruitment/edit/${post.uuid}`)}
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/recruitment/edit/${post.uuid}`);
+            }}
             className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
           >
             수정하기
