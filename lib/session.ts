@@ -41,6 +41,15 @@ export async function getSessionUuid() {
   return cookieStore.get("uuid")?.value ?? null;
 }
 
+// 세션 쿠키만 제거 (서버 로그아웃 API 호출 없이) — 만료/무효 세션 정리 후 재로그인 유도할 때 사용
+export async function clearSession() {
+  const cookieStore = await cookies();
+  cookieStore.delete("session");
+  cookieStore.delete("uuid");
+  cookieStore.delete("access_token");
+  cookieStore.delete("refresh_token");
+}
+
 // GitHub OAuth 후 토큰 갱신 (email은 기존 쿠키 유지)
 export async function saveAccessToken(
   uuid: string,
