@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useNavigation } from "@/components/NavigationProvider";
 import type { ResponsePosts } from "@/types/post";
 
 interface Props {
@@ -10,11 +10,11 @@ interface Props {
 }
 
 export default function PostCard({ post }: Props) {
-  const router = useRouter();
+  const { navigate } = useNavigation();
 
   return (
     <div
-      onClick={() => router.push(`/board/${post.uuid}`)}
+      onClick={() => navigate(`/board/${post.uuid}`)}
       className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-gray-100">

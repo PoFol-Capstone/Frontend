@@ -1,7 +1,7 @@
 "use client";
 
 import type { ResponsePosts } from "@/types/post";
-import { useRouter } from "next/navigation";
+import { useNavigation } from "@/components/NavigationProvider";
 import { deriveStatus } from "./utils";
 
 interface Props {
@@ -10,14 +10,17 @@ interface Props {
 }
 
 export default function PostCard({ post, isSelected }: Props) {
-  const router = useRouter();
+  const { navigate } = useNavigation();
   const status = deriveStatus(post);
+
+  const handleSelect = () => {
+    if (isSelected) return;
+    navigate(`/recruitment?postId=${post.uuid}`, { scroll: false });
+  };
 
   return (
     <article
-      onClick={() =>
-        router.push(`/recruitment?postId=${post.uuid}`, { scroll: false })
-      }
+      onClick={handleSelect}
       className={`cursor-pointer rounded-[18px] border p-5 transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] ${
         isSelected ? "border-gray-900 bg-white" : "border-gray-200 bg-white"
       }`}
@@ -68,7 +71,7 @@ export default function PostCard({ post, isSelected }: Props) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              router.push(`/recruitment/edit/${post.uuid}`);
+              navigate(`/recruitment/edit/${post.uuid}`);
             }}
             className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
           >

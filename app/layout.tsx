@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import { NavigationProvider } from "@/components/NavigationProvider";
 import type { Metadata } from "next";
 import "./globals.css";
 import { getSession } from "@/lib/session";
@@ -22,8 +23,10 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <Header session={session} />
-        {children}
+        <NavigationProvider>
+          <Header session={session} />
+          {children}
+        </NavigationProvider>
       </body>
     </html>
   );

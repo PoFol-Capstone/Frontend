@@ -2,6 +2,7 @@
 
 import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
+import { useNavigation } from "@/components/NavigationProvider";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -16,6 +17,7 @@ export default function Header({ session }: { session: string | null }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const router = useRouter();
+  const { handleLinkClick } = useNavigation();
   const [keyword, setKeyword] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
@@ -66,7 +68,11 @@ export default function Header({ session }: { session: string | null }) {
   return (
     <header className="border-b border-gray-200 bg-white px-10 py-4">
       <div className="mx-auto flex items-center justify-between">
-        <Link href={isLoggedIn ? "/board" : "/"} className="text-xl font-bold">
+        <Link
+          href={isLoggedIn ? "/board" : "/"}
+          onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
+          className="text-xl font-bold"
+        >
           PoFoL
         </Link>
 
@@ -90,6 +96,7 @@ export default function Header({ session }: { session: string | null }) {
             <div className="flex items-center gap-4">
               <Link
                 href="/board/write"
+                onClick={(e) => handleLinkClick(e, "/board/write")}
                 className="flex items-center justify-center text-gray-600 transition hover:text-black"
                 aria-label="게시글 작성"
               >
@@ -145,6 +152,7 @@ export default function Header({ session }: { session: string | null }) {
           <div className="flex items-center gap-3">
             <Link
               href="/login"
+              onClick={(e) => handleLinkClick(e, "/login")}
               className="text-sm font-medium text-black hover:text-gray-600"
             >
               로그인
@@ -152,6 +160,7 @@ export default function Header({ session }: { session: string | null }) {
 
             <Link
               href="/signup"
+              onClick={(e) => handleLinkClick(e, "/signup")}
               className="rounded-full bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
             >
               시작하기
