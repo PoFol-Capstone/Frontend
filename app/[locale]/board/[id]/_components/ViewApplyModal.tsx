@@ -2,6 +2,7 @@
 
 import { cancelApply } from "@/lib/apply";
 import type { ResponseApplication } from "@/types/post";
+import { useTranslations } from "next-intl";
 import Modal from "./Modal";
 
 type Props = {
@@ -19,6 +20,7 @@ export default function ViewApplyModal({
   onEdit,
   onCancel,
 }: Props) {
+  const t = useTranslations("board.apply");
   const isPending = application.status === "PENDING";
 
   const handleCancel = async () => {
@@ -27,34 +29,34 @@ export default function ViewApplyModal({
   };
 
   return (
-    <Modal title="지원 내역" onClose={onClose}>
+    <Modal title={t("viewModalTitle")} onClose={onClose}>
       <div className="mb-5 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
-        <p className="font-semibold">지원 완료</p>
+        <p className="font-semibold">{t("sectionCompleteTitle")}</p>
         <p className="mt-1">
           {isPending
-            ? "마감 전까지 수정할 수 있어요."
-            : "수정이 불가능한 상태입니다."}
+            ? t("editableUntilDeadline")
+            : t("notEditable")}
         </p>
       </div>
 
       <div className="mb-4">
-        <p className="mb-2 text-sm font-medium">지원한 포지션</p>
+        <p className="mb-2 text-sm font-medium">{t("appliedPosition")}</p>
         <span className="rounded-full border border-black px-3 py-1 text-xs">
           {application.positionType}
         </span>
       </div>
 
       <div className="mb-4">
-        <p className="mb-2 text-sm font-medium">자기소개</p>
+        <p className="mb-2 text-sm font-medium">{t("introduction")}</p>
         <div className="min-h-24 rounded-xl border border-gray-200 p-3 text-sm text-gray-700">
-          {application.introduction || "작성된 내용이 없습니다."}
+          {application.introduction || t("noContent")}
         </div>
       </div>
 
       <div className="mb-5">
-        <p className="mb-2 text-sm font-medium">포트폴리오 / GitHub</p>
+        <p className="mb-2 text-sm font-medium">{t("portfolio")}</p>
         <div className="rounded-xl border border-gray-200 px-3 py-3 text-sm text-gray-500">
-          {application.portfolioUrl || "작성된 내용이 없습니다."}
+          {application.portfolioUrl || t("noContent")}
         </div>
       </div>
 
@@ -64,7 +66,7 @@ export default function ViewApplyModal({
           onClick={onClose}
           className="flex-1 rounded-xl border border-gray-200 py-3 text-sm"
         >
-          닫기
+          {t("close")}
         </button>
         {isPending && (
           <>
@@ -73,14 +75,14 @@ export default function ViewApplyModal({
               onClick={handleCancel}
               className="flex-1 rounded-xl border border-red-200 py-3 text-sm text-red-500"
             >
-              취소하기
+              {t("cancelApplication")}
             </button>
             <button
               type="button"
               onClick={onEdit}
               className="flex-1 rounded-xl bg-black py-3 text-sm font-semibold text-white"
             >
-              수정하기
+              {t("edit")}
             </button>
           </>
         )}

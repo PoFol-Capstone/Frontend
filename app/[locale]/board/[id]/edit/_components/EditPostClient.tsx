@@ -13,10 +13,12 @@ import type { Skill } from "@/types/skill";
 import Image from "next/image";
 import { useRouter } from "@/i18n/navigation";
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Props = { post: ResponsePosts };
 
 export default function EditPostClient({ post }: Props) {
+  const t = useTranslations("board.edit");
   const router = useRouter();
 
   const [descriptionInit, featuresInit] = post.content.split(
@@ -139,11 +141,11 @@ export default function EditPostClient({ post }: Props) {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-5">
-      <h1 className="text-2xl font-bold">게시글 수정</h1>
+      <h1 className="text-2xl font-bold">{t("title")}</h1>
 
       <section className="border border-gray-200 rounded-2xl p-6 space-y-5 bg-white">
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">프로젝트 이름</label>
+          <label className="text-sm font-medium">{t("projectName")}</label>
           <input
             type="text"
             value={title}
@@ -153,7 +155,7 @@ export default function EditPostClient({ post }: Props) {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">프로젝트 설명</label>
+          <label className="text-sm font-medium">{t("projectDescription")}</label>
           <textarea
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
@@ -163,7 +165,7 @@ export default function EditPostClient({ post }: Props) {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">주요 기능</label>
+          <label className="text-sm font-medium">{t("mainFeatures")}</label>
           <textarea
             value={mainFeatures}
             onChange={(e) => setMainFeatures(e.target.value)}
@@ -173,7 +175,7 @@ export default function EditPostClient({ post }: Props) {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">배포된 사이트</label>
+          <label className="text-sm font-medium">{t("deployUrl")}</label>
           <input
             type="url"
             value={deployUrl}
@@ -184,20 +186,20 @@ export default function EditPostClient({ post }: Props) {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">기술 스택</label>
+          <label className="text-sm font-medium">{t("techStack")}</label>
           <SkillPicker selected={selectedSkills} onChange={setSelectedSkills} />
         </div>
 
         <div className="space-y-3">
-          <label className="text-sm font-medium">썸네일</label>
+          <label className="text-sm font-medium">{t("thumbnail")}</label>
           <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
             {!thumbnailUrl && (
-              <span className="text-sm text-gray-400">썸네일 없음</span>
+              <span className="text-sm text-gray-400">{t("noThumbnail")}</span>
             )}
             {thumbnailUrl && (
               <Image
                 src={thumbnailUrl}
-                alt="썸네일 미리보기"
+                alt={t("thumbnailAlt")}
                 fill
                 unoptimized
                 sizes="(max-width: 672px) 100vw, 672px"
@@ -219,7 +221,7 @@ export default function EditPostClient({ post }: Props) {
               disabled={isThumbnailLoading}
               className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40"
             >
-              {isThumbnailLoading ? "업로드 중..." : "썸네일 변경"}
+              {isThumbnailLoading ? t("uploading") : t("changeThumbnail")}
             </button>
             {thumbnailUrl && (
               <button
@@ -227,7 +229,7 @@ export default function EditPostClient({ post }: Props) {
                 onClick={() => setThumbnailUrl("")}
                 className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                썸네일 삭제
+                {t("removeThumbnail")}
               </button>
             )}
           </div>
@@ -258,7 +260,7 @@ export default function EditPostClient({ post }: Props) {
           onClick={() => router.back()}
           className="flex-1 rounded-xl border border-gray-300 py-4 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
         >
-          취소
+          {t("cancel")}
         </button>
         <button
           type="button"
@@ -266,7 +268,7 @@ export default function EditPostClient({ post }: Props) {
           disabled={isSubmitting || !title}
           className="flex-1 rounded-xl bg-black py-4 text-base font-semibold text-white hover:bg-gray-900 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isSubmitting ? "수정 중..." : "수정 완료"}
+          {isSubmitting ? t("submitting") : t("submit")}
         </button>
       </div>
     </div>

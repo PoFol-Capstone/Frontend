@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { followUser, unfollowUser } from "@/lib/user";
+import { useTranslations } from "next-intl";
 
 interface Props {
   targetUuid: string;
 }
 
 export default function FollowButton({ targetUuid }: Props) {
+  const t = useTranslations("profile.follow");
   const [isFollowing, setIsFollowing] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
@@ -36,7 +38,7 @@ export default function FollowButton({ targetUuid }: Props) {
           : "bg-black text-white hover:bg-gray-800"
       }`}
     >
-      {isFollowing ? "팔로잉" : "팔로우"}
+      {isFollowing ? t("following") : t("follow")}
     </button>
   );
 }

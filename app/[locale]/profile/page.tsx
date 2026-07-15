@@ -2,7 +2,7 @@ import { getSessionUuid, clearSession } from "@/lib/session";
 import getUser from "@/lib/user";
 import { getUserPosts } from "@/lib/post";
 import { ApiError } from "@/lib/http.server";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import ProfileSidebar from "./_components/ProfileSidebar";
 import PostCarousel from "./_components/PostCarousel";
@@ -41,6 +41,7 @@ export default async function ProfilePage() {
   }
 
   const postsResult = await postsPromise;
+  const t = await getTranslations("profile");
 
   const sitePosts = postsResult.content.map((p) => ({
     id: p.uuid,
@@ -58,7 +59,7 @@ export default async function ProfilePage() {
 
         <section className="space-y-12">
           <section>
-            <h2 className="mb-4 text-3xl font-bold">게시물</h2>
+            <h2 className="mb-4 text-3xl font-bold">{t("postsHeading")}</h2>
             <PostCarousel posts={sitePosts} />
           </section>
         </section>

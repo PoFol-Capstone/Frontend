@@ -1,9 +1,11 @@
 "use client";
 import { startTransition, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export type Repo = { name: string; fullName: string };
 
 export function useGithubRepos() {
+  const t = useTranslations("board.write.github");
   const [repos, setRepos] = useState<Repo[]>([]);
   const [selectedRepo, setSelectedRepo] = useState("");
   const [isLoadingRepos, setIsLoadingRepos] = useState(false);
@@ -22,10 +24,10 @@ export function useGithubRepos() {
       hasGithubError.current = true;
       setConnectError(
         githubError === "already_linked"
-          ? "이미 다른 계정에 연결된 GitHub 계정입니다."
+          ? t("errorAlreadyLinked")
           : githubError === "state_expired"
-            ? "GitHub 연결 시간이 초과되었습니다. 다시 시도해주세요."
-            : "GitHub 연결에 실패했습니다. 다시 시도해주세요.",
+            ? t("errorStateExpired")
+            : t("errorGeneric"),
       );
       url.searchParams.delete("github_error");
       window.history.replaceState({}, "", url.toString());
@@ -48,7 +50,7 @@ export function useGithubRepos() {
       })
       .catch(() => {})
       .finally(() => setIsCheckingGithub(false));
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (!isGithubConnected) return;
@@ -70,9 +72,9 @@ export function useGithubRepos() {
       const data = await res.json();
       if (!res.ok) {
         if (res.status === 401) {
-          setConnectError("로그인 후 이용해주세요.");
+          setConnectError(t("errorLoginRequired"));
         } else {
-          setConnectError(data.error ?? "GitHub 연결 요청에 실패했습니다.");
+          setConnectError(data.error ?? t("errorConnectFailed"));
         }
         return;
       }
@@ -80,9 +82,9 @@ export function useGithubRepos() {
         window.location.href = data.redirectUrl;
         return;
       }
-      setConnectError("GitHub 연결 URL을 받지 못했습니다.");
+      setConnectError(t("errorNoRedirectUrl"));
     } catch {
-      setConnectError("GitHub 연결 요청에 실패했습니다.");
+      setConnectError(t("errorConnectFailed"));
     } finally {
       setIsConnecting(false);
     }

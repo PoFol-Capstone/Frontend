@@ -1,5 +1,437 @@
 {
   "common": {
     "appName": "PoFoL"
+  },
+  "header": {
+    "createPost": "게시글 작성",
+    "openNotifications": "알림 열기",
+    "openProfileMenu": "프로필 메뉴 열기",
+    "searchPlaceholder": "프로젝트 검색...",
+    "login": "로그인",
+    "getStarted": "시작하기"
+  },
+  "localeSwitcher": {
+    "label": "언어 선택"
+  },
+  "profileMenu": {
+    "profile": "프로필",
+    "recruitment": "모집 관리",
+    "settings": "설정",
+    "logout": "로그아웃"
+  },
+  "notification": {
+    "title": "알림",
+    "unreadCount": "읽지 않은 알림 {count}개",
+    "loading": "불러오는 중...",
+    "empty": "모든 알림을 확인했습니다.",
+    "loadMore": "더보기",
+    "markAllRead": "모두 읽음으로 표시",
+    "actorWithOthers": "{name}님 외 {count}명",
+    "actorOnly": "{name}님",
+    "likePost": "{actor}이 게시글을 좋아합니다.",
+    "commentPost": "{actor}이 게시글에 댓글을 남겼습니다.",
+    "follow": "{actor}이 팔로우했습니다.",
+    "applicationSubmitted": "{actor}이 프로젝트에 지원했습니다.",
+    "applicationAcceptedWithTitle": "\"{title}\" 프로젝트 합류가 승인되었습니다.",
+    "applicationAccepted": "프로젝트 합류가 승인되었습니다.",
+    "applicationRejectedWithTitle": "\"{title}\" 프로젝트 합류가 거절되었습니다.",
+    "applicationRejected": "프로젝트 합류가 거절되었습니다.",
+    "justNow": "방금 전",
+    "minutesAgo": "{minutes}분 전",
+    "hoursAgo": "{hours}시간 전",
+    "daysAgo": "{days}일 전"
+  },
+  "auth": {
+    "login": {
+      "title": "로그인",
+      "emailPlaceholder": "이메일을 입력하세요",
+      "emailRequired": "이메일을 입력해주세요.",
+      "submitting": "전송 중...",
+      "submit": "로그인",
+      "failed": "로그인 요청에 실패했습니다.",
+      "or": "또는",
+      "githubContinue": "GitHub로 계속하기",
+      "noAccount": "아직 계정이 없으신가요?",
+      "signupLink": "회원가입"
+    },
+    "signupName": {
+      "title": "이름을 입력하세요",
+      "namePlaceholder": "이름을 입력하세요.",
+      "nameRequired": "이름을 입력해주세요.",
+      "next": "다음"
+    },
+    "signupType": {
+      "title": "새 계정을 만들어보세요!",
+      "emailStart": "이메일로 시작하기",
+      "githubLogin": "GitHub로 로그인"
+    },
+    "signupEmail": {
+      "title": "회원가입",
+      "emailPlaceholder": "이메일을 입력하세요",
+      "emailRequired": "이메일을 입력해주세요.",
+      "sending": "전송 중...",
+      "submit": "인증코드 받기",
+      "otpSentToast": "인증코드가 전송되었습니다.",
+      "sendFailed": "인증 코드 발송에 실패했습니다.",
+      "otherOption": "다른 옵션으로 회원가입",
+      "schoolEmailHint": "※ 학교 이메일로 가입하시면 많은 혜택을 받으실 수 있습니다."
+    },
+    "verify": {
+      "title": "인증번호 확인",
+      "verifying": "확인 중...",
+      "submit": "인증 완료",
+      "codeRequired": "6자리 인증번호를 입력해주세요.",
+      "invalidCode": "인증번호가 올바르지 않습니다.",
+      "verifyFailed": "인증 확인에 실패했습니다.",
+      "back": "뒤로가기"
+    },
+    "oauth": {
+      "connecting": "GitHub 연결 중..."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "대학생 개발자를 위한 협업 포트폴리오 플랫폼",
+      "subtitle": "코드 리뷰, 팀원 모집, 프로젝트 관리를 한 곳에서",
+      "getStarted": "시작하기",
+      "login": "로그인"
+    },
+    "codeReview": {
+      "step": "01",
+      "title": "코드 리뷰",
+      "description": "팀원의 코드에 인라인 댓글을 남기고 피드백을 주고받으세요.<br></br>어떤 줄에서 어떤 의도로 작성했는지 맥락과 함께 리뷰하면<br></br>코드 품질과 팀 전체의 실력이 함께 올라갑니다."
+    },
+    "recruitment": {
+      "step": "02",
+      "title": "팀원 모집",
+      "description": "기술 스택과 관심사를 기반으로 프로젝트에 맞는 동료를 찾으세요.<br></br>백엔드가 필요한지, 디자이너가 필요한지 공고를 올리면<br></br>비슷한 목표를 가진 대학생 개발자들이 지원합니다."
+    },
+    "portfolio": {
+      "step": "03",
+      "title": "포트폴리오",
+      "description": "완료된 프로젝트가 자동으로 나만의 포트폴리오로 정리됩니다.<br></br>어떤 기술을 썼고, 어떤 역할을 맡았는지 한눈에 보여주는<br></br>개발 이력을 쉽게 만들고 공유할 수 있습니다."
+    },
+    "cta": {
+      "title": "지금 바로 시작하세요",
+      "button": "무료로 시작하기 →"
+    },
+    "footer": "© 2026 PoFol"
+  },
+  "board": {
+    "empty": "등록된 게시물이 없습니다.",
+    "categories": {
+      "all": "전체",
+      "recruiting": "모집중",
+      "school": "학교",
+      "bookmarks": "북마크"
+    },
+    "relatedPosts": {
+      "title": "관련 프로젝트",
+      "empty": "관련 프로젝트가 없습니다."
+    },
+    "detail": {
+      "editPost": "게시글 수정",
+      "deletePost": "게시글 삭제",
+      "mainFeatures": "주요 기능",
+      "recruitPositions": "모집 포지션",
+      "visitSite": "사이트 방문",
+      "linkGithub": "GitHub",
+      "linkDeploy": "배포 사이트",
+      "linkFigma": "Figma",
+      "linkErd": "ERD",
+      "linkClass": "클래스 다이어그램",
+      "linkExtra": "추가 자료",
+      "bookmark": "북마크",
+      "share": "공유",
+      "linkCopied": "URL이 복사되었습니다.",
+      "follow": "팔로우",
+      "following": "팔로잉",
+      "deleteConfirmTitle": "게시글을 삭제할까요?",
+      "deleteConfirmDesc": "삭제한 게시글은 복구할 수 없습니다.",
+      "cancel": "취소",
+      "delete": "삭제",
+      "deleting": "삭제 중..."
+    },
+    "apply": {
+      "sectionCompleteTitle": "지원 완료",
+      "sectionCompleteDesc": "이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수 있어요.",
+      "viewApplication": "지원서 확인",
+      "applyNow": "지원하기",
+      "modalTitle": "지원하기",
+      "selectPosition": "지원할 포지션",
+      "introduction": "자기소개",
+      "introductionPlaceholder": "간단한 자기소개를 작성해주세요.",
+      "portfolio": "포트폴리오 / GitHub",
+      "portfolioPlaceholder": "https://github.com/username",
+      "cancel": "취소",
+      "submit": "지원하기",
+      "editModalTitle": "지원서 수정",
+      "editHint": "수정 후 다시 저장할 수 있습니다.",
+      "save": "저장하기",
+      "savedToast": "지원서가 저장되었습니다.",
+      "viewModalTitle": "지원 내역",
+      "appliedPosition": "지원한 포지션",
+      "noContent": "작성된 내용이 없습니다.",
+      "editableUntilDeadline": "마감 전까지 수정할 수 있어요.",
+      "notEditable": "수정이 불가능한 상태입니다.",
+      "close": "닫기",
+      "cancelApplication": "취소하기",
+      "edit": "수정하기"
+    },
+    "comment": {
+      "count": "댓글 {count}개",
+      "deletedContent": "삭제된 댓글입니다.",
+      "placeholder": "댓글 추가...",
+      "replyPlaceholder": "답글 추가...",
+      "submit": "등록",
+      "reply": "답글",
+      "save": "저장",
+      "cancel": "취소"
+    },
+    "write": {
+      "steps": {
+        "type": "유형 선택",
+        "content": "내용 작성",
+        "thumbnail": "썸네일",
+        "extra": "추가 정보"
+      },
+      "step1": {
+        "heading": "어떤 게시글을 작성하시나요?",
+        "subheading": "게시글 유형을 선택해주세요.",
+        "projectTitle": "프로젝트 전시",
+        "projectDesc": "완성된 프로젝트를 포트폴리오에 공개합니다",
+        "recruitTitle": "팀원 모집",
+        "recruitDesc": "함께할 팀원을 구하고 있습니다"
+      },
+      "step2": {
+        "heading": "프로젝트 정보를 입력해주세요",
+        "subheading": "GitHub로 자동완성하거나 직접 입력하세요.",
+        "checkingGithub": "GitHub 연결 확인 중...",
+        "notConnectedHint": "GitHub 연결 시 정보를 자동으로 불러올 수 있습니다.",
+        "connecting": "연결 중...",
+        "connectGithub": "GitHub 연결",
+        "loading": "불러오는 중...",
+        "selectRepoOptional": "레포지토리 선택 (선택사항)",
+        "aiWriting": "AI 작성 중...",
+        "aiAutocomplete": "AI 자동완성"
+      },
+      "step3": {
+        "heading": "썸네일을 설정해주세요",
+        "subheading": "AI로 생성하거나 직접 업로드할 수 있습니다.",
+        "previewPlaceholder": "AI가 생성한 썸네일 미리보기",
+        "thumbnailAlt": "썸네일 미리보기",
+        "generating": "생성 중...",
+        "generateAI": "AI 썸네일 생성",
+        "uploadDirect": "직접 업로드"
+      },
+      "step4": {
+        "heading": "추가 정보를 입력해주세요",
+        "subheading": "태그와 자료 링크는 선택사항입니다.",
+        "submitting": "등록 중...",
+        "submit": "게시글 등록"
+      },
+      "nav": {
+        "prev": "이전",
+        "next": "다음"
+      },
+      "projectInfo": {
+        "name": "프로젝트 이름",
+        "description": "프로젝트 설명",
+        "mainFeatures": "주요 기능",
+        "deployUrl": "배포된 사이트",
+        "techStack": "기술 스택"
+      },
+      "github": {
+        "title": "GitHub 불러오기",
+        "selectRepo": "Repository 선택",
+        "loading": "불러오는 중...",
+        "selectRepoPlaceholder": "레포지토리를 선택하세요",
+        "noRepos": "레포지토리 없음",
+        "githubLink": "GitHub 링크",
+        "aiWriting": "AI 작성 중...",
+        "aiWrite": "AI로 작성하기",
+        "connectedHint": "GitHub 계정이 연결되어 있습니다.",
+        "connecting": "연결 중...",
+        "reconnect": "재연동",
+        "autoImportHint": "연결된 GitHub 계정의 레포지토리 정보를 자동으로 불러옵니다.",
+        "checkingConnection": "GitHub 연결 확인 중...",
+        "connectPromptTitle": "GitHub 계정을 연결해주세요",
+        "connectPromptDesc": "레포지토리를 불러와 프로젝트 정보를 자동으로 채울 수 있습니다.",
+        "connectAccount": "GitHub 계정 연결하기",
+        "errorAlreadyLinked": "이미 다른 계정에 연결된 GitHub 계정입니다.",
+        "errorStateExpired": "GitHub 연결 시간이 초과되었습니다. 다시 시도해주세요.",
+        "errorGeneric": "GitHub 연결에 실패했습니다. 다시 시도해주세요.",
+        "errorLoginRequired": "로그인 후 이용해주세요.",
+        "errorConnectFailed": "GitHub 연결 요청에 실패했습니다.",
+        "errorNoRedirectUrl": "GitHub 연결 URL을 받지 못했습니다."
+      },
+      "skillPicker": {
+        "placeholder": "기술 스택 검색...",
+        "searching": "검색 중...",
+        "noResults": "결과 없음",
+        "removeLabel": "{name} 제거"
+      },
+      "tags": {
+        "title": "태그",
+        "hint": "Enter 또는 쉼표로 태그를 추가하세요.",
+        "placeholder": "예: React, 포트폴리오, 팀프로젝트"
+      },
+      "teamRecruit": {
+        "title": "팀원 모집",
+        "hint": "팀원 모집 기능을 설정하고 지원을 받아보세요.",
+        "description": "프로젝트 설명",
+        "descriptionPlaceholder": "프로젝트에 대해 설명해주세요",
+        "roles": "모집 역할 및 인원",
+        "unit": "명"
+      },
+      "uploadLinks": {
+        "title": "추가 자료 링크",
+        "hint": "외부 링크를 추가하면 게시물에 함께 표시됩니다.",
+        "githubPlaceholder": "GitHub (내용 작성 단계에서 레포 선택 시 자동 입력)",
+        "figma": "Figma",
+        "erd": "ERD",
+        "class": "클래스 다이어그램",
+        "extra": "추가 자료"
+      },
+      "ai": {
+        "summarizeFailed": "AI 요약에 실패했습니다.",
+        "thumbnailFailed": "썸네일 생성에 실패했습니다."
+      },
+      "recruitingTitle": "모집중"
+    },
+    "edit": {
+      "title": "게시글 수정",
+      "projectName": "프로젝트 이름",
+      "projectDescription": "프로젝트 설명",
+      "mainFeatures": "주요 기능",
+      "deployUrl": "배포된 사이트",
+      "techStack": "기술 스택",
+      "thumbnail": "썸네일",
+      "noThumbnail": "썸네일 없음",
+      "thumbnailAlt": "썸네일 미리보기",
+      "uploading": "업로드 중...",
+      "changeThumbnail": "썸네일 변경",
+      "removeThumbnail": "썸네일 삭제",
+      "cancel": "취소",
+      "submitting": "수정 중...",
+      "submit": "수정 완료"
+    }
+  },
+  "profile": {
+    "postsHeading": "게시물",
+    "sidebar": {
+      "monthsSuffix": "개월차",
+      "noBio": "소개 글을 등록해주세요",
+      "githubNotConnected": "GitHub 미연동",
+      "noPortfolio": "포트폴리오 없음",
+      "noEmail": "이메일 없음",
+      "editProfile": "프로필 수정"
+    },
+    "follow": {
+      "following": "팔로잉",
+      "follow": "팔로우"
+    },
+    "followerModal": {
+      "title": "팔로워",
+      "searchPlaceholder": "유저 검색",
+      "noResults": "검색 결과가 없습니다.",
+      "empty": "팔로워가 없습니다."
+    },
+    "editModal": {
+      "title": "프로필 수정",
+      "subtitle": "프로필 정보를 수정할 수 있습니다.",
+      "name": "이름",
+      "namePlaceholder": "이름",
+      "email": "이메일",
+      "emailHint": "가입 시 등록된 이메일은 변경할 수 없습니다.",
+      "github": "GitHub",
+      "githubNotConnected": "연동된 GitHub 계정이 없습니다",
+      "githubHint": "GitHub은 OAuth 연동으로 자동 설정됩니다.",
+      "portfolio": "포트폴리오",
+      "position": "직무",
+      "positionPlaceholder": "프론트엔드, 백엔드, ..",
+      "startMonth": "경력 시작월",
+      "currentLabel": "현재",
+      "bio": "소개글",
+      "bioPlaceholder": "소개글을 입력해주세요.",
+      "saving": "저장 중...",
+      "save": "저장하기",
+      "yearsMonthsLabel": "{years}년 {months}개월차",
+      "yearsLabel": "{years}년차",
+      "monthsLabel": "{months}개월차"
+    },
+    "editPageStub": "프로필 편집",
+    "error": {
+      "title": "프로필을 불러오지 못했습니다.",
+      "desc": "잠시 후 다시 시도해 주세요.",
+      "retry": "다시 시도"
+    }
+  },
+  "recruitment": {
+    "breadcrumb": "Recruitment",
+    "pageTitle": "팀원 모집 관리",
+    "pageSubtitle": "내가 올린 모집글과 지원자 현황을 한 곳에서 확인하고 관리해요.",
+    "status": {
+      "closed": "마감",
+      "recruiting": "모집중"
+    },
+    "applicantCard": {
+      "viewProfile": "프로필 보기",
+      "appliedFor": "{position} 지원",
+      "viewPortfolio": "포트폴리오 보기",
+      "noPortfolio": "포트폴리오 없음",
+      "accept": "수락",
+      "reject": "거절",
+      "accepted": "수락됨",
+      "rejected": "거절됨"
+    },
+    "applicantSection": {
+      "title": "지원자 현황",
+      "postApplicants": "\"{title}\" 지원자",
+      "selectPostHint": "게시글을 선택해주세요.",
+      "selectPostFromLeft": "왼쪽에서 게시글을 선택해주세요.",
+      "noApplicants": "아직 지원자가 없어요."
+    },
+    "postCard": {
+      "applicantCount": "지원자",
+      "edit": "수정하기"
+    },
+    "postListSection": {
+      "title": "내 모집글",
+      "subtitle": "현재 등록한 팀원 모집 게시글이에요.",
+      "count": "{count}개",
+      "empty": "등록한 모집글이 없어요."
+    }
+  },
+  "settings": {
+    "title": "설정",
+    "subtitle": "서비스 이용 환경을 설정할 수 있습니다.",
+    "language": {
+      "title": "언어 설정",
+      "desc": "서비스에서 표시할 언어를 선택할 수 있습니다."
+    },
+    "notifications": {
+      "title": "알림 설정",
+      "desc": "팔로우, 좋아요, 북마크, 지원, 모집 관련 알림을 관리할 수 있습니다.",
+      "follow": "팔로우 알림",
+      "like": "좋아요 알림",
+      "bookmark": "북마크 알림",
+      "apply": "지원 알림",
+      "recruit": "모집 알림",
+      "toggleLabel": "{name} 설정"
+    }
+  },
+  "search": {
+    "userSection": "User",
+    "projectSection": "Project",
+    "viewProfile": "프로필 보기",
+    "following": "팔로잉",
+    "follow": "팔로우",
+    "collapse": "접기",
+    "showMoreUsers": "Users 더보기"
+  },
+  "bookmark": {
+    "title": "북마크",
+    "empty": "북마크한 게시글이 없습니다."
   }
 }

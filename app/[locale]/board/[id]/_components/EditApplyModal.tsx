@@ -3,6 +3,7 @@
 import { updateApply } from "@/lib/apply";
 import type { ResponseApplication } from "@/types/post";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Modal from "./Modal";
 
 type Props = {
@@ -12,13 +13,14 @@ type Props = {
 };
 
 export default function EditApplyModal({ postUuid, application, onClose }: Props) {
+  const t = useTranslations("board.apply");
   const [introduction, setIntroduction] = useState(application.introduction);
   const [portfolioUrl, setPortfolioUrl] = useState(application.portfolioUrl ?? "");
 
   const handleSave = async () => {
     try {
       await updateApply(postUuid, { introduction, portfolioUrl });
-      sessionStorage.setItem("toastMessage", "지원서가 저장되었습니다.");
+      sessionStorage.setItem("toastMessage", t("savedToast"));
       onClose();
       window.location.reload();
     } catch (e) {
@@ -27,13 +29,13 @@ export default function EditApplyModal({ postUuid, application, onClose }: Props
   };
 
   return (
-    <Modal title="지원서 수정" onClose={onClose}>
+    <Modal title={t("editModalTitle")} onClose={onClose}>
       <div className="mb-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
-        수정 후 다시 저장할 수 있습니다.
+        {t("editHint")}
       </div>
 
       <label className="mb-4 block">
-        <span className="mb-2 block text-sm font-medium">자기소개</span>
+        <span className="mb-2 block text-sm font-medium">{t("introduction")}</span>
         <textarea
           value={introduction}
           onChange={(e) => setIntroduction(e.target.value)}
@@ -43,7 +45,7 @@ export default function EditApplyModal({ postUuid, application, onClose }: Props
 
       <label className="mb-5 block">
         <span className="mb-2 block text-sm font-medium">
-          포트폴리오 / GitHub
+          {t("portfolio")}
         </span>
         <input
           value={portfolioUrl}
@@ -58,14 +60,14 @@ export default function EditApplyModal({ postUuid, application, onClose }: Props
           onClick={onClose}
           className="flex-1 rounded-xl border border-gray-200 py-3 text-sm"
         >
-          취소
+          {t("cancel")}
         </button>
         <button
           type="button"
           onClick={handleSave}
           className="flex-1 rounded-xl bg-black py-3 text-sm font-semibold text-white"
         >
-          저장하기
+          {t("save")}
         </button>
       </div>
     </Modal>

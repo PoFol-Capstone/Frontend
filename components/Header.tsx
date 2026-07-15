@@ -2,14 +2,17 @@
 
 import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useNavigation } from "@/components/NavigationProvider";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useTranslations } from "next-intl";
 
 import { Bell, Search, CirclePlus, User } from "lucide-react";
 
 export default function Header({ session }: { session: string | null }) {
+  const t = useTranslations("header");
   const isLoggedIn = !!session;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -86,7 +89,7 @@ export default function Header({ session }: { session: string | null }) {
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="Search Project..."
+                    placeholder={t("searchPlaceholder")}
                     className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
                   />
               </form>
@@ -97,7 +100,7 @@ export default function Header({ session }: { session: string | null }) {
                 href="/board/write"
                 onClick={(e) => handleLinkClick(e, "/board/write")}
                 className="flex items-center justify-center text-gray-600 transition hover:text-black"
-                aria-label="게시글 작성"
+                aria-label={t("createPost")}
               >
                 <CirclePlus className="h-5 w-5" />
               </Link>
@@ -106,7 +109,7 @@ export default function Header({ session }: { session: string | null }) {
                 type="button"
                 onClick={handleOpenNotifications}
                 className="relative flex items-center justify-center text-gray-600 transition hover:text-black"
-                aria-label="알림 열기"
+                aria-label={t("openNotifications")}
               >
                 <Bell className="h-5 w-5" />
 
@@ -118,6 +121,8 @@ export default function Header({ session }: { session: string | null }) {
                 )}
               </button>
 
+              <LocaleSwitcher />
+
               <div ref={profileRef} className="relative">
                 <button
                   type="button"
@@ -126,7 +131,7 @@ export default function Header({ session }: { session: string | null }) {
                     setIsNotificationOpen(false);
                   }}
                   className="flex items-center justify-center text-gray-600 transition hover:text-black"
-                  aria-label="프로필 메뉴 열기"
+                  aria-label={t("openProfileMenu")}
                 >
                   <User className="h-5 w-5" />
                 </button>
@@ -149,12 +154,14 @@ export default function Header({ session }: { session: string | null }) {
           </>
         ) : (
           <div className="flex items-center gap-3">
+            <LocaleSwitcher />
+
             <Link
               href="/login"
               onClick={(e) => handleLinkClick(e, "/login")}
               className="text-sm font-medium text-black hover:text-gray-600"
             >
-              로그인
+              {t("login")}
             </Link>
 
             <Link
@@ -162,7 +169,7 @@ export default function Header({ session }: { session: string | null }) {
               onClick={(e) => handleLinkClick(e, "/signup")}
               className="rounded-full bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800"
             >
-              시작하기
+              {t("getStarted")}
             </Link>
           </div>
         )}

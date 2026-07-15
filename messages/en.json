@@ -1,5 +1,437 @@
 {
   "common": {
     "appName": "PoFoL"
+  },
+  "header": {
+    "createPost": "Create post",
+    "openNotifications": "Open notifications",
+    "openProfileMenu": "Open profile menu",
+    "searchPlaceholder": "Search Project...",
+    "login": "Log in",
+    "getStarted": "Get Started"
+  },
+  "localeSwitcher": {
+    "label": "Select language"
+  },
+  "profileMenu": {
+    "profile": "Profile",
+    "recruitment": "Recruitment",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "notification": {
+    "title": "Notifications",
+    "unreadCount": "{count} unread notifications",
+    "loading": "Loading...",
+    "empty": "You're all caught up.",
+    "loadMore": "Load more",
+    "markAllRead": "Mark all as read",
+    "actorWithOthers": "{name} and {count} others",
+    "actorOnly": "{name}",
+    "likePost": "{actor} liked your post.",
+    "commentPost": "{actor} commented on your post.",
+    "follow": "{actor} followed you.",
+    "applicationSubmitted": "{actor} applied to your project.",
+    "applicationAcceptedWithTitle": "Your application to \"{title}\" was accepted.",
+    "applicationAccepted": "Your application was accepted.",
+    "applicationRejectedWithTitle": "Your application to \"{title}\" was declined.",
+    "applicationRejected": "Your application was declined.",
+    "justNow": "Just now",
+    "minutesAgo": "{minutes}m ago",
+    "hoursAgo": "{hours}h ago",
+    "daysAgo": "{days}d ago"
+  },
+  "auth": {
+    "login": {
+      "title": "Log in",
+      "emailPlaceholder": "Enter your email",
+      "emailRequired": "Please enter your email.",
+      "submitting": "Sending...",
+      "submit": "Log in",
+      "failed": "Failed to request login.",
+      "or": "or",
+      "githubContinue": "Continue with GitHub",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign up"
+    },
+    "signupName": {
+      "title": "Enter your name",
+      "namePlaceholder": "Enter your name.",
+      "nameRequired": "Please enter your name.",
+      "next": "Next"
+    },
+    "signupType": {
+      "title": "Create a new account!",
+      "emailStart": "Start with email",
+      "githubLogin": "Log in with GitHub"
+    },
+    "signupEmail": {
+      "title": "Sign up",
+      "emailPlaceholder": "Enter your email",
+      "emailRequired": "Please enter your email.",
+      "sending": "Sending...",
+      "submit": "Get verification code",
+      "otpSentToast": "Verification code sent.",
+      "sendFailed": "Failed to send verification code.",
+      "otherOption": "Sign up with a different option",
+      "schoolEmailHint": "※ Sign up with your school email to receive extra benefits."
+    },
+    "verify": {
+      "title": "Verify your code",
+      "verifying": "Verifying...",
+      "submit": "Complete verification",
+      "codeRequired": "Please enter the 6-digit verification code.",
+      "invalidCode": "The verification code is incorrect.",
+      "verifyFailed": "Failed to verify the code.",
+      "back": "Back"
+    },
+    "oauth": {
+      "connecting": "Connecting to GitHub..."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "A collaborative portfolio platform for student developers",
+      "subtitle": "Code review, team recruiting, and project management in one place",
+      "getStarted": "Get Started",
+      "login": "Log in"
+    },
+    "codeReview": {
+      "step": "01",
+      "title": "Code Review",
+      "description": "Leave inline comments on your teammates' code and exchange feedback.<br></br>Reviewing with context on which line and what intent code was written for<br></br>lifts both code quality and the whole team's skill together."
+    },
+    "recruitment": {
+      "step": "02",
+      "title": "Team Recruiting",
+      "description": "Find teammates that fit your project based on tech stack and interests.<br></br>Post whether you need a backend developer or a designer,<br></br>and student developers with similar goals will apply."
+    },
+    "portfolio": {
+      "step": "03",
+      "title": "Portfolio",
+      "description": "Completed projects are automatically organized into your own portfolio.<br></br>Easily build and share a development history that shows<br></br>what tech you used and what role you played at a glance."
+    },
+    "cta": {
+      "title": "Get started right now",
+      "button": "Start for free →"
+    },
+    "footer": "© 2026 PoFol"
+  },
+  "board": {
+    "empty": "No posts yet.",
+    "categories": {
+      "all": "All",
+      "recruiting": "Recruiting",
+      "school": "School",
+      "bookmarks": "Bookmarks"
+    },
+    "relatedPosts": {
+      "title": "Related Projects",
+      "empty": "No related projects."
+    },
+    "detail": {
+      "editPost": "Edit post",
+      "deletePost": "Delete post",
+      "mainFeatures": "Key Features",
+      "recruitPositions": "Open Positions",
+      "visitSite": "Visit site",
+      "linkGithub": "GitHub",
+      "linkDeploy": "Live site",
+      "linkFigma": "Figma",
+      "linkErd": "ERD",
+      "linkClass": "Class diagram",
+      "linkExtra": "Additional resources",
+      "bookmark": "Bookmark",
+      "share": "Share",
+      "linkCopied": "Link copied.",
+      "follow": "Follow",
+      "following": "Following",
+      "deleteConfirmTitle": "Delete this post?",
+      "deleteConfirmDesc": "Deleted posts can't be recovered.",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "deleting": "Deleting..."
+    },
+    "apply": {
+      "sectionCompleteTitle": "Application submitted",
+      "sectionCompleteDesc": "You've already applied to this project. You can view or edit your application.",
+      "viewApplication": "View application",
+      "applyNow": "Apply",
+      "modalTitle": "Apply",
+      "selectPosition": "Position to apply for",
+      "introduction": "Introduction",
+      "introductionPlaceholder": "Write a brief introduction about yourself.",
+      "portfolio": "Portfolio / GitHub",
+      "portfolioPlaceholder": "https://github.com/username",
+      "cancel": "Cancel",
+      "submit": "Apply",
+      "editModalTitle": "Edit application",
+      "editHint": "You can save again after editing.",
+      "save": "Save",
+      "savedToast": "Application saved.",
+      "viewModalTitle": "Application details",
+      "appliedPosition": "Applied position",
+      "noContent": "No content written.",
+      "editableUntilDeadline": "You can edit until the deadline.",
+      "notEditable": "This can no longer be edited.",
+      "close": "Close",
+      "cancelApplication": "Cancel application",
+      "edit": "Edit"
+    },
+    "comment": {
+      "count": "{count} comments",
+      "deletedContent": "This comment has been deleted.",
+      "placeholder": "Add a comment...",
+      "replyPlaceholder": "Add a reply...",
+      "submit": "Post",
+      "reply": "Reply",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "write": {
+      "steps": {
+        "type": "Type",
+        "content": "Details",
+        "thumbnail": "Thumbnail",
+        "extra": "Extra info"
+      },
+      "step1": {
+        "heading": "What kind of post are you creating?",
+        "subheading": "Select a post type.",
+        "projectTitle": "Showcase a project",
+        "projectDesc": "Publish a completed project to your portfolio",
+        "recruitTitle": "Recruit teammates",
+        "recruitDesc": "Looking for teammates to join you"
+      },
+      "step2": {
+        "heading": "Enter your project information",
+        "subheading": "Autofill from GitHub or enter it manually.",
+        "checkingGithub": "Checking GitHub connection...",
+        "notConnectedHint": "Connect GitHub to automatically import information.",
+        "connecting": "Connecting...",
+        "connectGithub": "Connect GitHub",
+        "loading": "Loading...",
+        "selectRepoOptional": "Select a repository (optional)",
+        "aiWriting": "AI writing...",
+        "aiAutocomplete": "AI autofill"
+      },
+      "step3": {
+        "heading": "Set a thumbnail",
+        "subheading": "Generate one with AI or upload your own.",
+        "previewPlaceholder": "AI-generated thumbnail preview",
+        "thumbnailAlt": "Thumbnail preview",
+        "generating": "Generating...",
+        "generateAI": "Generate AI thumbnail",
+        "uploadDirect": "Upload directly"
+      },
+      "step4": {
+        "heading": "Enter additional information",
+        "subheading": "Tags and resource links are optional.",
+        "submitting": "Submitting...",
+        "submit": "Publish post"
+      },
+      "nav": {
+        "prev": "Back",
+        "next": "Next"
+      },
+      "projectInfo": {
+        "name": "Project name",
+        "description": "Project description",
+        "mainFeatures": "Key features",
+        "deployUrl": "Deployed site",
+        "techStack": "Tech stack"
+      },
+      "github": {
+        "title": "Import from GitHub",
+        "selectRepo": "Select repository",
+        "loading": "Loading...",
+        "selectRepoPlaceholder": "Select a repository",
+        "noRepos": "No repositories",
+        "githubLink": "GitHub link",
+        "aiWriting": "AI writing...",
+        "aiWrite": "Write with AI",
+        "connectedHint": "Your GitHub account is connected.",
+        "connecting": "Connecting...",
+        "reconnect": "Reconnect",
+        "autoImportHint": "Automatically imports repository info from your connected GitHub account.",
+        "checkingConnection": "Checking GitHub connection...",
+        "connectPromptTitle": "Connect your GitHub account",
+        "connectPromptDesc": "Import a repository to automatically fill in your project information.",
+        "connectAccount": "Connect GitHub account",
+        "errorAlreadyLinked": "This GitHub account is already linked to another account.",
+        "errorStateExpired": "The GitHub connection timed out. Please try again.",
+        "errorGeneric": "Failed to connect to GitHub. Please try again.",
+        "errorLoginRequired": "Please log in first.",
+        "errorConnectFailed": "Failed to request GitHub connection.",
+        "errorNoRedirectUrl": "Didn't receive a GitHub connection URL."
+      },
+      "skillPicker": {
+        "placeholder": "Search tech stack...",
+        "searching": "Searching...",
+        "noResults": "No results",
+        "removeLabel": "Remove {name}"
+      },
+      "tags": {
+        "title": "Tags",
+        "hint": "Add tags with Enter or a comma.",
+        "placeholder": "e.g. React, Portfolio, Team project"
+      },
+      "teamRecruit": {
+        "title": "Recruit teammates",
+        "hint": "Set up team recruiting and start receiving applications.",
+        "description": "Project description",
+        "descriptionPlaceholder": "Describe your project",
+        "roles": "Roles and headcount",
+        "unit": ""
+      },
+      "uploadLinks": {
+        "title": "Additional resource links",
+        "hint": "Added links will be shown alongside your post.",
+        "githubPlaceholder": "GitHub (auto-filled when you select a repo in the details step)",
+        "figma": "Figma",
+        "erd": "ERD",
+        "class": "Class diagram",
+        "extra": "Additional resources"
+      },
+      "ai": {
+        "summarizeFailed": "AI summary failed.",
+        "thumbnailFailed": "Failed to generate thumbnail."
+      },
+      "recruitingTitle": "Recruiting"
+    },
+    "edit": {
+      "title": "Edit post",
+      "projectName": "Project name",
+      "projectDescription": "Project description",
+      "mainFeatures": "Key features",
+      "deployUrl": "Deployed site",
+      "techStack": "Tech stack",
+      "thumbnail": "Thumbnail",
+      "noThumbnail": "No thumbnail",
+      "thumbnailAlt": "Thumbnail preview",
+      "uploading": "Uploading...",
+      "changeThumbnail": "Change thumbnail",
+      "removeThumbnail": "Remove thumbnail",
+      "cancel": "Cancel",
+      "submitting": "Saving...",
+      "submit": "Save changes"
+    }
+  },
+  "profile": {
+    "postsHeading": "Posts",
+    "sidebar": {
+      "monthsSuffix": " mo.",
+      "noBio": "Add a bio",
+      "githubNotConnected": "GitHub not linked",
+      "noPortfolio": "No portfolio",
+      "noEmail": "No email",
+      "editProfile": "Edit profile"
+    },
+    "follow": {
+      "following": "Following",
+      "follow": "Follow"
+    },
+    "followerModal": {
+      "title": "Followers",
+      "searchPlaceholder": "Search users",
+      "noResults": "No results found.",
+      "empty": "No followers yet."
+    },
+    "editModal": {
+      "title": "Edit profile",
+      "subtitle": "You can edit your profile information.",
+      "name": "Name",
+      "namePlaceholder": "Name",
+      "email": "Email",
+      "emailHint": "The email registered at signup can't be changed.",
+      "github": "GitHub",
+      "githubNotConnected": "No GitHub account linked",
+      "githubHint": "GitHub is set automatically via OAuth linking.",
+      "portfolio": "Portfolio",
+      "position": "Position",
+      "positionPlaceholder": "Frontend, Backend, ..",
+      "startMonth": "Career start month",
+      "currentLabel": "Currently",
+      "bio": "Bio",
+      "bioPlaceholder": "Write a short bio.",
+      "saving": "Saving...",
+      "save": "Save",
+      "yearsMonthsLabel": "{years}y {months}mo",
+      "yearsLabel": "{years}y",
+      "monthsLabel": "{months}mo"
+    },
+    "editPageStub": "Edit Profile",
+    "error": {
+      "title": "Couldn't load the profile.",
+      "desc": "Please try again in a moment.",
+      "retry": "Try again"
+    }
+  },
+  "recruitment": {
+    "breadcrumb": "Recruitment",
+    "pageTitle": "Recruitment Management",
+    "pageSubtitle": "Review and manage your recruiting posts and applicants in one place.",
+    "status": {
+      "closed": "Closed",
+      "recruiting": "Recruiting"
+    },
+    "applicantCard": {
+      "viewProfile": "View profile",
+      "appliedFor": "Applied for {position}",
+      "viewPortfolio": "View portfolio",
+      "noPortfolio": "No portfolio",
+      "accept": "Accept",
+      "reject": "Reject",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "applicantSection": {
+      "title": "Applicants",
+      "postApplicants": "Applicants for \"{title}\"",
+      "selectPostHint": "Select a post.",
+      "selectPostFromLeft": "Select a post on the left.",
+      "noApplicants": "No applicants yet."
+    },
+    "postCard": {
+      "applicantCount": "Applicants",
+      "edit": "Edit"
+    },
+    "postListSection": {
+      "title": "My recruiting posts",
+      "subtitle": "Team recruiting posts you've published.",
+      "count": "{count}",
+      "empty": "No recruiting posts yet."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Configure how you use the service.",
+    "language": {
+      "title": "Language",
+      "desc": "Choose the language displayed in the service."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "desc": "Manage notifications for follows, likes, bookmarks, applications, and recruiting.",
+      "follow": "Follow notifications",
+      "like": "Like notifications",
+      "bookmark": "Bookmark notifications",
+      "apply": "Application notifications",
+      "recruit": "Recruiting notifications",
+      "toggleLabel": "Toggle {name}"
+    }
+  },
+  "search": {
+    "userSection": "User",
+    "projectSection": "Project",
+    "viewProfile": "View profile",
+    "following": "Following",
+    "follow": "Follow",
+    "collapse": "Collapse",
+    "showMoreUsers": "Show more users"
+  },
+  "bookmark": {
+    "title": "Bookmarks",
+    "empty": "No bookmarked posts yet."
   }
 }

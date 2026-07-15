@@ -2,7 +2,7 @@ import { getSessionUuid } from "@/lib/session";
 import getUser, { getFollowers } from "@/lib/user";
 import { getUserPosts } from "@/lib/post";
 import { notFound } from "next/navigation";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import ProfileSidebar from "../_components/ProfileSidebar";
 import PostCarousel from "../_components/PostCarousel";
@@ -33,6 +33,8 @@ export default async function UserProfilePage({ params }: Props) {
     }),
   ]);
 
+  const t = await getTranslations("profile");
+
   const carouselPosts = postsResult.content.map((p) => ({
     id: p.uuid,
     title: p.title,
@@ -53,7 +55,7 @@ export default async function UserProfilePage({ params }: Props) {
 
         <section className="space-y-12">
           <section>
-            <h2 className="mb-4 text-3xl font-bold">게시물</h2>
+            <h2 className="mb-4 text-3xl font-bold">{t("postsHeading")}</h2>
             <PostCarousel posts={carouselPosts} />
           </section>
         </section>

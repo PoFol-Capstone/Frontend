@@ -1,18 +1,19 @@
 "use client";
 import { Database, Link, PenTool, GitBranch, Paperclip } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export type UploadSectionId = "erd" | "figma" | "class" | "extra";
 
 const LINK_ROWS: {
   id: UploadSectionId;
-  label: string;
+  labelKey: string;
   icon: React.ElementType;
   placeholder: string;
 }[] = [
-  { id: "figma", label: "Figma", icon: PenTool, placeholder: "https://figma.com/..." },
-  { id: "erd", label: "ERD", icon: Database, placeholder: "https://..." },
-  { id: "class", label: "클래스 다이어그램", icon: GitBranch, placeholder: "https://..." },
-  { id: "extra", label: "추가 자료", icon: Paperclip, placeholder: "https://..." },
+  { id: "figma", labelKey: "figma", icon: PenTool, placeholder: "https://figma.com/..." },
+  { id: "erd", labelKey: "erd", icon: Database, placeholder: "https://..." },
+  { id: "class", labelKey: "class", icon: GitBranch, placeholder: "https://..." },
+  { id: "extra", labelKey: "extra", icon: Paperclip, placeholder: "https://..." },
 ];
 
 type Props = {
@@ -22,12 +23,14 @@ type Props = {
 };
 
 export default function UploadLinksSection({ uploadLinks, onChange, githubUrl }: Props) {
+  const t = useTranslations("board.write.uploadLinks");
+
   return (
     <section className="border border-gray-200 rounded-2xl p-6 space-y-4 bg-white">
       <div>
-        <h2 className="text-base font-semibold">추가 자료 링크</h2>
+        <h2 className="text-base font-semibold">{t("title")}</h2>
         <p className="text-sm text-gray-500 mt-0.5">
-          외부 링크를 추가하면 게시물에 함께 표시됩니다.
+          {t("hint")}
         </p>
       </div>
 
@@ -42,13 +45,13 @@ export default function UploadLinksSection({ uploadLinks, onChange, githubUrl }:
               type="url"
               value={githubUrl ?? ""}
               readOnly
-              placeholder="GitHub (내용 작성 단계에서 레포 선택 시 자동 입력)"
+              placeholder={t("githubPlaceholder")}
               className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 placeholder:text-gray-400 cursor-default"
             />
           </div>
         </div>
 
-        {LINK_ROWS.map(({ id, label, icon: Icon, placeholder }) => (
+        {LINK_ROWS.map(({ id, icon: Icon, placeholder }) => (
           <div key={id} className="flex items-center gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100">
               <Icon size={16} className="text-gray-600" />
@@ -76,13 +79,13 @@ export default function UploadLinksSection({ uploadLinks, onChange, githubUrl }:
       </div>
 
       <div className="pt-1 flex flex-wrap gap-2">
-        {LINK_ROWS.map(({ id, label }) =>
+        {LINK_ROWS.map(({ id, labelKey }) =>
           uploadLinks[id] ? (
             <span
               key={id}
               className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600"
             >
-              {label} ✓
+              {t(labelKey)} ✓
             </span>
           ) : null
         )}

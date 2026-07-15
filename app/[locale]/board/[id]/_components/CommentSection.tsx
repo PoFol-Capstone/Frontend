@@ -10,6 +10,7 @@ import type { Comment } from "@/types/comment";
 import type { Profile } from "@/types/user";
 import { CornerDownRight, Heart, Pencil, Send, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 
 type Props = {
   postUuid: string;
@@ -18,8 +19,8 @@ type Props = {
   currentUser?: Profile | null;
 };
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("ko-KR", {
+function formatDate(iso: string, locale: string) {
+  return new Date(iso).toLocaleDateString(locale, {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -45,13 +46,20 @@ function applyLikeToggle(
   });
 }
 
-function applyDelete(comments: Comment[], uuid: string): Comment[] {
+function applyDelete(
+  comments: Comment[],
+  uuid: string,
+  deletedContentLabel: string,
+): Comment[] {
   return comments.map((c) => {
     if (c.uuid === uuid) {
-      return { ...c, deleted: true, content: "삭제된 댓글입니다." };
+      return { ...c, deleted: true, content: deletedContentLabel };
     }
     if (c.replies.length > 0) {
-      return { ...c, replies: applyDelete(c.replies, uuid) };
+      return {
+        ...c,
+        replies: applyDelete(c.replies, uuid, deletedContentLabel),
+      };
     }
     return c;
   });
@@ -103,6 +111,8 @@ function CommentItem({
   onUpdate,
   onReplySubmit,
 }: CommentItemProps) {
+  const t = useTranslations("board.comment");
+  const locale = useLocale();
   const [replyInput, setReplyInput] = useState("");
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [editInput, setEditInput] = useState(comment.content);
@@ -144,7 +154,7 @@ function CommentItem({
             <div className="mb-1 flex items-center gap-2">
               <p className="text-sm font-semibold">{comment.author.name}</p>
               <span className="text-xs text-gray-400">
-                {formatDate(comment.createdAt)}
+                {formatDate(comment.createdAt, locale)}
               </span>
               {isOwner && !isEditing && (
                 <div className="ml-auto flex items-center gap-1">
@@ -184,14 +194,14 @@ function CommentItem({
                 onClick={handleEditSubmit}
                 className="rounded-full bg-black px-3 py-1 text-xs font-semibold text-white hover:bg-gray-800"
               >
-                저장
+                {t("save")}
               </button>
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
                 className="text-xs text-gray-400 hover:text-gray-700"
               >
-                취소
+                {t("cancel")}
               </button>
             </div>
           ) : (
@@ -219,7 +229,7 @@ function CommentItem({
                   className="flex items-center gap-1 transition hover:text-black"
                 >
                   <CornerDownRight className="h-4 w-4" />
-                  답글
+                  {t("reply")}
                 </button>
               )}
             </div>
@@ -233,7 +243,7 @@ function CommentItem({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleReplySubmit();
                 }}
-                placeholder="답글 추가..."
+                placeholder={t("replyPlaceholder")}
                 className="flex-1 border-b border-gray-200 py-1.5 text-sm outline-none focus:border-black"
                 autoFocus
               />
@@ -244,7 +254,7 @@ function CommentItem({
                   className="flex items-center gap-1 rounded-full bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800"
                 >
                   <Send className="h-3 w-3" />
-                  등록
+                  {t("submit")}
                 </button>
               )}
             </div>
@@ -275,6 +285,7 @@ export default function CommentSection({
   currentUserUuid,
   currentUser,
 }: Props) {
+  const t = useTranslations("board.comment");
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [commentInput, setCommentInput] = useState("");
 
@@ -293,7 +304,7 @@ export default function CommentSection({
   };
 
   const handleDelete = (uuid: string) => {
-    setComments((prev) => applyDelete(prev, uuid));
+    setComments((prev) => applyDelete(prev, uuid, t("deletedContent")));
   };
 
   const handleUpdate = (uuid: string, content: string) => {
@@ -306,7 +317,7 @@ export default function CommentSection({
 
   return (
     <section className="mt-10 border-t border-gray-100 pt-8">
-      <h2 className="mb-5 text-lg font-bold">댓글 {totalCount}개</h2>
+      <h2 className="mb-5 text-lg font-bold">{t("count", { count: totalCount })}</h2>
 
       {currentUserUuid && (
         <div className="mb-6 flex items-center gap-3">
@@ -328,7 +339,7 @@ export default function CommentSection({
             onKeyDown={(e) => {
               if (e.key === "Enter") handleAddComment();
             }}
-            placeholder="댓글 추가..."
+            placeholder={t("placeholder")}
             className="flex-1 border-b border-gray-200 py-2 text-sm outline-none focus:border-black"
           />
           {commentInput.trim() && (
@@ -338,7 +349,7 @@ export default function CommentSection({
               className="flex items-center gap-1 rounded-full bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800"
             >
               <Send className="h-3 w-3" />
-              등록
+              {t("submit")}
             </button>
           )}
         </div>

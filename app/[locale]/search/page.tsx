@@ -6,6 +6,7 @@ import { useState } from "react";
 import PostCard from "@/app/[locale]/board/_components/PostCard";
 import type { ResponsePosts } from "@/types/post";
 import { Users, Eye, Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const users = [
   {
@@ -82,6 +83,7 @@ const projects: Partial<ResponsePosts>[] = [
 ];
 
 export default function SearchPage() {
+  const t = useTranslations("search");
   const [showAllUsers, setShowAllUsers] = useState(false);
   const [userList, setUserList] = useState(users);
 
@@ -103,7 +105,7 @@ export default function SearchPage() {
         <section>
           <div className="mb-4 flex items-end justify-between">
             <div>
-              <h2 className="text-xl font-bold">User</h2>
+              <h2 className="text-xl font-bold">{t("userSection")}</h2>
             </div>
           </div>
 
@@ -136,7 +138,7 @@ export default function SearchPage() {
                     href={`/profile/${user.id}`}
                     className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
                   >
-                    프로필 보기
+                    {t("viewProfile")}
                   </Link>
 
                   <button
@@ -148,7 +150,7 @@ export default function SearchPage() {
                         : "bg-black text-white hover:bg-gray-800"
                     }`}
                   >
-                    {user.isFollowing ? "팔로잉" : "팔로우"}
+                    {user.isFollowing ? t("following") : t("follow")}
                   </button>
                 </div>
               </div>
@@ -163,7 +165,7 @@ export default function SearchPage() {
                 onClick={() => setShowAllUsers((prev) => !prev)}
                 className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
               >
-                {showAllUsers ? "접기" : "Users 더보기"}
+                {showAllUsers ? t("collapse") : t("showMoreUsers")}
               </button>
               <div className="h-px flex-1 bg-gray-200" />
             </div>
@@ -172,7 +174,7 @@ export default function SearchPage() {
 
         <section>
           <div className="mb-4">
-            <h2 className="text-xl font-bold">Project</h2>
+            <h2 className="text-xl font-bold">{t("projectSection")}</h2>
           </div>
 
           <div className="flex flex-col gap-6">

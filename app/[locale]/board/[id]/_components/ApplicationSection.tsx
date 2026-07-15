@@ -7,6 +7,7 @@ import type {
 } from "@/types/post";
 import { PostType } from "@/types/post";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import ApplyModal from "./ApplyModal";
 import EditApplyModal from "./EditApplyModal";
 import ViewApplyModal from "./ViewApplyModal";
@@ -24,6 +25,7 @@ export default function ApplicationSection({
   recruitPositions,
   isAuthor = false,
 }: Props) {
+  const t = useTranslations("board.apply");
   const [application, setApplication] = useState<ResponseApplication | null>(
     null,
   );
@@ -62,9 +64,9 @@ export default function ApplicationSection({
         <div className="mt-8 border-t border-gray-100 pt-8">
           {application && (
             <div className="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
-              <p className="font-semibold">지원 완료</p>
+              <p className="font-semibold">{t("sectionCompleteTitle")}</p>
               <p className="mt-1">
-                이미 지원한 프로젝트입니다. 지원 내용을 확인하거나 수정할 수 있어요.
+                {t("sectionCompleteDesc")}
               </p>
             </div>
           )}
@@ -74,7 +76,7 @@ export default function ApplicationSection({
             onClick={openApplicationModal}
             className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800"
           >
-            {application ? "지원서 확인" : "지원하기"}
+            {application ? t("viewApplication") : t("applyNow")}
           </button>
         </div>
       )}

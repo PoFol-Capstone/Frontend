@@ -4,8 +4,10 @@ import { login, register, verifyOtp } from "@/lib/auth";
 import { saveLogin } from "@/lib/session";
 import { useRouter } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function SignupVerifyPage() {
+  const t = useTranslations("auth.verify");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
@@ -92,7 +94,7 @@ export default function SignupVerifyPage() {
 
   const verify = async (code: string) => {
     if (code.length !== 6) {
-      setMessage("6자리 인증번호를 입력해주세요.");
+      setMessage(t("codeRequired"));
       return;
     }
 
@@ -103,7 +105,7 @@ export default function SignupVerifyPage() {
       const result = await verifyOtp(email, code);
 
       if (!result.verified) {
-        setMessage("인증번호가 올바르지 않습니다.");
+        setMessage(t("invalidCode"));
         return;
       }
 
@@ -133,7 +135,7 @@ export default function SignupVerifyPage() {
       window.location.href = callbackUrl;
     } catch (error) {
       console.error(error);
-      setMessage("인증 확인에 실패했습니다.");
+      setMessage(t("verifyFailed"));
     } finally {
       setLoading(false);
     }
@@ -147,7 +149,7 @@ export default function SignupVerifyPage() {
         </div>
       )}
       <section className="mx-auto flex w-full max-w-md flex-col items-center rounded-2xl px-8 py-12">
-        <h1 className="mb-2 text-3xl font-bold">인증번호 확인</h1>
+        <h1 className="mb-2 text-3xl font-bold">{t("title")}</h1>
 
         <form
           className="mt-8 flex w-full flex-col items-center gap-6"
@@ -180,7 +182,7 @@ export default function SignupVerifyPage() {
             disabled={loading}
             className="w-full rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white disabled:opacity-50"
           >
-            {loading ? "확인 중..." : "인증 완료"}
+            {loading ? t("verifying") : t("submit")}
           </button>
         </form>
 
@@ -191,7 +193,7 @@ export default function SignupVerifyPage() {
           onClick={() => router.push("/signup/email")}
           className="mt-8 text-sm text-gray-500 underline"
         >
-          뒤로가기
+          {t("back")}
         </button>
       </section>
     </main>

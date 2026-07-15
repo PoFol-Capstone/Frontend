@@ -1,18 +1,21 @@
 import type { ResponsePosts } from "@/types/post";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 type Props = {
   relatedPosts: ResponsePosts[];
 };
 
 export default function RelatedPosts({ relatedPosts }: Props) {
+  const t = useTranslations("board.relatedPosts");
+
   return (
     <aside className="h-fit pt-1">
-      <h2 className="mb-4 text-sm font-bold">관련 프로젝트</h2>
+      <h2 className="mb-4 text-sm font-bold">{t("title")}</h2>
 
       {relatedPosts.length === 0 ? (
-        <p className="text-xs text-gray-400">관련 프로젝트가 없습니다.</p>
+        <p className="text-xs text-gray-400">{t("empty")}</p>
       ) : (
         <div className="space-y-4">
           {relatedPosts.map((item) => (

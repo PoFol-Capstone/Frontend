@@ -2,6 +2,7 @@
 
 import type { Skill } from "@/types/skill";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface SkillPickerProps {
   selected: Skill[];
@@ -9,6 +10,7 @@ interface SkillPickerProps {
 }
 
 export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
+  const t = useTranslations("board.write.skillPicker");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Skill[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -93,7 +95,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
                 removeSkill(skill.id);
               }}
               className="ml-0.5 opacity-70 hover:opacity-100 text-base leading-none"
-              aria-label={`${skill.name} 제거`}
+              aria-label={t("removeLabel", { name: skill.name })}
             >
               ×
             </button>
@@ -104,7 +106,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsOpen(true)}
-          placeholder={selected.length === 0 ? "기술 스택 검색..." : ""}
+          placeholder={selected.length === 0 ? t("placeholder") : ""}
           className="flex-1 min-w-30 text-sm outline-none bg-transparent placeholder:text-gray-400"
         />
       </div>
@@ -112,9 +114,9 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
       {isOpen && (
         <div className="absolute z-10 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-52 overflow-y-auto">
           {isLoading ? (
-            <div className="px-4 py-3 text-sm text-gray-400">검색 중...</div>
+            <div className="px-4 py-3 text-sm text-gray-400">{t("searching")}</div>
           ) : results.length === 0 ? (
-            <div className="px-4 py-3 text-sm text-gray-400">결과 없음</div>
+            <div className="px-4 py-3 text-sm text-gray-400">{t("noResults")}</div>
           ) : (
             results.map((skill) => (
               <button

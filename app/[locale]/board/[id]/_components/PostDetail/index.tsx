@@ -7,6 +7,7 @@ import type { Profile } from "@/types/user";
 import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { deletePostAction } from "../../actions";
 import ApplicationSection from "../ApplicationSection";
 import CommentSection from "../CommentSection";
@@ -31,6 +32,7 @@ export default function PostDetail({
   currentUserUuid,
   currentUser,
 }: Props) {
+  const t = useTranslations("board.detail");
   const router = useRouter();
 
   // 작성자 확인
@@ -78,7 +80,7 @@ export default function PostDetail({
                     type="button"
                     onClick={() => router.push(`/board/${post.uuid}/edit`)}
                     className="rounded-full p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
-                    aria-label="게시글 수정"
+                    aria-label={t("editPost")}
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
@@ -86,7 +88,7 @@ export default function PostDetail({
                     type="button"
                     onClick={() => setShowDeleteConfirm(true)}
                     className="rounded-full p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
-                    aria-label="게시글 삭제"
+                    aria-label={t("deletePost")}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>

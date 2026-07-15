@@ -2,6 +2,7 @@
 
 import type { ResponsePosts } from "@/types/post";
 import { useNavigation } from "@/components/NavigationProvider";
+import { useTranslations } from "next-intl";
 import { deriveStatus } from "./utils";
 
 interface Props {
@@ -10,8 +11,12 @@ interface Props {
 }
 
 export default function PostCard({ post, isSelected }: Props) {
+  const t = useTranslations("recruitment.postCard");
+  const tStatus = useTranslations("recruitment.status");
   const { navigate } = useNavigation();
   const status = deriveStatus(post);
+  const statusLabel =
+    status === "CLOSED" ? tStatus("closed") : tStatus("recruiting");
 
   const handleSelect = () => {
     if (isSelected) return;
@@ -33,12 +38,12 @@ export default function PostCard({ post, isSelected }: Props) {
             </h3>
             <span
               className={`shrink-0 rounded-full px-2 py-1 text-xs font-semibold ${
-                status === "모집중"
+                status === "RECRUITING"
                   ? "bg-gray-100 text-gray-700"
                   : "bg-gray-300 text-gray-600"
               }`}
             >
-              {status}
+              {statusLabel}
             </span>
           </div>
 
@@ -59,14 +64,14 @@ export default function PostCard({ post, isSelected }: Props) {
         </div>
 
         <div className="shrink-0 rounded-2xl bg-gray-50 px-4 py-3 text-center">
-          <p className="text-xs text-gray-500">지원자</p>
+          <p className="text-xs text-gray-500">{t("applicantCount")}</p>
           <p className="mt-1 text-xl font-bold text-gray-950">
             {post.totalApplicantCount}
           </p>
         </div>
       </div>
 
-      {status !== "마감" && (
+      {status !== "CLOSED" && (
         <div className="mt-5 flex gap-2">
           <button
             onClick={(e) => {
@@ -75,7 +80,7 @@ export default function PostCard({ post, isSelected }: Props) {
             }}
             className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
           >
-            수정하기
+            {t("edit")}
           </button>
         </div>
       )}

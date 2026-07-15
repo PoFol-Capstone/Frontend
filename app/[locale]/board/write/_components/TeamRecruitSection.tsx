@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 const RECRUIT_ROLES = ["Frontend", "Backend", "Designer"];
 
@@ -22,6 +23,7 @@ export default function TeamRecruitSection({
   onRoleCountsChange,
   hideToggle = false,
 }: Props) {
+  const t = useTranslations("board.write.teamRecruit");
   const recruitRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -59,11 +61,11 @@ export default function TeamRecruitSection({
               className="w-5 h-5 rounded accent-black cursor-pointer"
             />
             <label htmlFor="teamRecruit" className="text-base font-semibold cursor-pointer">
-              팀원 모집
+              {t("title")}
             </label>
           </div>
           <p className="text-sm text-gray-500 mt-1.5 pl-7">
-            팀원 모집 기능을 설정하고 지원을 받아보세요.
+            {t("hint")}
           </p>
         </div>
       )}
@@ -71,19 +73,19 @@ export default function TeamRecruitSection({
       {(enabled || hideToggle) && (
         <div className={`space-y-4 ${!hideToggle ? "border-t border-gray-200 pt-4" : ""}`}>
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">프로젝트 설명</label>
+            <label className="text-sm font-medium">{t("description")}</label>
             <textarea
               ref={recruitRef}
               value={description}
               onChange={(e) => onDescriptionChange(e.target.value)}
-              placeholder="프로젝트에 대해 설명해주세요"
+              placeholder={t("descriptionPlaceholder")}
               rows={1}
               className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none overflow-hidden placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">모집 역할 및 인원</label>
+            <label className="text-sm font-medium">{t("roles")}</label>
             <div className="flex flex-wrap gap-3">
               {RECRUIT_ROLES.map((role) => {
                 const isSelected = role in roleCounts;
@@ -121,8 +123,8 @@ export default function TeamRecruitSection({
                         </button>
                       </div>
                     )}
-                    {isSelected && (
-                      <span className="text-sm text-gray-500">명</span>
+                    {isSelected && t("unit") && (
+                      <span className="text-sm text-gray-500">{t("unit")}</span>
                     )}
                   </div>
                 );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import type { FollowerUser } from "@/types/user";
+import { useTranslations } from "next-intl";
 
 type Props = {
   onClose: () => void;
@@ -15,6 +16,8 @@ export default function FollowerModal({
   followers,
   onToggleFollow,
 }: Props) {
+  const t = useTranslations("profile.followerModal");
+  const tFollow = useTranslations("profile.follow");
   const [search, setSearch] = useState("");
 
   const filteredUsers = followers.filter((user) =>
@@ -25,7 +28,7 @@ export default function FollowerModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="flex h-[430px] max-h-[80dvh] w-full max-w-sm flex-col rounded-2xl bg-white p-4 shadow-xl">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold">팔로워</h2>
+          <h2 className="text-lg font-bold">{t("title")}</h2>
 
           <button
             type="button"
@@ -38,7 +41,7 @@ export default function FollowerModal({
 
         <input
           type="text"
-          placeholder="유저 검색"
+          placeholder={t("searchPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-4 w-full rounded-lg border border-gray-300 px-3 py-2 outline-none transition focus:border-black"
@@ -61,7 +64,7 @@ export default function FollowerModal({
                     : "bg-black text-white hover:bg-gray-800"
                 }`}
               >
-                {user.isFollowing ? "팔로잉" : "팔로우"}
+                {user.isFollowing ? tFollow("following") : tFollow("follow")}
               </button>
             </div>
           ))}
@@ -69,8 +72,8 @@ export default function FollowerModal({
           {filteredUsers.length === 0 && (
             <p className="py-10 text-center text-sm text-gray-500">
               {search
-                ? "검색 결과가 없습니다."
-                : "팔로워가 없습니다."}
+                ? t("noResults")
+                : t("empty")}
             </p>
           )}
         </div>

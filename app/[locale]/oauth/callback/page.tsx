@@ -3,8 +3,10 @@
 import { useEffect } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { saveAccessToken } from "@/lib/session";
+import { useTranslations } from "next-intl";
 
 export default function OAuthCallbackPage() {
+  const t = useTranslations("auth.oauth");
   const router = useRouter();
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function OAuthCallbackPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-sm text-gray-500">GitHub 연결 중...</p>
+      <p className="text-sm text-gray-500">{t("connecting")}</p>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { submitApply } from "@/lib/apply";
 import type { RecruitPositionResponse, ResponseApplication } from "@/types/post";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import Modal from "./Modal";
 import PositionSelector from "./PositionSelector";
 
@@ -19,6 +20,7 @@ export default function ApplyModal({
   onSuccess,
   onClose,
 }: Props) {
+  const t = useTranslations("board.apply");
   const [selectedPosition, setSelectedPosition] = useState("");
   const [introduction, setIntroduction] = useState("");
   const [portfolioUrl, setPortfolioUrl] = useState("");
@@ -34,7 +36,7 @@ export default function ApplyModal({
   };
 
   return (
-    <Modal title="지원하기" onClose={onClose}>
+    <Modal title={t("modalTitle")} onClose={onClose}>
       <PositionSelector
         positions={positions}
         selectedPosition={selectedPosition}
@@ -42,9 +44,9 @@ export default function ApplyModal({
       />
 
       <label className="mb-4 block">
-        <span className="mb-2 block text-sm font-medium">자기소개</span>
+        <span className="mb-2 block text-sm font-medium">{t("introduction")}</span>
         <textarea
-          placeholder="간단한 자기소개를 작성해주세요."
+          placeholder={t("introductionPlaceholder")}
           value={introduction}
           onChange={(e) => setIntroduction(e.target.value)}
           className="h-28 w-full resize-none rounded-xl border border-gray-200 p-3 text-sm outline-none focus:border-black"
@@ -53,10 +55,10 @@ export default function ApplyModal({
 
       <label className="mb-5 block">
         <span className="mb-2 block text-sm font-medium">
-          포트폴리오 / GitHub
+          {t("portfolio")}
         </span>
         <input
-          placeholder="https://github.com/username"
+          placeholder={t("portfolioPlaceholder")}
           value={portfolioUrl}
           onChange={(e) => setPortfolioUrl(e.target.value)}
           className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:border-black"
@@ -69,14 +71,14 @@ export default function ApplyModal({
           onClick={onClose}
           className="flex-1 rounded-xl border border-gray-200 py-3 text-sm"
         >
-          취소
+          {t("cancel")}
         </button>
         <button
           type="button"
           onClick={handleSubmit}
           className="flex-1 rounded-xl bg-black py-3 text-sm font-semibold text-white"
         >
-          지원하기
+          {t("submit")}
         </button>
       </div>
     </Modal>

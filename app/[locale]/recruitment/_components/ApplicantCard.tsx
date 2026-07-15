@@ -2,6 +2,7 @@
 
 import type { ApplicantResponse } from "@/types/post";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 interface Props {
   applicant: ApplicantResponse;
@@ -18,6 +19,7 @@ export default function ApplicantCard({
   onAccept,
   onReject,
 }: Props) {
+  const t = useTranslations("recruitment.applicantCard");
   const router = useRouter();
 
   return (
@@ -29,11 +31,11 @@ export default function ApplicantCard({
             onClick={() => router.push(`/profile/${applicant.applicantUuid}`)}
             className="shrink-0 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100"
           >
-            프로필 보기
+            {t("viewProfile")}
           </button>
         </div>
         <p className="mt-1 text-sm text-gray-500">
-          {applicant.positionType} 지원
+          {t("appliedFor", { position: applicant.positionType })}
         </p>
       </div>
 
@@ -50,12 +52,12 @@ export default function ApplicantCard({
               rel="noopener noreferrer"
               className="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-xs font-semibold text-gray-700 transition hover:bg-gray-100"
             >
-              포트폴리오 보기
+              {t("viewPortfolio")}
             </a>
           )}
           {!applicant.portfolioUrl && (
             <span className="whitespace-nowrap rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs text-gray-400">
-              포트폴리오 없음
+              {t("noPortfolio")}
             </span>
           )}
 
@@ -66,14 +68,14 @@ export default function ApplicantCard({
                 disabled={isPending}
                 className="rounded-lg bg-black px-3 py-2 text-xs font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50"
               >
-                수락
+                {t("accept")}
               </button>
               <button
                 onClick={() => onReject(applicant.applyUuid)}
                 disabled={isPending}
                 className="rounded-lg bg-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-300 disabled:opacity-50"
               >
-                거절
+                {t("reject")}
               </button>
             </>
           )}
@@ -83,7 +85,7 @@ export default function ApplicantCard({
               disabled
               className="col-span-2 rounded-lg bg-black px-3 py-2 text-xs font-semibold text-white"
             >
-              수락됨
+              {t("accepted")}
             </button>
           )}
 
@@ -92,7 +94,7 @@ export default function ApplicantCard({
               disabled
               className="col-span-2 rounded-lg bg-gray-300 px-3 py-2 text-xs font-semibold text-gray-700"
             >
-              거절됨
+              {t("rejected")}
             </button>
           )}
         </div>

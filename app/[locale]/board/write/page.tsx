@@ -7,6 +7,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import { Monitor, Users, ImageIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import ProjectInfoSection from "./_components/ProjectInfoSection";
 import TagsSection from "./_components/TagsSection";
 import TeamRecruitSection from "./_components/TeamRecruitSection";
@@ -18,9 +19,14 @@ import { useProjectForm } from "./_hooks/useProjectForm";
 
 type PostTypeSelection = "project" | "recruit" | null;
 
-const STEPS = ["유형 선택", "내용 작성", "썸네일", "추가 정보"] as const;
-
 export default function Page() {
+  const t = useTranslations("board.write");
+  const STEPS = [
+    t("steps.type"),
+    t("steps.content"),
+    t("steps.thumbnail"),
+    t("steps.extra"),
+  ];
   const router = useRouter();
   const github = useGithubRepos();
   const project = useProjectForm();
@@ -55,10 +61,11 @@ export default function Page() {
     .filter(([, count]) => count > 0)
     .map(([role]) => role);
 
+  const recruitingTitle = t("recruitingTitle");
   const recruitTitle =
     selectedRoles.length > 0
-      ? `${selectedRoles.join(" · ")} 모집중`
-      : "모집중";
+      ? `${selectedRoles.join(" · ")} ${recruitingTitle}`
+      : recruitingTitle;
 
   const postTitle = hasProject ? project.projectName : recruitTitle;
 
@@ -166,9 +173,9 @@ export default function Page() {
       {currentStep === 1 && (
         <div className="space-y-6">
           <div>
-            <h2 className="text-xl font-bold">어떤 게시글을 작성하시나요?</h2>
+            <h2 className="text-xl font-bold">{t("step1.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
-              게시글 유형을 선택해주세요.
+              {t("step1.subheading")}
             </p>
           </div>
 
@@ -183,11 +190,11 @@ export default function Page() {
               }`}
             >
               <Monitor size={28} className="mb-3" />
-              <p className="font-bold text-base">프로젝트 전시</p>
+              <p className="font-bold text-base">{t("step1.projectTitle")}</p>
               <p
                 className={`mt-1 text-sm leading-5 ${postTypeSelection === "project" ? "text-gray-300" : "text-gray-500"}`}
               >
-                완성된 프로젝트를 포트폴리오에 공개합니다
+                {t("step1.projectDesc")}
               </p>
             </button>
 
@@ -201,11 +208,11 @@ export default function Page() {
               }`}
             >
               <Users size={28} className="mb-3" />
-              <p className="font-bold text-base">팀원 모집</p>
+              <p className="font-bold text-base">{t("step1.recruitTitle")}</p>
               <p
                 className={`mt-1 text-sm leading-5 ${postTypeSelection === "recruit" ? "text-gray-300" : "text-gray-500"}`}
               >
-                함께할 팀원을 구하고 있습니다
+                {t("step1.recruitDesc")}
               </p>
             </button>
           </div>
@@ -229,7 +236,7 @@ export default function Page() {
               disabled={!step1Valid}
               className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              다음
+              {t("nav.next")}
             </button>
           </div>
         </div>
@@ -239,20 +246,20 @@ export default function Page() {
       {currentStep === 2 && (
         <div className="space-y-5">
           <div>
-            <h2 className="text-xl font-bold">프로젝트 정보를 입력해주세요</h2>
+            <h2 className="text-xl font-bold">{t("step2.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
-              GitHub로 자동완성하거나 직접 입력하세요.
+              {t("step2.subheading")}
             </p>
           </div>
 
           {/* 컴팩트 GitHub 자동완성 바 */}
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
             {github.isCheckingGithub ? (
-              <p className="text-xs text-gray-400 py-1">GitHub 연결 확인 중...</p>
+              <p className="text-xs text-gray-400 py-1">{t("step2.checkingGithub")}</p>
             ) : !github.isGithubConnected ? (
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs text-gray-500">
-                  GitHub 연결 시 정보를 자동으로 불러올 수 있습니다.
+                  {t("step2.notConnectedHint")}
                 </p>
                 <button
                   type="button"
@@ -260,7 +267,7 @@ export default function Page() {
                   disabled={github.isConnecting}
                   className="shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                 >
-                  {github.isConnecting ? "연결 중..." : "GitHub 연결"}
+                  {github.isConnecting ? t("step2.connecting") : t("step2.connectGithub")}
                 </button>
               </div>
             ) : (
@@ -273,8 +280,8 @@ export default function Page() {
                 >
                   <option value="">
                     {github.isLoadingRepos
-                      ? "불러오는 중..."
-                      : "레포지토리 선택 (선택사항)"}
+                      ? t("step2.loading")
+                      : t("step2.selectRepoOptional")}
                   </option>
                   {Array.isArray(github.repos) &&
                     github.repos.map((repo) => (
@@ -296,10 +303,10 @@ export default function Page() {
                   className="shrink-0 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {project.isAIWriting
-                    ? "AI 작성 중..."
+                    ? t("step2.aiWriting")
                     : project.isLoadingRepoData
-                      ? "불러오는 중..."
-                      : "AI 자동완성"}
+                      ? t("step2.loading")
+                      : t("step2.aiAutocomplete")}
                 </button>
               </div>
             )}
@@ -332,7 +339,7 @@ export default function Page() {
               onClick={() => setCurrentStep(1)}
               className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              이전
+              {t("nav.prev")}
             </button>
             <button
               type="button"
@@ -340,7 +347,7 @@ export default function Page() {
               disabled={!step2Valid}
               className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              다음
+              {t("nav.next")}
             </button>
           </div>
         </div>
@@ -350,9 +357,9 @@ export default function Page() {
       {currentStep === 3 && (
         <div className="space-y-5">
           <div>
-            <h2 className="text-xl font-bold">썸네일을 설정해주세요</h2>
+            <h2 className="text-xl font-bold">{t("step3.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
-              AI로 생성하거나 직접 업로드할 수 있습니다.
+              {t("step3.subheading")}
             </p>
           </div>
 
@@ -363,7 +370,7 @@ export default function Page() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-gray-400">
                     <ImageIcon size={22} />
                   </div>
-                  <span className="text-sm">AI가 생성한 썸네일 미리보기</span>
+                  <span className="text-sm">{t("step3.previewPlaceholder")}</span>
                 </div>
               )}
 
@@ -383,7 +390,7 @@ export default function Page() {
                   <Image
                     key={project.thumbnailUrl}
                     src={project.thumbnailUrl}
-                    alt="썸네일 미리보기"
+                    alt={t("step3.thumbnailAlt")}
                     fill
                     unoptimized
                     sizes="(max-width: 672px) 100vw, 672px"
@@ -432,7 +439,7 @@ export default function Page() {
                 disabled={!project.projectName || project.isThumbnailLoading}
                 className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                {project.isThumbnailLoading ? "생성 중..." : "AI 썸네일 생성"}
+                {project.isThumbnailLoading ? t("step3.generating") : t("step3.generateAI")}
               </button>
               <button
                 type="button"
@@ -440,7 +447,7 @@ export default function Page() {
                 disabled={project.isThumbnailLoading}
                 className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                직접 업로드
+                {t("step3.uploadDirect")}
               </button>
             </div>
           </section>
@@ -451,14 +458,14 @@ export default function Page() {
               onClick={() => setCurrentStep(2)}
               className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              이전
+              {t("nav.prev")}
             </button>
             <button
               type="button"
               onClick={() => setCurrentStep(4)}
               className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 transition-colors"
             >
-              다음
+              {t("nav.next")}
             </button>
           </div>
         </div>
@@ -468,9 +475,9 @@ export default function Page() {
       {currentStep === 4 && (
         <div className="space-y-5">
           <div>
-            <h2 className="text-xl font-bold">추가 정보를 입력해주세요</h2>
+            <h2 className="text-xl font-bold">{t("step4.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
-              태그와 자료 링크는 선택사항입니다.
+              {t("step4.subheading")}
             </p>
           </div>
 
@@ -490,7 +497,7 @@ export default function Page() {
               onClick={() => setCurrentStep(3)}
               className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              이전
+              {t("nav.prev")}
             </button>
             <button
               type="button"
@@ -498,7 +505,7 @@ export default function Page() {
               disabled={isSubmitting || !canSubmit}
               className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              {isSubmitting ? "등록 중..." : "게시글 등록"}
+              {isSubmitting ? t("step4.submitting") : t("step4.submit")}
             </button>
           </div>
         </div>

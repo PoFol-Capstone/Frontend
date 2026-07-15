@@ -1,6 +1,7 @@
 "use client";
 import type { Skill } from "@/types/skill";
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import SkillPicker from "./SkillPicker";
 
 type Props = {
@@ -32,6 +33,7 @@ export default function ProjectInfoSection({
   isLoadingRepoData,
   isAIWriting,
 }: Props) {
+  const t = useTranslations("board.write.projectInfo");
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const featuresRef = useRef<HTMLTextAreaElement>(null);
 
@@ -59,7 +61,7 @@ export default function ProjectInfoSection({
     <div className="space-y-5">
       <div className="space-y-6">
         <label className="mb-2.5 block text-base font-semibold text-gray-900">
-          프로젝트 이름
+          {t("name")}
         </label>
         {isLoadingRepoData ? (
           <div className="h-13 w-full animate-pulse rounded-xl bg-gray-200" />
@@ -74,7 +76,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-semibold">프로젝트 설명</label>
+        <label className="text-sm font-semibold">{t("description")}</label>
         {isLoadingRepoData || isAIWriting ? (
           <div className="animate-pulse space-y-2 rounded-lg border border-gray-200 px-3 py-3">
             <div className="h-3.5 w-full rounded bg-gray-200" />
@@ -93,7 +95,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-semibold">주요 기능</label>
+        <label className="text-sm font-semibold">{t("mainFeatures")}</label>
         {isLoadingRepoData || isAIWriting ? (
           <div className="animate-pulse space-y-2 rounded-lg border border-gray-200 px-3 py-3">
             <div className="h-3.5 w-full rounded bg-gray-200" />
@@ -113,7 +115,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-semibold">배포된 사이트</label>
+        <label className="text-sm font-semibold">{t("deployUrl")}</label>
         {isLoadingRepoData ? (
           <div className="animate-pulse h-10 w-full rounded-lg bg-gray-200" />
         ) : (
@@ -128,7 +130,7 @@ export default function ProjectInfoSection({
       </div>
 
       <div className="space-y-1.5">
-        <label className="text-sm font-semibold">기술 스택</label>
+        <label className="text-sm font-semibold">{t("techStack")}</label>
         {isLoadingRepoData ? (
           <div className="animate-pulse flex flex-wrap gap-2 min-h-10.5 rounded-lg border border-gray-200 px-3 py-2">
             <div className="h-7 w-20 rounded-full bg-gray-200" />

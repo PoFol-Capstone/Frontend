@@ -1,6 +1,15 @@
 "use client";
 
-const categories = ["All", "Recruiting", "School", "Bookmarks"];
+import { useTranslations } from "next-intl";
+
+const categories = ["All", "Recruiting", "School", "Bookmarks"] as const;
+
+const CATEGORY_LABEL_KEYS: Record<(typeof categories)[number], string> = {
+  All: "all",
+  Recruiting: "recruiting",
+  School: "school",
+  Bookmarks: "bookmarks",
+};
 
 interface Props {
   selected: string;
@@ -8,6 +17,8 @@ interface Props {
 }
 
 export default function CategoryFilter({ selected, onSelect }: Props) {
+  const t = useTranslations("board.categories");
+
   return (
     <section className="mb-8 flex flex-wrap gap-2">
       {categories.map((category) => (
@@ -21,7 +32,7 @@ export default function CategoryFilter({ selected, onSelect }: Props) {
               : "border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-black"
           }`}
         >
-          {category}
+          {t(CATEGORY_LABEL_KEYS[category])}
         </button>
       ))}
     </section>

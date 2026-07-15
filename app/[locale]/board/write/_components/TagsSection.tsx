@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Props = {
   tags: string[];
@@ -7,6 +8,7 @@ type Props = {
 };
 
 export default function TagsSection({ tags, onChange }: Props) {
+  const t = useTranslations("board.write.tags");
   const [tagInput, setTagInput] = useState("");
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -24,8 +26,8 @@ export default function TagsSection({ tags, onChange }: Props) {
   return (
     <section className="border border-gray-200 rounded-2xl p-6 space-y-3 bg-white">
       <div>
-        <h2 className="text-base font-semibold">태그</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Enter 또는 쉼표로 태그를 추가하세요.</p>
+        <h2 className="text-base font-semibold">{t("title")}</h2>
+        <p className="text-sm text-gray-500 mt-0.5">{t("hint")}</p>
       </div>
 
       <div className="flex flex-wrap gap-2 min-h-10 rounded-lg border border-gray-300 px-3 py-2 focus-within:ring-2 focus-within:ring-gray-200">
@@ -49,7 +51,7 @@ export default function TagsSection({ tags, onChange }: Props) {
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={tags.length === 0 ? "예: React, 포트폴리오, 팀프로젝트" : ""}
+          placeholder={tags.length === 0 ? t("placeholder") : ""}
           className="flex-1 min-w-24 text-sm outline-none bg-transparent placeholder:text-gray-400"
         />
       </div>

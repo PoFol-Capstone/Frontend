@@ -4,6 +4,7 @@ import { toggleBookmark, toggleLike } from "@/lib/post";
 import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 type Props = {
   postUuid: string;
@@ -22,6 +23,7 @@ export default function AuthorBar({
   viewCount,
   initialLikeCount,
 }: Props) {
+  const t = useTranslations("board.detail");
   const [isFollowing, setIsFollowing] = useState(false);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLiked, setIsLiked] = useState(() => {
@@ -78,7 +80,7 @@ export default function AuthorBar({
 
   const handleShare = async () => {
     await navigator.clipboard.writeText(window.location.href);
-    setCopyMessage("URL이 복사되었습니다.");
+    setCopyMessage(t("linkCopied"));
     setTimeout(() => setCopyMessage(""), 2500);
   };
 
@@ -121,7 +123,7 @@ export default function AuthorBar({
               type="button"
               onClick={handleBookmark}
               className="transition hover:text-black"
-              aria-label="북마크"
+              aria-label={t("bookmark")}
             >
               <Bookmark
                 className="h-4 w-4"
@@ -132,7 +134,7 @@ export default function AuthorBar({
               type="button"
               onClick={handleShare}
               className="transition hover:text-black"
-              aria-label="공유"
+              aria-label={t("share")}
             >
               <Share2 className="h-4 w-4" />
             </button>
@@ -148,7 +150,7 @@ export default function AuthorBar({
                   : "bg-black text-white hover:bg-gray-800"
               }`}
             >
-              {isFollowing ? "Following" : "Follow"}
+              {isFollowing ? t("following") : t("follow")}
             </button>
           )}
         </div>

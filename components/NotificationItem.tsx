@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import type { Notification } from "@/types/notification";
 
 type NotificationItemProps = {
@@ -8,33 +9,38 @@ type NotificationItemProps = {
   onRead: (uuid: string) => void;
 };
 
-function getNotificationMessage(notification: Notification) {
+function getNotificationMessage(
+  notification: Notification,
+  t: ReturnType<typeof useTranslations<"notification">>,
+) {
   const { type, actor, post, count } = notification;
   const actorLabel =
-    count > 1 ? `${actor.name}님 외 ${count - 1}명` : `${actor.name}님`;
+    count > 1
+      ? t("actorWithOthers", { name: actor.name, count: count - 1 })
+      : t("actorOnly", { name: actor.name });
 
   switch (type) {
     case "LIKE_POST":
-      return `${actorLabel}이 게시글을 좋아합니다.`;
+      return t("likePost", { actor: actorLabel });
 
     case "COMMENT_POST":
-      return `${actorLabel}이 게시글에 댓글을 남겼습니다.`;
+      return t("commentPost", { actor: actorLabel });
 
     case "FOLLOW":
-      return `${actorLabel}이 팔로우했습니다.`;
+      return t("follow", { actor: actorLabel });
 
     case "APPLICATION_SUBMITTED":
-      return `${actorLabel}이 프로젝트에 지원했습니다.`;
+      return t("applicationSubmitted", { actor: actorLabel });
 
     case "APPLICATION_ACCEPTED":
       return post
-        ? `"${post.title}" 프로젝트 합류가 승인되었습니다.`
-        : "프로젝트 합류가 승인되었습니다.";
+        ? t("applicationAcceptedWithTitle", { title: post.title })
+        : t("applicationAccepted");
 
     case "APPLICATION_REJECTED":
       return post
-        ? `"${post.title}" 프로젝트 합류가 거절되었습니다.`
-        : "프로젝트 합류가 거절되었습니다.";
+        ? t("applicationRejectedWithTitle", { title: post.title })
+        : t("applicationRejected");
   }
 }
 
@@ -50,20 +56,24 @@ function getNotificationHref(notification: Notification) {
   return null;
 }
 
-function getRelativeTime(createdAt: string) {
+function getRelativeTime(
+  createdAt: string,
+  t: ReturnType<typeof useTranslations<"notification">>,
+  locale: string,
+) {
   const diffMs = Date.now() - new Date(createdAt).getTime();
   const diffMin = Math.floor(diffMs / 60000);
 
-  if (diffMin < 1) return "방금 전";
-  if (diffMin < 60) return `${diffMin}분 전`;
+  if (diffMin < 1) return t("justNow");
+  if (diffMin < 60) return t("minutesAgo", { minutes: diffMin });
 
   const diffHour = Math.floor(diffMin / 60);
-  if (diffHour < 24) return `${diffHour}시간 전`;
+  if (diffHour < 24) return t("hoursAgo", { hours: diffHour });
 
   const diffDay = Math.floor(diffHour / 24);
-  if (diffDay < 7) return `${diffDay}일 전`;
+  if (diffDay < 7) return t("daysAgo", { days: diffDay });
 
-  return new Date(createdAt).toLocaleDateString("ko-KR");
+  return new Date(createdAt).toLocaleDateString(locale);
 }
 
 export default function NotificationItem({
@@ -71,6 +81,8 @@ export default function NotificationItem({
   onRead,
 }: NotificationItemProps) {
   const router = useRouter();
+  const t = useTranslations("notification");
+  const locale = useLocale();
 
   const handleClick = () => {
     if (!notification.isRead) {
@@ -97,11 +109,11 @@ export default function NotificationItem({
 
       <div className="flex-1">
         <p className="text-sm text-gray-800">
-          {getNotificationMessage(notification)}
+          {getNotificationMessage(notification, t)}
         </p>
 
         <p className="mt-1 text-xs text-gray-400">
-          {getRelativeTime(notification.createdAt)}
+          {getRelativeTime(notification.createdAt, t, locale)}
         </p>
       </div>
     </button>

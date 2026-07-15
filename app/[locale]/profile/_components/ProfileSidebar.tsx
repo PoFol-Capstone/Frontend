@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Eye, Users, Mail, Link2 } from "lucide-react";
 import { useState } from "react";
 import { FaGithub } from "react-icons/fa";
+import { useTranslations } from "next-intl";
 
 import { Profile } from "@/types/user";
 import ProfileEditModal from "./ProfileEditModal";
@@ -23,6 +24,7 @@ export default function ProfileSidebar({
   followers = [],
   onToggleFollow,
 }: Props) {
+  const t = useTranslations("profile.sidebar");
   const githubUrl = profile.links.find((link) => link.type === "GITHUB")?.url;
   const portfolioUrl = profile.links.find((link) => link.type !== "GITHUB")?.url;
   const emailUrl = profile.email;
@@ -58,11 +60,11 @@ export default function ProfileSidebar({
         <h1 className="text-3xl font-bold">{profile.name}</h1>
 
         <div className="mt-2 text-sm font-medium">
-          {profile.position} · {profile.positionMonths}개월차
+          {profile.position} · {profile.positionMonths}{t("monthsSuffix")}
         </div>
 
         <p className="mt-4 text-left text-sm leading-6">
-          {profile.bio || "소개 글을 등록해주세요"}
+          {profile.bio || t("noBio")}
         </p>
 
         <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-300 pt-3">
@@ -91,7 +93,7 @@ export default function ProfileSidebar({
           ) : (
             <div className="flex items-center gap-2 text-gray-400">
               <FaGithub className="h-4 w-4 shrink-0" />
-              <span>GitHub 미연동</span>
+              <span>{t("githubNotConnected")}</span>
             </div>
           )}
 
@@ -108,7 +110,7 @@ export default function ProfileSidebar({
           ) : (
             <div className="flex items-center gap-2 text-gray-400">
               <Link2 className="h-4 w-4 shrink-0" />
-              <span>포트폴리오 없음</span>
+              <span>{t("noPortfolio")}</span>
             </div>
           )}
 
@@ -123,7 +125,7 @@ export default function ProfileSidebar({
           ) : (
             <div className="flex items-center gap-2 text-gray-400">
               <Mail className="h-4 w-4 shrink-0" />
-              <span>이메일 없음</span>
+              <span>{t("noEmail")}</span>
             </div>
           )}
         </div>
@@ -150,7 +152,7 @@ export default function ProfileSidebar({
             onClick={() => setIsEditModalOpen(true)}
             className="mt-6 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
           >
-            프로필 수정
+            {t("editProfile")}
           </button>
         )}
 

@@ -1,8 +1,10 @@
 "use client";
 import { useRef, useState } from "react";
 import type { Skill } from "@/types/skill";
+import { useTranslations } from "next-intl";
 
 export function useProjectForm() {
+  const t = useTranslations("board.write.ai");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [mainFeatures, setMainFeatures] = useState("");
@@ -63,7 +65,7 @@ export function useProjectForm() {
           body: JSON.stringify({ projectName: name, readmeText: data.readmeText ?? "", techStack: stack }),
         });
         const aiData = await aiRes.json();
-        if (!aiRes.ok) throw new Error(aiData.error ?? "AI 요약에 실패했습니다.");
+        if (!aiRes.ok) throw new Error(aiData.error ?? t("summarizeFailed"));
         setProjectDescription(aiData.projectDescription ?? "");
         setMainFeatures(aiData.mainFeatures ?? "");
         setIsAIWriting(false);
@@ -80,7 +82,7 @@ export function useProjectForm() {
           }),
         });
         const thumbData = await thumbRes.json();
-        if (!thumbRes.ok) throw new Error(thumbData.error ?? "썸네일 생성에 실패했습니다.");
+        if (!thumbRes.ok) throw new Error(thumbData.error ?? t("thumbnailFailed"));
         setThumbnailUrl(thumbData.url ?? "");
         setIsThumbnailLoading(false);
       }

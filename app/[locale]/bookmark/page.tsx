@@ -4,8 +4,10 @@ import { getPosts } from "@/lib/post";
 import type { ResponsePosts } from "@/types/post";
 import { Link } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function BookmarkPage() {
+  const t = useTranslations("bookmark");
   const [bookmarkedPosts, setBookmarkedPosts] = useState<ResponsePosts[]>([]);
 
   useEffect(() => {
@@ -29,10 +31,10 @@ export default function BookmarkPage() {
 
   return (
     <main className="min-h-screen bg-white px-6 py-8">
-      <h1 className="mb-6 text-2xl font-bold">북마크</h1>
+      <h1 className="mb-6 text-2xl font-bold">{t("title")}</h1>
 
       {bookmarkedPosts.length === 0 ? (
-        <p className="text-gray-400">북마크한 게시글이 없습니다.</p>
+        <p className="text-gray-400">{t("empty")}</p>
       ) : (
         <div className="grid gap-4">
           {bookmarkedPosts.map((post) => (

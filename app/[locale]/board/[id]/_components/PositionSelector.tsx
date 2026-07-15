@@ -1,4 +1,5 @@
 import type { RecruitPositionResponse } from "@/types/post";
+import { useTranslations } from "next-intl";
 
 export default function PositionSelector({
   positions,
@@ -9,9 +10,11 @@ export default function PositionSelector({
   selectedPosition: string;
   onSelect: (p: string) => void;
 }) {
+  const t = useTranslations("board.apply");
+
   return (
     <div className="mb-4">
-      <p className="mb-2 text-sm font-medium">지원할 포지션</p>
+      <p className="mb-2 text-sm font-medium">{t("selectPosition")}</p>
       <div className="flex flex-wrap gap-2">
         {positions.map((pos) => {
           const isSelected = selectedPosition === pos.positionType;
