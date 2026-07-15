@@ -11,7 +11,7 @@ import type { Notification } from "@/types/notification";
 
 const POLL_INTERVAL_MS = 30000;
 
-export function useNotifications() {
+export function useNotifications(isLoggedIn: boolean) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [page, setPage] = useState(0);
@@ -27,8 +27,10 @@ export function useNotifications() {
     }
   }, []);
 
-  // 탭이 보이는 동안만 30초마다 안읽음 개수 폴링 (WebSocket 없이 폴링 전략)
+  // 로그인 상태에서만, 탭이 보이는 동안 30초마다 안읽음 개수 폴링 (WebSocket 없이 폴링 전략)
   useEffect(() => {
+    if (!isLoggedIn) return;
+
     refreshUnreadCount();
 
     const interval = setInterval(() => {
@@ -44,7 +46,7 @@ export function useNotifications() {
       clearInterval(interval);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [refreshUnreadCount]);
+  }, [isLoggedIn, refreshUnreadCount]);
 
   const loadFirstPage = useCallback(async () => {
     setIsLoading(true);

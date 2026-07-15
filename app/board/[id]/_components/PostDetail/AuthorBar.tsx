@@ -9,6 +9,7 @@ type Props = {
   postUuid: string;
   authorUuid: string;
   authorName: string;
+  isAuthor: boolean;
   viewCount: number;
   initialLikeCount: number;
 };
@@ -17,6 +18,7 @@ export default function AuthorBar({
   postUuid,
   authorUuid,
   authorName,
+  isAuthor,
   viewCount,
   initialLikeCount,
 }: Props) {
@@ -36,14 +38,14 @@ export default function AuthorBar({
 
   const handleLike = async () => {
     await toggleLike(postUuid);
-    
+
     const savedLikes: string[] = JSON.parse(
       localStorage.getItem("likes") || "[]"
     );
 
     let nextLikes: string[];
 
-    if (savedLikes.includes(postUuid)){
+    if (savedLikes.includes(postUuid)) {
       nextLikes = savedLikes.filter((id) => id !== postUuid);
       setIsLiked(false);
       setLikeCount((prev) => Math.max(0, prev - 1));
@@ -88,71 +90,67 @@ export default function AuthorBar({
         </div>
       )}
 
-      <div className="mb-6 flex items-center justify-between border-t border-gray-200 pt-4">
-        <div className="flex items-center gap-4">
-          <Link href={`/profile/${authorUuid}`}>
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600 hover:opacity-80 transition">
-              {authorName.slice(0, 1)}
-            </div>
-          </Link>
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-gray-100 pt-6">
+        <Link href={`/profile/${authorUuid}`} className="group flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600 transition group-hover:opacity-80">
+            {authorName.slice(0, 1)}
+          </div>
+          <span className="text-sm font-semibold text-black group-hover:underline">
+            {authorName}
+          </span>
+        </Link>
 
-          <div className="flex items-center gap-3">
-            <Link
-              href={`/profile/${authorUuid}`}
-              className="text-sm font-medium text-black hover:underline"
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-4 text-sm text-gray-500">
+            <span className="flex items-center gap-1">
+              <Eye className="h-4 w-4" />
+              {viewCount}
+            </span>
+            <button
+              type="button"
+              onClick={handleLike}
+              className="flex items-center gap-1 transition hover:text-black"
             >
-              {authorName}
-            </Link>
+              <Heart
+                className="h-4 w-4"
+                fill={isLiked ? "currentColor" : "none"}
+              />
+              {likeCount}
+            </button>
+            <button
+              type="button"
+              onClick={handleBookmark}
+              className="transition hover:text-black"
+              aria-label="북마크"
+            >
+              <Bookmark
+                className="h-4 w-4"
+                fill={isBookmarked ? "currentColor" : "none"}
+              />
+            </button>
+            <button
+              type="button"
+              onClick={handleShare}
+              className="transition hover:text-black"
+              aria-label="공유"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+          </div>
 
+          {!isAuthor && (
             <button
               type="button"
               onClick={() => setIsFollowing((prev) => !prev)}
-              className={`rounded-full px-3 py-1 text-xs transition ${
+              className={`rounded-full px-6 py-2.5 text-sm font-semibold transition ${
                 isFollowing
-                  ? "border border-gray-200 bg-white text-black"
+                  ? "border border-gray-300 bg-white text-black hover:bg-gray-50"
                   : "bg-black text-white hover:bg-gray-800"
               }`}
             >
               {isFollowing ? "Following" : "Follow"}
             </button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-5 text-sm text-gray-500">
-          <div className="flex items-center gap-1">
-            <Eye className="h-4 w-4" />
-            <span>{viewCount}</span>
-          </div>
-          <button
-            type="button"
-            onClick={handleLike}
-            className="flex items-center gap-1 transition hover:text-black"
-          >
-            <Heart
-              className="h-4 w-4"
-              fill={isLiked ? "currentColor" : "none"}
-            />
-            <span>{likeCount}</span>
-          </button>
-          <button
-            type="button"
-            onClick={handleBookmark}
-            className="transition hover:text-black"
-            aria-label="북마크"
-          >
-            <Bookmark
-              className="h-4 w-4"
-              fill={isBookmarked ? "currentColor" : "none"}
-            />
-          </button>
-          <button
-            type="button"
-            onClick={handleShare}
-            className="transition hover:text-black"
-            aria-label="공유"
-          >
-            <Share2 className="h-4 w-4" />
-          </button>
+          )}
         </div>
       </div>
     </>

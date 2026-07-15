@@ -56,11 +56,10 @@ async function refreshAccessToken(): Promise<string | null> {
 
     if (!refreshToken) return null;
 
-    // refresh_token을 body 대신 Cookie 헤더로 전달 — 서버가 쿠키에서 직접 읽는 구조
+    // 서버는 refreshToken을 쿠키가 아닌 요청 body(TokenRefreshRequest)로 받는 구조
     const res = await axios.post<{ accessToken: string }>(
       `${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh`,
-      null,
-      { headers: { Cookie: `refresh_token=${refreshToken}` } },
+      { refreshToken },
     );
 
     const newToken = res.data.accessToken;
@@ -108,15 +107,6 @@ http.interceptors.response.use(
       (await retryWithNewToken(error.config))
     ) {
       return http(error.config);
-    }
-
-    if (process.env.NODE_ENV !== "production") {
-      console.error(
-        "[http] request failed:",
-        error.config?.method,
-        error.config?.url,
-        error,
-      );
     }
 
     return Promise.reject(toApiError(error));

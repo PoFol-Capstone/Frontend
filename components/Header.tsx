@@ -39,7 +39,7 @@ export default function Header({ session }: { session: string | null }) {
     loadMore,
     markOneRead,
     markAllRead,
-  } = useNotifications();
+  } = useNotifications(isLoggedIn);
 
   const profileRef = useRef<HTMLDivElement>(null);
 

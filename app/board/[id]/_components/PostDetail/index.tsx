@@ -31,7 +31,6 @@ export default function PostDetail({
   currentUserUuid,
   currentUser,
 }: Props) {
-  console.log(post);
   const router = useRouter();
 
   // 작성자 확인
@@ -67,30 +66,44 @@ export default function PostDetail({
           <PostHero
             thumbnailUrl={post.thumbnailUrl}
             title={post.title}
-            skills={post.skills}
             deployUrl={deployUrl}
           />
 
-          <div className="mb-2 flex items-center justify-between">
-            <h1 className="text-3xl font-bold">{post.title}</h1>
-            {isAuthor && (
-              <div className="flex shrink-0 items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => router.push(`/board/${post.uuid}/edit`)}
-                  className="rounded-full p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
-                  aria-label="게시글 수정"
-                >
-                  <Pencil className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteConfirm(true)}
-                  className="rounded-full p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
-                  aria-label="게시글 삭제"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+          <div className="mb-6">
+            <div className="mb-3 flex items-start justify-between gap-4">
+              <h1 className="text-3xl font-bold leading-tight">{post.title}</h1>
+              {isAuthor && (
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/board/${post.uuid}/edit`)}
+                    className="rounded-full p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+                    aria-label="게시글 수정"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="rounded-full p-1.5 text-gray-400 transition hover:bg-red-50 hover:text-red-500"
+                    aria-label="게시글 삭제"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {post.skills.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {post.skills.map((skill) => (
+                  <span
+                    key={skill.id}
+                    className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
+                  >
+                    {skill.name}
+                  </span>
+                ))}
               </div>
             )}
           </div>
@@ -103,19 +116,20 @@ export default function PostDetail({
             recruitPositionInfos={post.recruitPositionInfos}
           />
 
-          <AuthorBar
-            postUuid={post.uuid}
-            authorUuid={post.authorUuid}
-            authorName={post.authorName}
-            viewCount={post.viewCount}
-            initialLikeCount={post.likeCount}
-          />
-
           <ApplicationSection
             postUuid={post.uuid}
             postType={post.postType}
             recruitPositions={post.recruitPositionInfos}
             isAuthor={isAuthor}
+          />
+
+          <AuthorBar
+            postUuid={post.uuid}
+            authorUuid={post.authorUuid}
+            authorName={post.authorName}
+            isAuthor={isAuthor}
+            viewCount={post.viewCount}
+            initialLikeCount={post.likeCount}
           />
 
           <CommentSection

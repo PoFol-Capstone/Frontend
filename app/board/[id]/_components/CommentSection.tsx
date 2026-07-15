@@ -305,7 +305,7 @@ export default function CommentSection({
   };
 
   return (
-    <section className="mt-10 border-t border-gray-200 pt-8">
+    <section className="mt-10 border-t border-gray-100 pt-8">
       <h2 className="mb-5 text-lg font-bold">댓글 {totalCount}개</h2>
 
       {currentUserUuid && (

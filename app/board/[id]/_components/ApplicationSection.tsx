@@ -59,7 +59,7 @@ export default function ApplicationSection({
   return (
     <>
       {!isAuthor && (
-        <>
+        <div className="mt-8 border-t border-gray-100 pt-8">
           {application && (
             <div className="mb-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
               <p className="font-semibold">지원 완료</p>
@@ -76,7 +76,7 @@ export default function ApplicationSection({
           >
             {application ? "지원서 확인" : "지원하기"}
           </button>
-        </>
+        </div>
       )}
 
       {isApplyOpen && (

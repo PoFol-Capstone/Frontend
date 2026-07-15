@@ -2,7 +2,7 @@
 
 import type { Notification } from "@/types/notification";
 import type { PagedResponse } from "@/types/post";
-import { http } from "./http.server";
+import { ApiError, http } from "./http.server";
 
 export async function getNotifications(
   page = 0,
@@ -13,8 +13,16 @@ export async function getNotifications(
 }
 
 export async function getUnreadCount(): Promise<number> {
-  const res = await http.get<{ count: number }>("/api/notifications/count");
-  return res.data.count;
+  try {
+    const res = await http.get<{ count: number }>("/api/notifications/count");
+    return res.data.count;
+  } catch (err) {
+    // 세션 만료 등으로 인증이 끊긴 상태의 백그라운드 폴링 — 사용자 작업을 막지 않고 조용히 0으로 처리
+    if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
+      return 0;
+    }
+    throw err;
+  }
 }
 
 export async function markAsRead(uuid: string): Promise<void> {
