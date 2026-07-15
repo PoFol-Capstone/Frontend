@@ -3,9 +3,8 @@
 import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
 import { useNavigation } from "@/components/NavigationProvider";
-import Link from "next/link";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useNotifications } from "@/hooks/useNotifications";
 
 import { Bell, Search, CirclePlus, User } from "lucide-react";

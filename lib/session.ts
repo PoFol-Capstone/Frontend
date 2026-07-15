@@ -1,6 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
 import { logout as authLogout } from "./auth";
 
 const COOKIE_OPTIONS = {
@@ -80,6 +81,7 @@ export async function logout() {
     cookieStore.delete("access_token");
     cookieStore.delete("refresh_token");
 
-    redirect("/");
+    const locale = await getLocale();
+    redirect({ href: "/", locale });
   }
 }

@@ -2,7 +2,7 @@
 
 import { useNavigation } from "@/components/NavigationProvider";
 import { logout } from "@/lib/session";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 const MENU_ITEMS = [
   { label: "Profile", href: "/profile" },
