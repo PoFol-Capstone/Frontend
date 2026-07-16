@@ -1,8 +1,14 @@
 import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 import { generatePastelSvgBuffer } from "./_lib";
+import { getSessionUuid } from "@/lib/session";
 
 export async function POST(req: NextRequest) {
+  const uuid = await getSessionUuid();
+  if (!uuid) {
+    return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
+  }
+
   try {
     const { projectName, techStack, projectDescription, mainFeatures } =
       await req.json();

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { getSessionUuid } from "@/lib/session";
 
 export async function POST(req: NextRequest) {
+  const uuid = await getSessionUuid();
+  if (!uuid) {
+    return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
+  }
+
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json(
       { error: "OPENAI_API_KEY가 설정되지 않았습니다." },
