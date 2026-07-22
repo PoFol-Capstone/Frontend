@@ -1,8 +1,8 @@
 "use client";
 
 import EmptyView from "@/app/[locale]/board/_components/empty-view";
+import { Pagination } from "@/components/Pagination";
 import { useState } from "react";
-import { PaginationControls } from "./PaginationControls";
 import { PostCard } from "./PostCard";
 import type { ProfilePost } from "./types";
 
@@ -26,7 +26,7 @@ export default function PostCarousel({ posts }: { posts: ProfilePost[] }) {
           <PostCard key={post.id} post={post} />
         ))}
       </div>
-      <PaginationControls page={page} totalPages={totalPages} onChange={setPage} />
+      <Pagination page={page} totalPages={totalPages} onChange={setPage} />
     </div>
   );
 }
