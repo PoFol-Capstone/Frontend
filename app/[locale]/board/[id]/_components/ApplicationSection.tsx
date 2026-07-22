@@ -29,14 +29,7 @@ export default function ApplicationSection({
   const [application, setApplication] = useState<ResponseApplication | null>(
     null,
   );
-  const [toast, setToast] = useState(() => {
-    const saved = sessionStorage.getItem("toastMessage");
-    if (saved) {
-      sessionStorage.removeItem("toastMessage");
-      return saved;
-    }
-    return "";
-  });
+  const [toast, setToast] = useState("");
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -44,6 +37,14 @@ export default function ApplicationSection({
   useEffect(() => {
     getApply(postUuid).then(setApplication);
   }, [postUuid]);
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem("toastMessage");
+    if (saved) {
+      sessionStorage.removeItem("toastMessage");
+      setToast(saved);
+    }
+  }, []);
 
   useEffect(() => {
     if (!toast) return;

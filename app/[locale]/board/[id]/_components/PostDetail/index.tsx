@@ -132,6 +132,8 @@ export default function PostDetail({
             isAuthor={isAuthor}
             viewCount={post.viewCount}
             initialLikeCount={post.likeCount}
+            initialIsLiked={post.isLiked}
+            initialIsBookmarked={post.isBookmarked}
           />
 
           <CommentSection

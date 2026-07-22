@@ -47,12 +47,16 @@ export async function deletePost(uuid: string): Promise<void> {
   await http.delete(`/api/posts/${uuid}`);
 }
 
-export async function toggleLike(uuid: string): Promise<void> {
-  await http.post(`/api/posts/${uuid}/like`);
+export async function toggleLike(uuid: string): Promise<{ liked: boolean }> {
+  const res = await http.post(`/api/posts/${uuid}/like`);
+  return res.data;
 }
 
-export async function toggleBookmark(uuid: string): Promise<void> {
-  await http.post(`/api/posts/${uuid}/bookmark`);
+export async function toggleBookmark(
+  uuid: string,
+): Promise<{ bookmarked: boolean }> {
+  const res = await http.post(`/api/posts/${uuid}/bookmark`);
+  return res.data;
 }
 
 export async function getBookmarkedPosts(): Promise<ResponsePosts[]> {

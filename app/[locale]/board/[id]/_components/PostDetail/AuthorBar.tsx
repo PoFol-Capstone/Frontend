@@ -13,6 +13,8 @@ type Props = {
   isAuthor: boolean;
   viewCount: number;
   initialLikeCount: number;
+  initialIsLiked: boolean;
+  initialIsBookmarked: boolean;
 };
 
 export default function AuthorBar({
@@ -22,60 +24,25 @@ export default function AuthorBar({
   isAuthor,
   viewCount,
   initialLikeCount,
+  initialIsLiked,
+  initialIsBookmarked,
 }: Props) {
   const t = useTranslations("board.detail");
   const [isFollowing, setIsFollowing] = useState(false);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
-  const [isLiked, setIsLiked] = useState(() => {
-    const saved: string[] = JSON.parse(localStorage.getItem("likes") || "[]");
-    return saved.includes(postUuid);
-  });
-  const [isBookmarked, setIsBookmarked] = useState(() => {
-    const saved: string[] = JSON.parse(
-      localStorage.getItem("bookmarks") || "[]"
-    );
-    return saved.includes(postUuid);
-  });
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [copyMessage, setCopyMessage] = useState("");
 
   const handleLike = async () => {
-    await toggleLike(postUuid);
-
-    const savedLikes: string[] = JSON.parse(
-      localStorage.getItem("likes") || "[]"
-    );
-
-    let nextLikes: string[];
-
-    if (savedLikes.includes(postUuid)) {
-      nextLikes = savedLikes.filter((id) => id !== postUuid);
-      setIsLiked(false);
-      setLikeCount((prev) => Math.max(0, prev - 1));
-    } else {
-      nextLikes = [...savedLikes, postUuid];
-      setIsLiked(true);
-      setLikeCount((prev) => prev + 1);
-    }
-
-    localStorage.setItem("likes", JSON.stringify(nextLikes));
+    const { liked } = await toggleLike(postUuid);
+    setIsLiked(liked);
+    setLikeCount((prev) => Math.max(0, prev + (liked ? 1 : -1)));
   };
 
   const handleBookmark = async () => {
-    await toggleBookmark(postUuid);
-
-    const saved = JSON.parse(localStorage.getItem("bookmarks") || "[]");
-
-    let nextBookmarks: string[];
-
-    if (saved.includes(postUuid)) {
-      nextBookmarks = saved.filter((id: string) => id !== postUuid);
-      setIsBookmarked(false);
-    } else {
-      nextBookmarks = [...saved, postUuid];
-      setIsBookmarked(true);
-    }
-
-    localStorage.setItem("bookmarks", JSON.stringify(nextBookmarks));
+    const { bookmarked } = await toggleBookmark(postUuid);
+    setIsBookmarked(bookmarked);
   };
 
   const handleShare = async () => {

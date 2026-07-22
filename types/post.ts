@@ -78,6 +78,8 @@ export type ResponsePosts = {
   totalApplicantCount: number;
   viewCount: number;
   likeCount: number;
+  isLiked: boolean;
+  isBookmarked: boolean;
   isPublished: boolean;
   skills: Skill[];
   tags: string[];
