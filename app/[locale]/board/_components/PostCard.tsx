@@ -1,6 +1,7 @@
 "use client";
 
 import { Link } from "@/i18n/navigation";
+import { Avatar } from "@/components/Avatar";
 import { Eye, Heart } from "lucide-react";
 import Image from "next/image";
 import { useNavigation } from "@/components/NavigationProvider";
@@ -89,9 +90,7 @@ export default function PostCard({ post }: Props) {
             onClick={(e) => e.stopPropagation()}
             className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-black"
           >
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200 text-[10px] font-semibold text-gray-600">
-              {post.authorName.slice(0, 1).toUpperCase()}
-            </span>
+            <Avatar src={null} name={post.authorName} size="xs" />
             {post.authorName}
           </Link>
           <div className="flex items-center gap-2.5 text-[11px] text-gray-500">

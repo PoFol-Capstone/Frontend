@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar } from "@/components/Avatar";
 import {
   createComment,
   deleteComment,
@@ -146,9 +147,11 @@ function CommentItem({
   return (
     <div className={isReply ? "ml-12 mt-3" : ""}>
       <div className="flex gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold text-gray-600">
-          {comment.deleted ? "?" : comment.author.name.slice(0, 1)}
-        </div>
+        <Avatar
+          src={null}
+          name={comment.deleted ? "?" : comment.author.name}
+          size="sm"
+        />
         <div className="flex-1">
           {!comment.deleted && (
             <div className="mb-1 flex items-center gap-2">
@@ -321,18 +324,11 @@ export default function CommentSection({
 
       {currentUserUuid && (
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-xs font-semibold text-gray-600">
-            {currentUser?.avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={currentUser.avatarUrl}
-                alt={currentUser.name}
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              (currentUser?.name?.slice(0, 1) ?? "?")
-            )}
-          </div>
+          <Avatar
+            src={currentUser?.avatarUrl}
+            name={currentUser?.name ?? "?"}
+            size="sm"
+          />
           <input
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}

@@ -1,5 +1,6 @@
 "use client";
 
+import { Avatar } from "@/components/Avatar";
 import { toggleBookmark, toggleLike } from "@/lib/post";
 import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -61,9 +62,12 @@ export default function AuthorBar({
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-gray-100 pt-6">
         <Link href={`/profile/${authorUuid}`} className="group flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-600 transition group-hover:opacity-80">
-            {authorName.slice(0, 1)}
-          </div>
+          <Avatar
+            src={null}
+            name={authorName}
+            size="md"
+            className="transition group-hover:opacity-80"
+          />
           <span className="text-sm font-semibold text-black group-hover:underline">
             {authorName}
           </span>

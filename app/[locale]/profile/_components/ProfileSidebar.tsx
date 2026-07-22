@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Avatar } from "@/components/Avatar";
 import { Eye, Users, Mail, Link2 } from "lucide-react";
 import { useState } from "react";
 import { FaGithub } from "react-icons/fa";
@@ -41,20 +41,8 @@ export default function ProfileSidebar({
   return (
     <>
       <aside className="h-fit border border-gray-300 px-8 py-7 text-center">
-        <div className="mx-auto mb-4 flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-          {profile.avatarUrl ? (
-            <Image
-              src={profile.avatarUrl}
-              alt={profile.name}
-              width={112}
-              height={112}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gray-100 text-3xl font-semibold text-gray-700">
-                {profile.name.charAt(0)}
-              </div>
-          )}
+        <div className="mx-auto mb-4">
+          <Avatar src={profile.avatarUrl} name={profile.name} size="lg" />
         </div>
 
         <h1 className="text-3xl font-bold">{profile.name}</h1>
