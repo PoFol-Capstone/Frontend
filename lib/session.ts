@@ -3,13 +3,21 @@ import { cookies } from "next/headers";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { logout as authLogout } from "./auth";
+import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } from "./tokenConfig";
 
-const COOKIE_OPTIONS = {
+// session/uuid/refresh_token — refresh token이 살아있는 한 세션도 유지되어야 하므로 동일한 수명 사용
+const SESSION_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
-  maxAge: 60 * 60 * 24 * 7, // 7일
+  maxAge: REFRESH_TOKEN_MAX_AGE,
   path: "/",
+};
+
+// access_token — 실제 JWT 만료 시간과 동일하게
+const ACCESS_TOKEN_COOKIE_OPTIONS = {
+  ...SESSION_COOKIE_OPTIONS,
+  maxAge: ACCESS_TOKEN_MAX_AGE,
 };
 
 // 로그인 할 때, 저장
@@ -24,10 +32,10 @@ export async function saveLogin(
    */
   const cookieStore = await cookies();
 
-  cookieStore.set("session", email, COOKIE_OPTIONS);
-  cookieStore.set("uuid", uuid, COOKIE_OPTIONS);
-  cookieStore.set("access_token", accessToken, COOKIE_OPTIONS);
-  cookieStore.set("refresh_token", refreshToken, COOKIE_OPTIONS);
+  cookieStore.set("session", email, SESSION_COOKIE_OPTIONS);
+  cookieStore.set("uuid", uuid, SESSION_COOKIE_OPTIONS);
+  cookieStore.set("access_token", accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+  cookieStore.set("refresh_token", refreshToken, SESSION_COOKIE_OPTIONS);
 }
 
 // 불러오기
@@ -59,9 +67,9 @@ export async function saveAccessToken(
 ) {
   const cookieStore = await cookies();
 
-  cookieStore.set("uuid", uuid, COOKIE_OPTIONS);
-  cookieStore.set("access_token", accessToken, COOKIE_OPTIONS);
-  cookieStore.set("refresh_token", refreshToken, COOKIE_OPTIONS);
+  cookieStore.set("uuid", uuid, SESSION_COOKIE_OPTIONS);
+  cookieStore.set("access_token", accessToken, ACCESS_TOKEN_COOKIE_OPTIONS);
+  cookieStore.set("refresh_token", refreshToken, SESSION_COOKIE_OPTIONS);
 }
 
 // 로그아웃 할 때, 삭제 후 로그인 페이지로 이동

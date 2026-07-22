@@ -1,5 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { cookies } from "next/headers";
+import { ACCESS_TOKEN_MAX_AGE } from "./tokenConfig";
 
 type RetryableConfig = InternalAxiosRequestConfig & { _retry?: boolean };
 
@@ -67,7 +68,7 @@ async function refreshAccessToken(): Promise<string | null> {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60,
+      maxAge: ACCESS_TOKEN_MAX_AGE,
       path: "/",
     });
 
