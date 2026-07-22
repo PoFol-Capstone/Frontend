@@ -54,6 +54,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // 프록시가 실행될 경로 (정적 파일, API 제외)
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  // 프록시가 실행될 경로 (API, 확장자 있는 정적 파일 전부 제외 - public/icons 등)
+  matcher: ["/((?!api|_next/static|_next/image|.*\\..*).*)"],
 };
