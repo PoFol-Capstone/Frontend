@@ -16,10 +16,6 @@ const PAGE_SIZE = 9;
 export default function BoardClient({ posts }: Props) {
   const [selected, setSelected] = useState("All");
   const [currentPage, setCurrentPage] = useState(0);
-  const [bookmarkedIds] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    return JSON.parse(localStorage.getItem("bookmarks") || "[]");
-  });
 
   const handleSelect = (category: string) => {
     setSelected(category);
@@ -31,13 +27,13 @@ export default function BoardClient({ posts }: Props) {
       case "All":
         return posts;
       case "Bookmarks":
-        return posts.filter((p) => bookmarkedIds.includes(p.uuid));
+        return posts.filter((p) => p.isBookmarked);
       case "Recruiting":
         return posts.filter((p) => p.postType === PostType.RECRUIT);
       default:
         return posts.filter((p) => p.tags.includes(selected));
     }
-  }, [posts, selected, bookmarkedIds]);
+  }, [posts, selected]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const pagePosts = filtered.slice(
