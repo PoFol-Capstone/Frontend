@@ -1,5 +1,6 @@
 "use client";
 
+import { useSessionToast } from "@/hooks/useSessionToast";
 import { login, register, verifyOtp } from "@/lib/auth";
 import { saveLogin } from "@/lib/session";
 import { useRouter } from "@/i18n/navigation";
@@ -13,23 +14,13 @@ export default function SignupVerifyPage() {
   const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const [toastMessage, setToastMessage] = useState("");
+  const toastMessage = useSessionToast("toastMessage");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     const singupEmail = sessionStorage.getItem("signupEmail");
     const loginEmail = sessionStorage.getItem("loginEmail");
     const savedEmail = singupEmail || loginEmail;
-    const toast = sessionStorage.getItem("toastMessage");
-
-    if (toast) {
-      setToastMessage(toast);
-      sessionStorage.removeItem("toastMessage");
-
-      setTimeout(() => {
-        setToastMessage("");
-      }, 2500);
-    }
 
     if (!savedEmail) {
       router.push("/signup/email");

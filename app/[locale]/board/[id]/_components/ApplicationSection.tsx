@@ -1,5 +1,6 @@
 "use client";
 
+import { useSessionToast } from "@/hooks/useSessionToast";
 import { getApply } from "@/lib/apply";
 import type {
   RecruitPositionResponse,
@@ -29,28 +30,14 @@ export default function ApplicationSection({
   const [application, setApplication] = useState<ResponseApplication | null>(
     null,
   );
-  const [toast, setToast] = useState("");
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const toast = useSessionToast("toastMessage");
 
   useEffect(() => {
     getApply(postUuid).then(setApplication);
   }, [postUuid]);
-
-  useEffect(() => {
-    const saved = sessionStorage.getItem("toastMessage");
-    if (saved) {
-      sessionStorage.removeItem("toastMessage");
-      setToast(saved);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!toast) return;
-    const timer = setTimeout(() => setToast(""), 2500);
-    return () => clearTimeout(timer);
-  }, [toast]);
 
   if (postType !== PostType.RECRUIT) return null;
 
