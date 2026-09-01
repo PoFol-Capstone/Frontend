@@ -1,8 +1,21 @@
+import { Suspense } from "react";
 import { getSession } from "@/lib/session";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link, redirect } from "@/i18n/navigation";
 
-export default async function HomePage() {
+/**
+ * 로그인 상태면 /board로 보내는 랜딩 페이지.
+ * 쿠키를 읽어야 하므로(런타임 API) Suspense 뒤에서 처리한다.
+ */
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+async function HomeContent() {
   const session = await getSession();
   if (session) redirect({ href: "/board", locale: await getLocale() });
 

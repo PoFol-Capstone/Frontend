@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { getSessionUuid } from "@/lib/session";
+import { rateLimit, rateLimitResponse } from "@/lib/rateLimit";
+
+// Blob 스토리지 용량 남용 방지 — 사용자당 분당 업로드 수 제한
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60_000;
 
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/gif"];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024;
@@ -10,6 +15,9 @@ export async function POST(req: NextRequest) {
   if (!uuid) {
     return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   }
+
+  const limit = rateLimit(`upload:thumbnail:${uuid}`, RATE_LIMIT, RATE_WINDOW_MS);
+  if (!limit.allowed) return rateLimitResponse(limit);
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json(

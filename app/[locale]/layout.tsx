@@ -1,11 +1,11 @@
-import Header from "@/components/Header";
+import HeaderSlot, { HeaderFallback } from "@/components/HeaderSlot";
 import { NavigationProvider } from "@/components/NavigationProvider";
 import type { Metadata } from "next";
 import "../globals.css";
-import { getSession } from "@/lib/session";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
@@ -32,14 +32,16 @@ export default async function RootLayout({
 
   setRequestLocale(locale);
 
-  const session = await getSession();
-
   return (
     <html lang={locale}>
       <body>
         <NextIntlClientProvider>
           <NavigationProvider>
-            <Header session={session} />
+            {/* 세션 쿠키 읽기는 HeaderSlot 안으로 옮겨 Suspense 뒤에서 스트리밍한다.
+                레이아웃이 직접 쿠키를 읽으면 모든 페이지의 static shell이 막힌다. */}
+            <Suspense fallback={<HeaderFallback />}>
+              <HeaderSlot />
+            </Suspense>
             {children}
           </NavigationProvider>
         </NextIntlClientProvider>

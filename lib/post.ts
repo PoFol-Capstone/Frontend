@@ -6,6 +6,7 @@ import type {
   RequestPosts,
   ResponsePosts,
 } from "@/types/post";
+import { requireSessionUuid } from "./authGuard";
 import { http } from "./http.server";
 
 /**
@@ -21,17 +22,20 @@ import { http } from "./http.server";
 export async function getPosts(
   params?: PostListParams,
 ): Promise<PagedResponse<ResponsePosts>> {
-  const res = await http.get("/api/posts", { params });
+  const res = await http.get<PagedResponse<ResponsePosts>>("/api/posts", {
+    params,
+  });
   return res.data;
 }
 
 export async function createPost(body: RequestPosts): Promise<ResponsePosts> {
-  const res = await http.post("/api/posts", body);
+  await requireSessionUuid();
+  const res = await http.post<ResponsePosts>("/api/posts", body);
   return res.data;
 }
 
 export async function getPost(uuid: string): Promise<ResponsePosts> {
-  const res = await http.get(`/api/posts/${uuid}`);
+  const res = await http.get<ResponsePosts>(`/api/posts/${uuid}`);
   return res.data;
 }
 
@@ -39,33 +43,40 @@ export async function updatePost(
   uuid: string,
   body: Partial<RequestPosts>,
 ): Promise<ResponsePosts> {
-  const res = await http.patch(`/api/posts/${uuid}`, body);
+  await requireSessionUuid();
+  const res = await http.patch<ResponsePosts>(`/api/posts/${uuid}`, body);
   return res.data;
 }
 
 export async function deletePost(uuid: string): Promise<void> {
+  await requireSessionUuid();
   await http.delete(`/api/posts/${uuid}`);
 }
 
 export async function toggleLike(uuid: string): Promise<{ liked: boolean }> {
-  const res = await http.post(`/api/posts/${uuid}/like`);
+  await requireSessionUuid();
+  const res = await http.post<{ liked: boolean }>(`/api/posts/${uuid}/like`);
   return res.data;
 }
 
 export async function toggleBookmark(
   uuid: string,
 ): Promise<{ bookmarked: boolean }> {
-  const res = await http.post(`/api/posts/${uuid}/bookmark`);
+  await requireSessionUuid();
+  const res = await http.post<{ bookmarked: boolean }>(
+    `/api/posts/${uuid}/bookmark`,
+  );
   return res.data;
 }
 
 export async function getBookmarkedPosts(): Promise<ResponsePosts[]> {
-  const res = await http.get("/api/post/bookmarked");
+  await requireSessionUuid();
+  const res = await http.get<ResponsePosts[]>("/api/post/bookmarked");
   return res.data;
 }
 
 export async function getRelatedPosts(uuid: string): Promise<ResponsePosts[]> {
-  const res = await http.get(`/api/posts/${uuid}/related`);
+  const res = await http.get<ResponsePosts[]>(`/api/posts/${uuid}/related`);
   return res.data;
 }
 
@@ -73,6 +84,9 @@ export async function getUserPosts(
   authorUuid: string,
   params?: { type?: string; page?: number; size?: number },
 ): Promise<PagedResponse<ResponsePosts>> {
-  const res = await http.get(`/api/user/${authorUuid}/posts`, { params });
+  const res = await http.get<PagedResponse<ResponsePosts>>(
+    `/api/user/${authorUuid}/posts`,
+    { params },
+  );
   return res.data;
 }

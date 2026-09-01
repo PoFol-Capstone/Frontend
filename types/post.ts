@@ -80,6 +80,8 @@ export type ResponsePosts = {
   likeCount: number;
   isLiked: boolean;
   isBookmarked: boolean;
+  /** 조회자가 이 글의 작성자를 팔로우 중인지 (비로그인/본인 글이면 false) */
+  isAuthorFollowed: boolean;
   isPublished: boolean;
   skills: Skill[];
   tags: string[];

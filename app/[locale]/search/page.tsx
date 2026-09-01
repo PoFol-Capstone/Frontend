@@ -3,7 +3,6 @@
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { useState } from "react";
-import PostCard from "@/app/[locale]/board/_components/PostCard";
 import type { ResponsePosts } from "@/types/post";
 import { Users, Eye, Heart } from "lucide-react";
 import { useTranslations } from "next-intl";

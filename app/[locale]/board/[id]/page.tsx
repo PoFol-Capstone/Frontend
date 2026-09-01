@@ -1,10 +1,25 @@
+import { Suspense } from "react";
 import { getComments } from "@/lib/comment";
 import { getPost, getRelatedPosts } from "@/lib/post";
 import { getSessionUuid } from "@/lib/session";
 import getUser from "@/lib/user";
 import PostDetail from "./_components/PostDetail/index";
+import PostDetailLoading from "./loading";
 
-export default async function PostDetailPage({
+export default function PostDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  // params/쿠키/API 응답 모두 요청 시점에만 알 수 있는 값이라 Suspense 뒤에서 스트리밍한다
+  return (
+    <Suspense fallback={<PostDetailLoading />}>
+      <PostDetailContent params={params} />
+    </Suspense>
+  );
+}
+
+async function PostDetailContent({
   params,
 }: {
   params: Promise<{ id: string }>;

@@ -1,3 +1,5 @@
+"use client";
+
 import type { ApplicantResponse, ResponsePosts } from "@/types/post";
 import { useTranslations } from "next-intl";
 import ApplicantCard from "./ApplicantCard";
@@ -8,6 +10,7 @@ interface Props {
   selectedPost: ResponsePosts | undefined;
   selectedPostUuid: string | undefined;
   isPending: boolean;
+  error?: string | null;
   onAccept: (applyUuid: string) => void;
   onReject: (applyUuid: string) => void;
 }
@@ -17,6 +20,7 @@ export default function ApplicantSection({
   selectedPost,
   selectedPostUuid,
   isPending,
+  error,
   onAccept,
   onReject,
 }: Props) {
@@ -33,6 +37,12 @@ export default function ApplicantSection({
             : t("selectPostHint")}
         </p>
       </div>
+
+      {error && (
+        <p role="alert" className="mb-4 text-sm text-red-500">
+          {error}
+        </p>
+      )}
 
       <div className="space-y-4">
         {!selectedPostUuid && (

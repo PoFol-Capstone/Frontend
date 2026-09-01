@@ -1,7 +1,17 @@
+import { Suspense } from "react";
 import { getPosts } from "@/lib/post";
 import BoardClient from "./_components/BoardClient";
+import BoardLoading from "./loading";
 
-export default async function BoardPage() {
+export default function BoardPage() {
+  return (
+    <Suspense fallback={<BoardLoading />}>
+      <BoardContent />
+    </Suspense>
+  );
+}
+
+async function BoardContent() {
   const result = await getPosts({ page: 0, size: 1000 }).catch(() => ({
     content: [],
     totalElements: 0,

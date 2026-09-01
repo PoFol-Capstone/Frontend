@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { X, Link2, Mail } from "lucide-react";
+import { useModalA11y } from "@/hooks/useModalA11y";
 import { FaGithub } from "react-icons/fa";
 import { Profile } from "@/types/user";
 import { updateProfile } from "@/lib/user";
@@ -41,6 +42,7 @@ function toStartMonth(positionMonths: number | null | undefined): string {
 
 export default function ProfileEditModal({ profile, onClose }: Props) {
   const t = useTranslations("profile.editModal");
+  const tCommon = useTranslations("common");
   const githubUrl = profile.links.find((l) => l.type === "GITHUB")?.url ?? "";
   const portfolioUrl = profile.links.find((l) => l.type !== "GITHUB")?.url ?? "";
 
@@ -52,6 +54,9 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
   });
   const [startMonth, setStartMonth] = useState(() => toStartMonth(profile.positionMonths));
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const panelRef = useModalA11y(onClose);
+  const titleId = useId();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -59,15 +64,29 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
   };
 
   const handleSubmit = async () => {
+    // 예전엔 검증도 실패 피드백도 없어서, 저장이 실패하면 모달이 그냥 열린 채로 남았다
+    if (!form.name.trim()) {
+      setError(t("nameRequired"));
+      return;
+    }
+
     const duration = calcDuration(startMonth, t);
+    setError(null);
     setIsSubmitting(true);
     try {
-      await updateProfile({ ...form, positionMonths: duration?.totalMonths ?? 0 });
+      await updateProfile({
+        ...form,
+        name: form.name.trim(),
+        positionMonths: duration?.totalMonths ?? 0,
+      });
       onClose();
       window.location.reload();
-    } finally {
+    } catch (err) {
+      console.error("[profile] 프로필 저장 실패:", err);
+      setError(t("saveFailed"));
       setIsSubmitting(false);
     }
+    // 성공 시엔 새로고침하므로 로딩 상태를 되돌리지 않는다
   };
 
   const duration = calcDuration(startMonth, t);
@@ -84,6 +103,11 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
     >
       {/* overflow-hidden + rounded으로 스크롤바가 모달 모서리 안에 클리핑됨 */}
       <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         className="relative w-full max-w-2xl rounded-3xl bg-white shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
@@ -100,11 +124,12 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
           <button
             type="button"
             onClick={onClose}
+            aria-label={tCommon("close")}
             className="absolute right-7 top-7 text-gray-400 transition hover:text-black"
           >
             <X size={24} />
           </button>
-          <h2 className="text-lg font-bold">{t("title")}</h2>
+          <h2 id={titleId} className="text-lg font-bold">{t("title")}</h2>
           <p className="mt-1 text-sm text-gray-400">
             {t("subtitle")}
           </p>
@@ -225,6 +250,12 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
               className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-black"
             />
           </div>
+
+          {error && (
+            <p role="alert" className="text-sm text-red-500">
+              {error}
+            </p>
+          )}
 
           <button
             type="button"

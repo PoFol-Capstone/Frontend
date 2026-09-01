@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getSessionUuid } from "@/lib/session";
 import getUser, { getFollowers } from "@/lib/user";
 import { getUserPosts } from "@/lib/post";
@@ -6,12 +7,21 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import ProfileSidebar from "../_components/ProfileSidebar";
 import PostCarousel from "../_components/PostCarousel";
+import ProfileLoading from "../loading";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export default async function UserProfilePage({ params }: Props) {
+export default function UserProfilePage({ params }: Props) {
+  return (
+    <Suspense fallback={<ProfileLoading />}>
+      <UserProfileContent params={params} />
+    </Suspense>
+  );
+}
+
+async function UserProfileContent({ params }: Props) {
   const { id } = await params;
 
   const [sessionUuid, profile] = await Promise.all([

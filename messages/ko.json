@@ -1,6 +1,9 @@
 {
   "common": {
-    "appName": "PoFoL"
+    "appName": "PoFoL",
+    "close": "닫기",
+    "retry": "다시 시도",
+    "loading": "불러오는 중..."
   },
   "header": {
     "createPost": "게시글 작성",
@@ -150,7 +153,11 @@
       "deleteConfirmDesc": "삭제한 게시글은 복구할 수 없습니다.",
       "cancel": "취소",
       "delete": "삭제",
-      "deleting": "삭제 중..."
+      "deleting": "삭제 중...",
+      "deleteFailed": "삭제에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      "bookmarkFailed": "북마크 처리에 실패했습니다.",
+      "likeFailed": "좋아요 처리에 실패했습니다.",
+      "copyFailed": "링크 복사에 실패했습니다."
     },
     "apply": {
       "sectionCompleteTitle": "지원 완료",
@@ -176,7 +183,15 @@
       "notEditable": "수정이 불가능한 상태입니다.",
       "close": "닫기",
       "cancelApplication": "취소하기",
-      "edit": "수정하기"
+      "edit": "수정하기",
+      "positionRequired": "지원할 포지션을 선택해주세요.",
+      "introductionRequired": "자기소개를 입력해주세요.",
+      "submitting": "지원 중...",
+      "saving": "저장 중...",
+      "canceling": "취소 중...",
+      "submitFailed": "지원에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      "saveFailed": "저장에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      "cancelFailed": "지원 취소에 실패했습니다. 잠시 후 다시 시도해주세요."
     },
     "comment": {
       "count": "댓글 {count}개",
@@ -186,7 +201,11 @@
       "submit": "등록",
       "reply": "답글",
       "save": "저장",
-      "cancel": "취소"
+      "cancel": "취소",
+      "submitFailed": "댓글 등록에 실패했습니다.",
+      "updateFailed": "댓글 수정에 실패했습니다.",
+      "deleteFailed": "댓글 삭제에 실패했습니다.",
+      "likeFailed": "좋아요 처리에 실패했습니다."
     },
     "write": {
       "steps": {
@@ -314,7 +333,15 @@
       "removeThumbnail": "썸네일 삭제",
       "cancel": "취소",
       "submitting": "수정 중...",
-      "submit": "수정 완료"
+      "submit": "수정 완료",
+      "titleRequired": "프로젝트 이름을 입력해주세요.",
+      "uploadFailed": "썸네일 업로드에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      "saveFailed": "수정에 실패했습니다. 잠시 후 다시 시도해주세요."
+    },
+    "error": {
+      "title": "게시글을 불러오지 못했습니다.",
+      "desc": "삭제된 글이거나 일시적인 오류일 수 있습니다.",
+      "retry": "다시 시도"
     }
   },
   "profile": {
@@ -329,7 +356,8 @@
     },
     "follow": {
       "following": "팔로잉",
-      "follow": "팔로우"
+      "follow": "팔로우",
+      "followFailed": "팔로우 처리에 실패했습니다."
     },
     "followerModal": {
       "title": "팔로워",
@@ -358,7 +386,9 @@
       "save": "저장하기",
       "yearsMonthsLabel": "{years}년 {months}개월차",
       "yearsLabel": "{years}년차",
-      "monthsLabel": "{months}개월차"
+      "monthsLabel": "{months}개월차",
+      "nameRequired": "이름을 입력해주세요.",
+      "saveFailed": "저장에 실패했습니다. 잠시 후 다시 시도해주세요."
     },
     "editPageStub": "프로필 편집",
     "error": {
@@ -390,7 +420,8 @@
       "postApplicants": "\"{title}\" 지원자",
       "selectPostHint": "게시글을 선택해주세요.",
       "selectPostFromLeft": "왼쪽에서 게시글을 선택해주세요.",
-      "noApplicants": "아직 지원자가 없어요."
+      "noApplicants": "아직 지원자가 없어요.",
+      "actionFailed": "처리에 실패했습니다. 잠시 후 다시 시도해주세요."
     },
     "postCard": {
       "applicantCount": "지원자",

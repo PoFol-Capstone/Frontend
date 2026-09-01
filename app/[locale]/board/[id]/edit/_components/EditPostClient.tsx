@@ -59,6 +59,7 @@ export default function EditPostClient({ post }: Props) {
   const [thumbnailUrl, setThumbnailUrl] = useState(post.thumbnailUrl ?? "");
   const [isThumbnailLoading, setIsThumbnailLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
   const githubLink = post.links?.find((l) => l.type === LinkType.GITHUB);
@@ -68,6 +69,7 @@ export default function EditPostClient({ post }: Props) {
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setError(null);
     setIsThumbnailLoading(true);
     const formData = new FormData();
     formData.append("file", file);
@@ -76,11 +78,18 @@ export default function EditPostClient({ post }: Props) {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setThumbnailUrl(data.url ?? "");
-    } catch {
-      // 업로드 실패 무시
+      // 라우트가 형식/크기/rate limit 위반 시 이유를 담아 보내주므로 그대로 보여준다
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error ?? "upload failed");
+      setThumbnailUrl(data?.url ?? "");
+    } catch (err) {
+      // 예전엔 조용히 무시해서, 업로드가 실패해도 사용자는 이유를 알 수 없었다
+      console.error("[edit] 썸네일 업로드 실패:", err);
+      setError(
+        err instanceof Error && err.message !== "upload failed"
+          ? err.message
+          : t("uploadFailed"),
+      );
     } finally {
       setIsThumbnailLoading(false);
       e.target.value = "";
@@ -88,7 +97,11 @@ export default function EditPostClient({ post }: Props) {
   };
 
   const handleSubmit = async () => {
-    if (!title) return;
+    if (!title.trim()) {
+      setError(t("titleRequired"));
+      return;
+    }
+    setError(null);
     setIsSubmitting(true);
     try {
       const content = [
@@ -116,7 +129,7 @@ export default function EditPostClient({ post }: Props) {
       ];
 
       await updatePost(post.uuid, {
-        title,
+        title: title.trim(),
         content,
         thumbnailUrl: thumbnailUrl || null,
         type: teamRecruitEnabled ? PostType.RECRUIT : PostType.DISPLAY,
@@ -132,8 +145,10 @@ export default function EditPostClient({ post }: Props) {
       });
 
       router.push(`/board/${post.uuid}`);
-    } catch {
-      // 에러는 서버 로그에서 확인
+    } catch (err) {
+      // 예전엔 catch를 비워둬서 저장 실패가 화면상 아무 변화 없이 끝났다
+      console.error("[edit] 게시글 수정 실패:", err);
+      setError(t("saveFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -254,6 +269,12 @@ export default function EditPostClient({ post }: Props) {
         onRoleCountsChange={setRoleCounts}
       />
 
+      {error && (
+        <p role="alert" className="text-sm text-red-500">
+          {error}
+        </p>
+      )}
+
       <div className="flex gap-3">
         <button
           type="button"
@@ -265,7 +286,7 @@ export default function EditPostClient({ post }: Props) {
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={isSubmitting || !title}
+          disabled={isSubmitting || !title.trim()}
           className="flex-1 rounded-xl bg-black py-4 text-base font-semibold text-white hover:bg-gray-900 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? t("submitting") : t("submit")}

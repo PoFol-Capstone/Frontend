@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { getSessionUuid } from "@/lib/session";
+import { rateLimit, rateLimitResponse } from "@/lib/rateLimit";
+
+// OpenAI 호출은 요청당 비용이 발생하므로 사용자당 분당 호출 수를 제한
+const LIMIT = 5;
+const WINDOW_MS = 60_000;
 
 export async function POST(req: NextRequest) {
   const uuid = await getSessionUuid();
   if (!uuid) {
     return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   }
+
+  const limit = rateLimit(`ai:summarize:${uuid}`, LIMIT, WINDOW_MS);
+  if (!limit.allowed) return rateLimitResponse(limit);
 
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json(
@@ -16,14 +24,46 @@ export async function POST(req: NextRequest) {
   }
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const { projectName, readmeText, techStack } = await req.json();
+
+  // 클라이언트 body는 신뢰할 수 없으므로 타입을 확인하고 정규화
+  // (예전에는 techStack이 배열이 아니거나 readmeText가 문자열이 아니면 TypeError로 500이 났다)
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { error: "잘못된 요청 형식입니다." },
+      { status: 400 },
+    );
+  }
+
+  const { projectName, readmeText, techStack } = (body ?? {}) as {
+    projectName?: unknown;
+    readmeText?: unknown;
+    techStack?: unknown;
+  };
+
+  const safeProjectName =
+    typeof projectName === "string" ? projectName.slice(0, 200) : "";
+  const safeReadme =
+    typeof readmeText === "string" ? readmeText.slice(0, 3000) : "";
+  const safeTechStack = Array.isArray(techStack)
+    ? techStack.filter((s): s is string => typeof s === "string").slice(0, 50)
+    : [];
+
+  if (!safeProjectName) {
+    return NextResponse.json(
+      { error: "projectName이 필요합니다." },
+      { status: 400 },
+    );
+  }
 
   const prompt = `다음은 GitHub 프로젝트 정보입니다.
 
-프로젝트명: ${projectName}
-기술 스택: ${(techStack as string[]).join(", ")}
+프로젝트명: ${safeProjectName}
+기술 스택: ${safeTechStack.join(", ")}
 README:
-${(readmeText as string).slice(0, 3000)}
+${safeReadme}
 
 위 정보를 바탕으로 아래 두 가지를 한국어로 작성해주세요.
 응답은 반드시 JSON 형식으로만 주세요.

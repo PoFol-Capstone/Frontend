@@ -1,10 +1,11 @@
 "use server";
 
 import type { Comment } from "@/types/comment";
+import { requireSessionUuid } from "./authGuard";
 import { http } from "./http.server";
 
 export async function getComments(postUuid: string): Promise<Comment[]> {
-  const res = await http.get(`/api/posts/${postUuid}/comments`);
+  const res = await http.get<Comment[]>(`/api/posts/${postUuid}/comments`);
   return res.data;
 }
 
@@ -13,7 +14,8 @@ export async function createComment(
   content: string,
   parentUuid?: string,
 ): Promise<Comment> {
-  const res = await http.post(`/api/posts/${postUuid}/comments`, {
+  await requireSessionUuid();
+  const res = await http.post<Comment>(`/api/posts/${postUuid}/comments`, {
     content,
     ...(parentUuid ? { parentUuid } : {}),
   });
@@ -24,17 +26,24 @@ export async function updateComment(
   commentUuid: string,
   content: string,
 ): Promise<Comment> {
-  const res = await http.patch(`/api/comments/${commentUuid}`, { content });
+  await requireSessionUuid();
+  const res = await http.patch<Comment>(`/api/comments/${commentUuid}`, {
+    content,
+  });
   return res.data;
 }
 
 export async function toggleCommentLike(
   commentUuid: string,
 ): Promise<{ liked: boolean }> {
-  const res = await http.post(`/api/comments/${commentUuid}/like`);
+  await requireSessionUuid();
+  const res = await http.post<{ liked: boolean }>(
+    `/api/comments/${commentUuid}/like`,
+  );
   return res.data;
 }
 
 export async function deleteComment(commentUuid: string): Promise<void> {
+  await requireSessionUuid();
   await http.delete(`/api/comments/${commentUuid}`);
 }

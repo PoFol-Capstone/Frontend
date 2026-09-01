@@ -1,3 +1,5 @@
+"use client";
+
 import type { RecruitPositionResponse } from "@/types/post";
 import { useTranslations } from "next-intl";
 

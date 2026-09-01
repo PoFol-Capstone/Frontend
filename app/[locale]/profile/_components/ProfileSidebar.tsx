@@ -9,20 +9,19 @@ import { useTranslations } from "next-intl";
 import { Profile } from "@/types/user";
 import ProfileEditModal from "./ProfileEditModal";
 import FollowerModal from "./FollowerModal";
+import FollowButton from "@/components/FollowButton";
 import type { FollowerUser } from "@/types/user";
 
 interface Props {
   profile: Profile;
   isOwner: boolean;
   followers?: FollowerUser[];
-  onToggleFollow?: (userId: number) => void;
 }
 
 export default function ProfileSidebar({
   profile,
   isOwner,
   followers = [],
-  onToggleFollow,
 }: Props) {
   const t = useTranslations("profile.sidebar");
   const githubUrl = profile.links.find((link) => link.type === "GITHUB")?.url;
@@ -31,12 +30,6 @@ export default function ProfileSidebar({
 
   const [isFollowerOpen, setIsFollowerOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-  const handleToggleFollow = async (userId: number) => {
-    if (!onToggleFollow) return;
-
-    await onToggleFollow(userId);
-  };
 
   return (
     <>
@@ -134,7 +127,7 @@ export default function ProfileSidebar({
           </div>
         </div>
 
-        {isOwner && (
+        {isOwner ? (
           <button
             type="button"
             onClick={() => setIsEditModalOpen(true)}
@@ -142,6 +135,11 @@ export default function ProfileSidebar({
           >
             {t("editProfile")}
           </button>
+        ) : (
+          <FollowButton
+            targetUuid={profile.uuid}
+            initialIsFollowing={profile.isFollowing}
+          />
         )}
 
         {isEditModalOpen && (
@@ -156,7 +154,6 @@ export default function ProfileSidebar({
         <FollowerModal
           onClose={() => setIsFollowerOpen(false)}
           followers={followers}
-          onToggleFollow={handleToggleFollow}
         />
       )}
     </>

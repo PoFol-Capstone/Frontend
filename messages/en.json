@@ -1,6 +1,9 @@
 {
   "common": {
-    "appName": "PoFoL"
+    "appName": "PoFoL",
+    "close": "Close",
+    "retry": "Try again",
+    "loading": "Loading..."
   },
   "header": {
     "createPost": "Create post",
@@ -150,7 +153,11 @@
       "deleteConfirmDesc": "Deleted posts can't be recovered.",
       "cancel": "Cancel",
       "delete": "Delete",
-      "deleting": "Deleting..."
+      "deleting": "Deleting...",
+      "deleteFailed": "Failed to delete. Please try again shortly.",
+      "bookmarkFailed": "Failed to update the bookmark.",
+      "likeFailed": "Failed to update the like.",
+      "copyFailed": "Failed to copy the link."
     },
     "apply": {
       "sectionCompleteTitle": "Application submitted",
@@ -176,7 +183,15 @@
       "notEditable": "This can no longer be edited.",
       "close": "Close",
       "cancelApplication": "Cancel application",
-      "edit": "Edit"
+      "edit": "Edit",
+      "positionRequired": "Please select a position to apply for.",
+      "introductionRequired": "Please write a short introduction.",
+      "submitting": "Submitting...",
+      "saving": "Saving...",
+      "canceling": "Canceling...",
+      "submitFailed": "Failed to submit. Please try again shortly.",
+      "saveFailed": "Failed to save. Please try again shortly.",
+      "cancelFailed": "Failed to cancel the application. Please try again shortly."
     },
     "comment": {
       "count": "{count} comments",
@@ -186,7 +201,11 @@
       "submit": "Post",
       "reply": "Reply",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "submitFailed": "Failed to post the comment.",
+      "updateFailed": "Failed to update the comment.",
+      "deleteFailed": "Failed to delete the comment.",
+      "likeFailed": "Failed to update the like."
     },
     "write": {
       "steps": {
@@ -314,7 +333,15 @@
       "removeThumbnail": "Remove thumbnail",
       "cancel": "Cancel",
       "submitting": "Saving...",
-      "submit": "Save changes"
+      "submit": "Save changes",
+      "titleRequired": "Please enter a project name.",
+      "uploadFailed": "Failed to upload the thumbnail. Please try again shortly.",
+      "saveFailed": "Failed to save changes. Please try again shortly."
+    },
+    "error": {
+      "title": "Couldn't load this post.",
+      "desc": "It may have been deleted, or this could be a temporary error.",
+      "retry": "Try again"
     }
   },
   "profile": {
@@ -329,7 +356,8 @@
     },
     "follow": {
       "following": "Following",
-      "follow": "Follow"
+      "follow": "Follow",
+      "followFailed": "Failed to update follow status."
     },
     "followerModal": {
       "title": "Followers",
@@ -358,7 +386,9 @@
       "save": "Save",
       "yearsMonthsLabel": "{years}y {months}mo",
       "yearsLabel": "{years}y",
-      "monthsLabel": "{months}mo"
+      "monthsLabel": "{months}mo",
+      "nameRequired": "Please enter a name.",
+      "saveFailed": "Failed to save. Please try again shortly."
     },
     "editPageStub": "Edit Profile",
     "error": {
@@ -390,7 +420,8 @@
       "postApplicants": "Applicants for \"{title}\"",
       "selectPostHint": "Select a post.",
       "selectPostFromLeft": "Select a post on the left.",
-      "noApplicants": "No applicants yet."
+      "noApplicants": "No applicants yet.",
+      "actionFailed": "Action failed. Please try again shortly."
     },
     "postCard": {
       "applicantCount": "Applicants",

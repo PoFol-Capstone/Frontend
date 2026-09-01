@@ -67,8 +67,15 @@ const NPM_MAP: Record<string, string> = {
 };
 
 export function detectFromPackageJson(content: string): string[] {
-  const pkg = JSON.parse(content);
-  const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+  // 남의 레포에서 받아온 파일이라 유효한 JSON이라는 보장이 없다 —
+  // 파싱 실패는 "감지 결과 없음"으로 처리하고 요청 전체를 실패시키지 않는다.
+  let pkg: { dependencies?: unknown; devDependencies?: unknown };
+  try {
+    pkg = JSON.parse(content);
+  } catch {
+    return [];
+  }
+  const allDeps = { ...(pkg?.dependencies ?? {}), ...(pkg?.devDependencies ?? {}) };
   return Object.entries(NPM_MAP)
     .filter(([key]) => key in allDeps)
     .map(([, label]) => label);

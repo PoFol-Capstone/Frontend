@@ -40,14 +40,17 @@ export default function PostDetail({
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const handleDelete = async () => {
+    setDeleteError(null);
     setIsDeleting(true);
-    try {
-      await deletePostAction(post.uuid);
-    } catch {
+    // 성공하면 액션이 /board로 리다이렉트하므로 여기서 반환되지 않는다.
+    // 예전엔 실패 시 모달을 그냥 닫아버려서 사용자는 삭제가 됐다고 오해할 수 있었다.
+    const result = await deletePostAction(post.uuid);
+    if (result && !result.ok) {
+      setDeleteError(result.message || t("deleteFailed"));
       setIsDeleting(false);
-      setShowDeleteConfirm(false);
     }
   };
 
@@ -57,9 +60,13 @@ export default function PostDetail({
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-8">
       {showDeleteConfirm && (
         <DeleteModal
-          onClose={() => setShowDeleteConfirm(false)}
+          onClose={() => {
+            setShowDeleteConfirm(false);
+            setDeleteError(null);
+          }}
           onConfirm={handleDelete}
           isDeleting={isDeleting}
+          error={deleteError}
         />
       )}
 
@@ -134,6 +141,7 @@ export default function PostDetail({
             initialLikeCount={post.likeCount}
             initialIsLiked={post.isLiked}
             initialIsBookmarked={post.isBookmarked}
+            initialIsAuthorFollowed={post.isAuthorFollowed}
           />
 
           <CommentSection

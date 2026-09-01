@@ -100,6 +100,7 @@ type CommentItemProps = {
   onDelete: (uuid: string) => void;
   onUpdate: (uuid: string, content: string) => void;
   onReplySubmit: (parentUuid: string, reply: Comment) => void;
+  onError: (message: string) => void;
 };
 
 function CommentItem({
@@ -111,6 +112,7 @@ function CommentItem({
   onDelete,
   onUpdate,
   onReplySubmit,
+  onError,
 }: CommentItemProps) {
   const t = useTranslations("board.comment");
   const locale = useLocale();
@@ -118,15 +120,30 @@ function CommentItem({
   const [showReplyInput, setShowReplyInput] = useState(false);
   const [editInput, setEditInput] = useState(comment.content);
   const [isEditing, setIsEditing] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const isOwner = !!currentUserUuid && currentUserUuid === comment.author.uuid;
 
+  // 아래 핸들러들은 예전에 await만 하고 에러를 잡지 않아서, 실패하면 unhandled rejection이
+  // 나고 화면에는 아무 변화도 없었다 (사용자는 클릭이 먹힌 줄 알게 됨).
   const handleReplySubmit = async () => {
-    if (!replyInput.trim()) return;
-    const newReply = await createComment(postUuid, replyInput, comment.uuid);
-    onReplySubmit(comment.uuid, newReply);
-    setReplyInput("");
-    setShowReplyInput(false);
+    if (!replyInput.trim() || isPending) return;
+    setIsPending(true);
+    try {
+      const newReply = await createComment(
+        postUuid,
+        replyInput.trim(),
+        comment.uuid,
+      );
+      onReplySubmit(comment.uuid, newReply);
+      setReplyInput("");
+      setShowReplyInput(false);
+    } catch (err) {
+      console.error("[comment] 답글 등록 실패:", err);
+      onError(t("submitFailed"));
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const handleEditSubmit = async () => {
@@ -134,14 +151,32 @@ function CommentItem({
       setIsEditing(false);
       return;
     }
-    await updateComment(comment.uuid, editInput);
-    onUpdate(comment.uuid, editInput);
-    setIsEditing(false);
+    if (isPending) return;
+    setIsPending(true);
+    try {
+      await updateComment(comment.uuid, editInput.trim());
+      onUpdate(comment.uuid, editInput.trim());
+      setIsEditing(false);
+    } catch (err) {
+      console.error("[comment] 댓글 수정 실패:", err);
+      onError(t("updateFailed"));
+    } finally {
+      setIsPending(false);
+    }
   };
 
   const handleDelete = async () => {
-    await deleteComment(comment.uuid);
-    onDelete(comment.uuid);
+    if (isPending) return;
+    setIsPending(true);
+    try {
+      await deleteComment(comment.uuid);
+      onDelete(comment.uuid);
+    } catch (err) {
+      console.error("[comment] 댓글 삭제 실패:", err);
+      onError(t("deleteFailed"));
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
@@ -171,7 +206,8 @@ function CommentItem({
                   <button
                     type="button"
                     onClick={handleDelete}
-                    className="rounded p-1 text-gray-400 hover:text-red-500"
+                    disabled={isPending}
+                    className="rounded p-1 text-gray-400 hover:text-red-500 disabled:opacity-50"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -195,7 +231,8 @@ function CommentItem({
               <button
                 type="button"
                 onClick={handleEditSubmit}
-                className="rounded-full bg-black px-3 py-1 text-xs font-semibold text-white hover:bg-gray-800"
+                disabled={isPending}
+                className="rounded-full bg-black px-3 py-1 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
               >
                 {t("save")}
               </button>
@@ -254,7 +291,8 @@ function CommentItem({
                 <button
                   type="button"
                   onClick={handleReplySubmit}
-                  className="flex items-center gap-1 rounded-full bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800"
+                  disabled={isPending}
+                  className="flex items-center gap-1 rounded-full bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
                 >
                   <Send className="h-3 w-3" />
                   {t("submit")}
@@ -276,6 +314,7 @@ function CommentItem({
           onDelete={onDelete}
           onUpdate={onUpdate}
           onReplySubmit={onReplySubmit}
+          onError={onError}
         />
       ))}
     </div>
@@ -291,19 +330,36 @@ export default function CommentSection({
   const t = useTranslations("board.comment");
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [commentInput, setCommentInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const totalCount = comments.reduce((acc, c) => acc + 1 + c.replies.length, 0);
 
   const handleAddComment = async () => {
-    if (!commentInput.trim()) return;
-    const newComment = await createComment(postUuid, commentInput);
-    setComments((prev) => [...prev, newComment]);
-    setCommentInput("");
+    if (!commentInput.trim() || isSubmitting) return;
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      const newComment = await createComment(postUuid, commentInput.trim());
+      setComments((prev) => [...prev, newComment]);
+      setCommentInput("");
+    } catch (err) {
+      console.error("[comment] 댓글 등록 실패:", err);
+      setError(t("submitFailed"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleLikeToggle = async (uuid: string) => {
-    const { liked } = await toggleCommentLike(uuid);
-    setComments((prev) => applyLikeToggle(prev, uuid, liked));
+    setError(null);
+    try {
+      const { liked } = await toggleCommentLike(uuid);
+      setComments((prev) => applyLikeToggle(prev, uuid, liked));
+    } catch (err) {
+      console.error("[comment] 좋아요 실패:", err);
+      setError(t("likeFailed"));
+    }
   };
 
   const handleDelete = (uuid: string) => {
@@ -342,13 +398,20 @@ export default function CommentSection({
             <button
               type="button"
               onClick={handleAddComment}
-              className="flex items-center gap-1 rounded-full bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800"
+              disabled={isSubmitting}
+              className="flex items-center gap-1 rounded-full bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
             >
               <Send className="h-3 w-3" />
               {t("submit")}
             </button>
           )}
         </div>
+      )}
+
+      {error && (
+        <p role="alert" className="mb-4 text-sm text-red-500">
+          {error}
+        </p>
       )}
 
       <div className="space-y-6">
@@ -362,6 +425,7 @@ export default function CommentSection({
             onDelete={handleDelete}
             onUpdate={handleUpdate}
             onReplySubmit={handleReplySubmit}
+            onError={setError}
           />
         ))}
       </div>

@@ -3,6 +3,7 @@
 import { cancelApply } from "@/lib/apply";
 import type { ResponseApplication } from "@/types/post";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import Modal from "./Modal";
 
 type Props = {
@@ -22,10 +23,21 @@ export default function ViewApplyModal({
 }: Props) {
   const t = useTranslations("board.apply");
   const isPending = application.status === "PENDING";
+  const [isCanceling, setIsCanceling] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCancel = async () => {
-    await cancelApply(postUuid);
-    onCancel();
+    setError(null);
+    setIsCanceling(true);
+    try {
+      await cancelApply(postUuid);
+      onCancel();
+    } catch (err) {
+      // 예전엔 실패해도 예외가 그대로 튀어나가 모달이 멈춘 것처럼 보였다
+      console.error("[apply] 지원 취소 실패:", err);
+      setError(t("cancelFailed"));
+      setIsCanceling(false);
+    }
   };
 
   return (
@@ -60,11 +72,18 @@ export default function ViewApplyModal({
         </div>
       </div>
 
+      {error && (
+        <p role="alert" className="mb-4 text-sm text-red-500">
+          {error}
+        </p>
+      )}
+
       <div className="flex gap-2">
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 rounded-xl border border-gray-200 py-3 text-sm"
+          disabled={isCanceling}
+          className="flex-1 rounded-xl border border-gray-200 py-3 text-sm disabled:opacity-50"
         >
           {t("close")}
         </button>
@@ -73,14 +92,16 @@ export default function ViewApplyModal({
             <button
               type="button"
               onClick={handleCancel}
-              className="flex-1 rounded-xl border border-red-200 py-3 text-sm text-red-500"
+              disabled={isCanceling}
+              className="flex-1 rounded-xl border border-red-200 py-3 text-sm text-red-500 disabled:opacity-50"
             >
-              {t("cancelApplication")}
+              {isCanceling ? t("canceling") : t("cancelApplication")}
             </button>
             <button
               type="button"
               onClick={onEdit}
-              className="flex-1 rounded-xl bg-black py-3 text-sm font-semibold text-white"
+              disabled={isCanceling}
+              className="flex-1 rounded-xl bg-black py-3 text-sm font-semibold text-white disabled:opacity-50"
             >
               {t("edit")}
             </button>

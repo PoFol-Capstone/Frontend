@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getApplicants } from "@/lib/apply";
 import { getPosts } from "@/lib/post";
 import { getSessionUuid } from "@/lib/session";
@@ -5,12 +6,21 @@ import { PostType } from "@/types/post";
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import RecruitmentClient from "./_components/RecruitmentClient";
+import RecruitmentLoading from "./loading";
 
-export default async function RecruitmentPage({
-  searchParams,
-}: {
+type Props = {
   searchParams: Promise<{ postId?: string }>;
-}) {
+};
+
+export default function RecruitmentPage({ searchParams }: Props) {
+  return (
+    <Suspense fallback={<RecruitmentLoading />}>
+      <RecruitmentContent searchParams={searchParams} />
+    </Suspense>
+  );
+}
+
+async function RecruitmentContent({ searchParams }: Props) {
   const [{ postId }, uuid, locale] = await Promise.all([
     searchParams,
     getSessionUuid(),

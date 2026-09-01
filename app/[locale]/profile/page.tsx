@@ -1,13 +1,23 @@
+import { Suspense } from "react";
 import { getSessionUuid, clearSession } from "@/lib/session";
-import getUser from "@/lib/user";
+import getUser, { getFollowers } from "@/lib/user";
 import { getUserPosts } from "@/lib/post";
 import { ApiError } from "@/lib/http.server";
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import ProfileSidebar from "./_components/ProfileSidebar";
 import PostCarousel from "./_components/PostCarousel";
+import ProfileLoading from "./loading";
 
-export default async function ProfilePage() {
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={<ProfileLoading />}>
+      <ProfileContent />
+    </Suspense>
+  );
+}
+
+async function ProfileContent() {
   const locale = await getLocale();
   const uuid = await getSessionUuid();
   if (!uuid) {
@@ -15,8 +25,13 @@ export default async function ProfilePage() {
     return;
   }
 
-  // 두 요청을 병렬로 시작하되, 결과 처리는 각자 따로 (getUser 실패가 getUserPosts를 막지 않도록)
+  // 세 요청을 병렬로 시작하되, 결과 처리는 각자 따로 (getUser 실패가 나머지를 막지 않도록)
   const profilePromise = getUser(uuid);
+  // 팔로워 모달은 본인 프로필에서도 열 수 있는데 목록을 안 넘겨줘서 늘 비어 있었다
+  const followersPromise = getFollowers(uuid).catch((err) => {
+    console.error("[profile] getFollowers 실패:", err);
+    return [];
+  });
   const postsPromise = getUserPosts(uuid, { size: 10 }).catch((err) => {
     const message = err instanceof ApiError ? err.message : err?.message;
     const status = err instanceof ApiError ? err.status : err?.response?.status;
@@ -40,7 +55,10 @@ export default async function ProfilePage() {
     throw err;
   }
 
-  const postsResult = await postsPromise;
+  const [postsResult, followers] = await Promise.all([
+    postsPromise,
+    followersPromise,
+  ]);
   const t = await getTranslations("profile");
 
   const sitePosts = postsResult.content.map((p) => ({
@@ -55,7 +73,7 @@ export default async function ProfilePage() {
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-10 py-8">
       <div className="mx-auto grid max-w-6xl grid-cols-[300px_1fr] gap-12">
-        <ProfileSidebar profile={profile} isOwner={true} />
+        <ProfileSidebar profile={profile} isOwner={true} followers={followers} />
 
         <section className="space-y-12">
           <section>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar } from "@/components/Avatar";
+import FollowButton from "@/components/FollowButton";
 import { toggleBookmark, toggleLike } from "@/lib/post";
 import { Bookmark, Eye, Heart, Share2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -16,6 +17,8 @@ type Props = {
   initialLikeCount: number;
   initialIsLiked: boolean;
   initialIsBookmarked: boolean;
+  /** 서버가 계산한 "내가 작성자를 팔로우 중인지" (`post.isAuthorFollowed`) */
+  initialIsAuthorFollowed: boolean;
 };
 
 export default function AuthorBar({
@@ -27,29 +30,49 @@ export default function AuthorBar({
   initialLikeCount,
   initialIsLiked,
   initialIsBookmarked,
+  initialIsAuthorFollowed,
 }: Props) {
   const t = useTranslations("board.detail");
-  const [isFollowing, setIsFollowing] = useState(false);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLiked, setIsLiked] = useState(initialIsLiked);
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [copyMessage, setCopyMessage] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
+  // 세션이 만료된 상태로 클릭하면 예전엔 unhandled rejection만 나고 아이콘이 그대로였다
   const handleLike = async () => {
-    const { liked } = await toggleLike(postUuid);
-    setIsLiked(liked);
-    setLikeCount((prev) => Math.max(0, prev + (liked ? 1 : -1)));
+    setError(null);
+    try {
+      const { liked } = await toggleLike(postUuid);
+      setIsLiked(liked);
+      setLikeCount((prev) => Math.max(0, prev + (liked ? 1 : -1)));
+    } catch (err) {
+      console.error("[board] 좋아요 실패:", err);
+      setError(t("likeFailed"));
+    }
   };
 
   const handleBookmark = async () => {
-    const { bookmarked } = await toggleBookmark(postUuid);
-    setIsBookmarked(bookmarked);
+    setError(null);
+    try {
+      const { bookmarked } = await toggleBookmark(postUuid);
+      setIsBookmarked(bookmarked);
+    } catch (err) {
+      console.error("[board] 북마크 실패:", err);
+      setError(t("bookmarkFailed"));
+    }
   };
 
   const handleShare = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setCopyMessage(t("linkCopied"));
-    setTimeout(() => setCopyMessage(""), 2500);
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopyMessage(t("linkCopied"));
+      setTimeout(() => setCopyMessage(""), 2500);
+    } catch (err) {
+      // 권한 거부/비보안 컨텍스트에서 clipboard API가 실패할 수 있다
+      console.error("[board] 링크 복사 실패:", err);
+      setError(t("copyFailed"));
+    }
   };
 
   return (
@@ -112,20 +135,20 @@ export default function AuthorBar({
           </div>
 
           {!isAuthor && (
-            <button
-              type="button"
-              onClick={() => setIsFollowing((prev) => !prev)}
-              className={`rounded-full px-6 py-2.5 text-sm font-semibold transition ${
-                isFollowing
-                  ? "border border-gray-300 bg-white text-black hover:bg-gray-50"
-                  : "bg-black text-white hover:bg-gray-800"
-              }`}
-            >
-              {isFollowing ? t("following") : t("follow")}
-            </button>
+            <FollowButton
+              targetUuid={authorUuid}
+              initialIsFollowing={initialIsAuthorFollowed}
+              className="rounded-full px-6 py-2.5 text-sm font-semibold"
+            />
           )}
         </div>
       </div>
+
+      {error && (
+        <p role="alert" className="mt-3 text-sm text-red-500">
+          {error}
+        </p>
+      )}
     </>
   );
 }

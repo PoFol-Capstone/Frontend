@@ -19,8 +19,19 @@ export class ApiError extends Error {
 function toApiError(error: unknown): ApiError {
   if (axios.isAxiosError(error)) {
     const status = error.response?.status;
-    const serverMessage = (error.response?.data as { message?: string } | undefined)
-      ?.message;
+    // 백엔드는 에러 메시지를 두 가지 형태로 보낸다:
+    //   - GlobalExceptionHandler(400 등): { "error": "이미 팔로우한 유저입니다" }
+    //   - Spring 기본 응답:              { "message": "..." }
+    // 예전엔 message만 읽어서 GlobalExceptionHandler가 붙여준 메시지가 전부 유실됐다.
+    const data = error.response?.data as
+      | { message?: unknown; error?: unknown }
+      | undefined;
+    const serverMessage =
+      typeof data?.message === "string" && data.message
+        ? data.message
+        : typeof data?.error === "string" && data.error
+          ? data.error
+          : undefined;
     return new ApiError(
       status,
       serverMessage ?? error.message ?? "요청 처리 중 오류가 발생했습니다.",
