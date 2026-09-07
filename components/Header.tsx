@@ -7,12 +7,22 @@ import { useNavigation } from "@/components/NavigationProvider";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { shortSchoolName } from "@/lib/schoolName";
+import type { SchoolNames } from "@/types/school";
 
 import { Bell, Search, CirclePlus, User } from "lucide-react";
 
-export default function Header({ session }: { session: string | null }) {
+export default function Header({
+  session,
+  school,
+}: {
+  session: string | null;
+  /** 학교 인증을 마친 유저의 학교명. 미인증이면 null */
+  school: SchoolNames | null;
+}) {
   const t = useTranslations("header");
+  const locale = useLocale();
   const isLoggedIn = !!session;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -73,9 +83,14 @@ export default function Header({ session }: { session: string | null }) {
         <Link
           href={isLoggedIn ? "/board" : "/"}
           onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
-          className="text-xl font-bold"
+          className="flex shrink-0 items-baseline text-xl font-bold"
         >
           PoFoL
+          {school && (
+            <span className="ml-1.5 text-base font-medium text-gray-400">
+              | {shortSchoolName(school, locale)}
+            </span>
+          )}
         </Link>
 
         {isLoggedIn ? (

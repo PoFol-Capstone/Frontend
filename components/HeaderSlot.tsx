@@ -1,4 +1,5 @@
 import { getSession } from "@/lib/session";
+import { getSchoolCookie } from "@/lib/school";
 import Header from "@/components/Header";
 
 /**
@@ -10,8 +11,8 @@ import Header from "@/components/Header";
  * `<Suspense fallback={<HeaderFallback />}>`로 감싼다.
  */
 export default async function HeaderSlot() {
-  const session = await getSession();
-  return <Header session={session} />;
+  const [session, school] = await Promise.all([getSession(), getSchoolCookie()]);
+  return <Header session={session} school={school} />;
 }
 
 /** static shell에 들어가는 헤더 자리 — 실제 헤더와 높이가 같아야 레이아웃이 흔들리지 않는다 */

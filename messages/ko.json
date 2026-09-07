@@ -441,6 +441,24 @@
       "title": "언어 설정",
       "desc": "서비스에서 표시할 언어를 선택할 수 있습니다."
     },
+    "school": {
+      "title": "학교 인증",
+      "desc": "학교 이메일로 소속 대학을 인증하면 사이트 이름 옆에 학교가 표시됩니다.",
+      "emailLabel": "학교 이메일",
+      "emailPlaceholder": "example@kangnam.ac.kr",
+      "sendCode": "인증 코드 받기",
+      "sending": "발송 중...",
+      "codeSentTo": "{school} 이메일로 인증 코드를 보냈습니다. 5분 이내에 입력해주세요.",
+      "codeLabel": "인증 코드",
+      "verify": "인증하기",
+      "verifying": "인증 중...",
+      "verifiedAt": "{school} 인증 완료",
+      "verifiedNotice": "{school} 인증이 완료되었습니다.",
+      "reverify": "다른 학교로 다시 인증",
+      "cancel": "취소",
+      "emailRequired": "학교 이메일을 입력해주세요.",
+      "statusUnavailable": "학교 인증 상태를 불러올 수 없습니다. 페이지를 새로고침해주세요."
+    },
     "notifications": {
       "title": "알림 설정",
       "desc": "팔로우, 좋아요, 북마크, 지원, 모집 관련 알림을 관리할 수 있습니다.",

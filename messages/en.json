@@ -441,6 +441,24 @@
       "title": "Language",
       "desc": "Choose the language displayed in the service."
     },
+    "school": {
+      "title": "School verification",
+      "desc": "Verify your university with your school email to show it next to the site name.",
+      "emailLabel": "School email",
+      "emailPlaceholder": "example@kangnam.ac.kr",
+      "sendCode": "Send code",
+      "sending": "Sending...",
+      "codeSentTo": "We sent a code to your {school} email. Enter it within 5 minutes.",
+      "codeLabel": "Verification code",
+      "verify": "Verify",
+      "verifying": "Verifying...",
+      "verifiedAt": "{school} verified",
+      "verifiedNotice": "{school} has been verified.",
+      "reverify": "Verify a different school",
+      "cancel": "Cancel",
+      "emailRequired": "Please enter your school email.",
+      "statusUnavailable": "Could not load your school verification status. Please refresh the page."
+    },
     "notifications": {
       "title": "Notifications",
       "desc": "Manage notifications for follows, likes, bookmarks, applications, and recruiting.",
