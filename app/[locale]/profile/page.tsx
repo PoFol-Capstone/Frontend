@@ -73,7 +73,12 @@ async function ProfileContent() {
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-10 py-8">
       <div className="mx-auto grid max-w-6xl grid-cols-[300px_1fr] gap-12">
-        <ProfileSidebar profile={profile} isOwner={true} followers={followers} />
+        <ProfileSidebar
+          profile={profile}
+          isOwner={true}
+          followers={followers}
+          viewerUuid={uuid}
+        />
 
         <section className="space-y-12">
           <section>

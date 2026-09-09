@@ -37,6 +37,17 @@ export type FollowerUser = {
   isFollowing: boolean;
 };
 
+// 백엔드 UserSearchResponse와 1:1 대응.
+export type UserSearchResult = {
+  uuid: string;
+  name: string;
+  avatarUrl: string | null;
+  bio: string | null;
+  position: string | null;
+  followerCount: number;
+  isFollowing: boolean;
+};
+
 export type ProfileUpdateRequest = {
   name: string;
   bio: string;

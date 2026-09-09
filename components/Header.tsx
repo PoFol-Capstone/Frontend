@@ -4,7 +4,7 @@ import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useNavigation } from "@/components/NavigationProvider";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useLocale, useTranslations } from "next-intl";
@@ -29,6 +29,7 @@ export default function Header({
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
   const { handleLinkClick } = useNavigation();
   const [keyword, setKeyword] = useState("");
 
@@ -38,8 +39,14 @@ export default function Header({
     const trimmed = keyword.trim();
     if (!trimmed) return;
 
-    router.push('/search?q=${encodeURIComponent(trimmed)}');
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
+
+  useEffect(() => {
+    if (pathname === "/board") {
+      setKeyword("");
+    }
+  }, [pathname]);
 
   const {
     unreadCount,

@@ -97,6 +97,8 @@ export type PostListParams = {
   authorUuid?: string;
   /** 로그인한 유저 본인의 학교 게시물만 조회 (학교 탭 전용) */
   mySchoolOnly?: boolean;
+  /** 제목/내용/태그 검색 키워드 */
+  keyword?: string;
 };
 
 export type PagedResponse<T> = {

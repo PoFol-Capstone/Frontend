@@ -12,9 +12,9 @@ export function Skeleton({ className = "" }: { className?: string }) {
 }
 
 /** 카드 그리드용 스켈레톤 (게시글 목록 등) */
-export function SkeletonCardGrid({ count = 8 }: { count?: number }) {
+export function SkeletonCardGrid({ count = 9 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: count }, (_, i) => (
         <div key={i} className="space-y-3">
           <Skeleton className="aspect-video w-full" />

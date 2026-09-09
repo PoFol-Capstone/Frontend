@@ -1,11 +1,23 @@
 "use server";
 
-import { Profile, FollowerUser, ProfileUpdateRequest } from "@/types/user";
+import {
+  Profile,
+  FollowerUser,
+  ProfileUpdateRequest,
+  UserSearchResult,
+} from "@/types/user";
 import { requireSessionUuid } from "./authGuard";
 import { http } from "./http.server";
 
 export default async function getUser(uuid: string): Promise<Profile> {
   const res = await http.get<Profile>(`/api/user/${uuid}`);
+  return res.data;
+}
+
+export async function searchUsers(keyword: string): Promise<UserSearchResult[]> {
+  const res = await http.get<UserSearchResult[]>("/api/user/search", {
+    params: { q: keyword },
+  });
   return res.data;
 }
 

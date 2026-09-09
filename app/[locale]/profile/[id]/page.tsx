@@ -61,6 +61,7 @@ async function UserProfileContent({ params }: Props) {
           profile={profile}
           isOwner={isOwner}
           followers={followers}
+          viewerUuid={sessionUuid}
         />
 
         <section className="space-y-12">

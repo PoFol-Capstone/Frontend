@@ -12,9 +12,11 @@ import { useTranslations } from "next-intl";
 type Props = {
   onClose: () => void;
   followers: FollowerUser[];
+  /** 로그인한 조회자 uuid — 목록에 본인이 있을 때 팔로우 버튼을 숨기기 위함 */
+  viewerUuid?: string | null;
 };
 
-export default function FollowerModal({ onClose, followers }: Props) {
+export default function FollowerModal({ onClose, followers, viewerUuid }: Props) {
   const t = useTranslations("profile.followerModal");
   const tFollow = useTranslations("profile.follow");
   const tCommon = useTranslations("common");
@@ -116,19 +118,21 @@ export default function FollowerModal({ onClose, followers }: Props) {
                 <span>{user.name}</span>
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleToggleFollow(user)}
-                disabled={pendingUuid === user.uuid}
-                aria-pressed={user.isFollowing}
-                className={`rounded-lg px-3 py-1 text-sm transition disabled:opacity-50 ${
-                  user.isFollowing
-                    ? "border border-black bg-white text-black hover:bg-gray-100"
-                    : "bg-black text-white hover:bg-gray-800"
-                }`}
-              >
-                {user.isFollowing ? tFollow("following") : tFollow("follow")}
-              </button>
+              {user.uuid !== viewerUuid && (
+                <button
+                  type="button"
+                  onClick={() => handleToggleFollow(user)}
+                  disabled={pendingUuid === user.uuid}
+                  aria-pressed={user.isFollowing}
+                  className={`rounded-lg px-3 py-1 text-sm transition disabled:opacity-50 ${
+                    user.isFollowing
+                      ? "border border-black bg-white text-black hover:bg-gray-100"
+                      : "bg-black text-white hover:bg-gray-800"
+                  }`}
+                >
+                  {user.isFollowing ? tFollow("following") : tFollow("follow")}
+                </button>
+              )}
             </div>
           ))}
 

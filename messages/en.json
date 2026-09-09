@@ -479,7 +479,10 @@
     "following": "Following",
     "follow": "Follow",
     "collapse": "Collapse",
-    "showMoreUsers": "Show more users"
+    "showMoreUsers": "Show more users",
+    "noResults": "No results found.",
+    "loading": "Searching...",
+    "followFailed": "Failed to update follow status."
   },
   "bookmark": {
     "title": "Bookmarks",

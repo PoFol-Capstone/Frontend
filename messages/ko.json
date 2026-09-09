@@ -479,7 +479,10 @@
     "following": "팔로잉",
     "follow": "팔로우",
     "collapse": "접기",
-    "showMoreUsers": "Users 더보기"
+    "showMoreUsers": "Users 더보기",
+    "noResults": "검색 결과가 없습니다.",
+    "loading": "검색 중...",
+    "followFailed": "팔로우 처리에 실패했습니다."
   },
   "bookmark": {
     "title": "북마크",
