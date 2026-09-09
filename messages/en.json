@@ -122,6 +122,8 @@
   },
   "board": {
     "empty": "No posts yet.",
+    "schoolVerificationRequired": "Verify your school to see posts only from people at your school.",
+    "schoolLoading": "Loading posts from your school...",
     "categories": {
       "all": "All",
       "recruiting": "Recruiting",

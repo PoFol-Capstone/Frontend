@@ -80,18 +80,24 @@ export default function Header({
   return (
     <header className="border-b border-gray-200 bg-white px-10 py-4">
       <div className="mx-auto flex items-center justify-between">
-        <Link
-          href={isLoggedIn ? "/board" : "/"}
-          onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
-          className="flex shrink-0 items-baseline text-xl font-bold"
-        >
-          PoFoL
+        <div className="flex shrink-0 items-baseline">
+          <Link
+            href={isLoggedIn ? "/board" : "/"}
+            onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
+            className="text-xl font-bold"
+          >
+            PoFoL
+          </Link>
           {school && (
-            <span className="ml-1.5 text-base font-medium text-gray-400">
+            <Link
+              href="/board?category=School"
+              onClick={(e) => handleLinkClick(e, "/board?category=School")}
+              className="ml-1.5 text-base font-medium text-gray-400 hover:text-gray-600"
+            >
               | {shortSchoolName(school, locale)}
-            </span>
+            </Link>
           )}
-        </Link>
+        </div>
 
         {isLoggedIn ? (
           <>

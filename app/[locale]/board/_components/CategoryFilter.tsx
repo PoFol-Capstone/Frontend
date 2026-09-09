@@ -2,9 +2,11 @@
 
 import { useTranslations } from "next-intl";
 
-const categories = ["All", "Recruiting", "School", "Bookmarks"] as const;
+export const CATEGORIES = ["All", "Recruiting", "School", "Bookmarks"] as const;
 
-const CATEGORY_LABEL_KEYS: Record<(typeof categories)[number], string> = {
+export type Category = (typeof CATEGORIES)[number];
+
+const CATEGORY_LABEL_KEYS: Record<Category, string> = {
   All: "all",
   Recruiting: "recruiting",
   School: "school",
@@ -12,8 +14,8 @@ const CATEGORY_LABEL_KEYS: Record<(typeof categories)[number], string> = {
 };
 
 interface Props {
-  selected: string;
-  onSelect: (category: string) => void;
+  selected: Category;
+  onSelect: (category: Category) => void;
 }
 
 export default function CategoryFilter({ selected, onSelect }: Props) {
@@ -21,7 +23,7 @@ export default function CategoryFilter({ selected, onSelect }: Props) {
 
   return (
     <section className="mb-8 flex flex-wrap gap-2">
-      {categories.map((category) => (
+      {CATEGORIES.map((category) => (
         <button
           key={category}
           type="button"

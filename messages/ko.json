@@ -122,6 +122,8 @@
   },
   "board": {
     "empty": "등록된 게시물이 없습니다.",
+    "schoolVerificationRequired": "학교 인증을 하면 같은 학교 사람들의 게시물만 모아볼 수 있어요.",
+    "schoolLoading": "같은 학교 게시물을 불러오는 중이에요...",
     "categories": {
       "all": "전체",
       "recruiting": "모집중",

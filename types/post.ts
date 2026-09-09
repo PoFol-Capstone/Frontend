@@ -95,6 +95,8 @@ export type PostListParams = {
   tagId?: number;
   skillId?: number;
   authorUuid?: string;
+  /** 로그인한 유저 본인의 학교 게시물만 조회 (학교 탭 전용) */
+  mySchoolOnly?: boolean;
 };
 
 export type PagedResponse<T> = {
