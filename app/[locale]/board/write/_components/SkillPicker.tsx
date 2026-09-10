@@ -18,9 +18,11 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestIdRef = useRef(0);
 
   const search = useCallback(
     async (q: string) => {
+      const requestId = ++requestIdRef.current;
       setIsLoading(true);
       try {
         const url = q
@@ -28,13 +30,15 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
           : "/api/skills";
         const res = await fetch(url);
         const data: Skill[] = await res.json();
+        if (requestId !== requestIdRef.current) return;
         setResults(
           data.filter((s) => !selected.some((sel) => sel.id === s.id)),
         );
       } catch {
+        if (requestId !== requestIdRef.current) return;
         setResults([]);
       } finally {
-        setIsLoading(false);
+        if (requestId === requestIdRef.current) setIsLoading(false);
       }
     },
     [selected],

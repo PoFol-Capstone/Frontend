@@ -1,6 +1,6 @@
 import { put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
-import { generatePastelSvgBuffer } from "./_lib";
+import { getThumbnailProvider } from "./providers";
 import { getSessionUuid } from "@/lib/session";
 import { rateLimit, rateLimitResponse } from "@/lib/rateLimit";
 
@@ -21,17 +21,19 @@ export async function POST(req: NextRequest) {
     const { projectName, techStack, projectDescription, mainFeatures } =
       await req.json();
 
-    const buffer = generatePastelSvgBuffer({
+    const provider = getThumbnailProvider();
+    const asset = await provider.generate({
       projectName,
       techStack: Array.isArray(techStack) ? techStack : [],
       projectDescription,
       mainFeatures,
     });
 
-    const blob = await put(`thumbnails/ai-${Date.now()}.svg`, buffer, {
-      access: "public",
-      contentType: "image/svg+xml",
-    });
+    const blob = await put(
+      `thumbnails/ai-${Date.now()}.${asset.extension}`,
+      asset.buffer,
+      { access: "public", contentType: asset.contentType },
+    );
 
     return NextResponse.json({ url: blob.url });
   } catch (error: unknown) {

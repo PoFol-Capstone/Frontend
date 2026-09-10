@@ -16,12 +16,15 @@ interface Props {
   profile: Profile;
   isOwner: boolean;
   followers?: FollowerUser[];
+  /** 로그인한 조회자 uuid — 팔로워 목록에서 본인 항목의 팔로우 버튼을 숨기기 위함 */
+  viewerUuid?: string | null;
 }
 
 export default function ProfileSidebar({
   profile,
   isOwner,
   followers = [],
+  viewerUuid,
 }: Props) {
   const t = useTranslations("profile.sidebar");
   const githubUrl = profile.links.find((link) => link.type === "GITHUB")?.url;
@@ -34,8 +37,13 @@ export default function ProfileSidebar({
   return (
     <>
       <aside className="h-fit border border-gray-300 px-8 py-7 text-center">
-        <div className="mx-auto mb-4">
-          <Avatar src={profile.avatarUrl} name={profile.name} size="lg" />
+        <div className="mb-4">
+          <Avatar
+            src={profile.avatarUrl}
+            name={profile.name}
+            size="lg"
+            className="mx-auto"
+          />
         </div>
 
         <h1 className="text-3xl font-bold">{profile.name}</h1>
@@ -154,6 +162,7 @@ export default function ProfileSidebar({
         <FollowerModal
           onClose={() => setIsFollowerOpen(false)}
           followers={followers}
+          viewerUuid={viewerUuid}
         />
       )}
     </>

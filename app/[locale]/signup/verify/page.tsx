@@ -4,18 +4,18 @@ import { useSessionToast } from "@/hooks/useSessionToast";
 import { login, register, verifyOtp } from "@/lib/auth";
 import { saveLogin } from "@/lib/session";
 import { useRouter } from "@/i18n/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import OtpInput, { OTP_LENGTH } from "@/components/OtpInput";
 
 export default function SignupVerifyPage() {
   const t = useTranslations("auth.verify");
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [digits, setDigits] = useState<string[]>(Array(6).fill(""));
+  const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const toastMessage = useSessionToast("toastMessage");
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     const singupEmail = sessionStorage.getItem("signupEmail");
@@ -28,60 +28,7 @@ export default function SignupVerifyPage() {
     }
 
     setEmail(savedEmail);
-    inputRefs.current[0]?.focus();
   }, [router]);
-
-  const handleChange = (index: number, value: string) => {
-    const char = value.replace(/\D/g, "").slice(-1);
-    const next = [...digits];
-    next[index] = char;
-    setDigits(next);
-
-    if (char && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
-    if (e.key === "Backspace") {
-      if (digits[index]) {
-        const next = [...digits];
-        next[index] = "";
-        setDigits(next);
-      } else if (index > 0) {
-        inputRefs.current[index - 1]?.focus();
-      }
-    } else if (e.key === "ArrowLeft" && index > 0) {
-      inputRefs.current[index - 1]?.focus();
-    } else if (e.key === "ArrowRight" && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handlePaste = (e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const pasted = e.clipboardData
-      .getData("text")
-      .replace(/\D/g, "")
-      .slice(0, 6);
-    const next = Array(6).fill("");
-    pasted.split("").forEach((char, i) => {
-      next[i] = char;
-    });
-    setDigits(next);
-    const focusIndex = Math.min(pasted.length, 5);
-    inputRefs.current[focusIndex]?.focus();
-  };
-
-  useEffect(() => {
-    if (digits.every((d) => d !== "")) {
-      verify(digits.join(""));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [digits]);
 
   const verify = async (code: string) => {
     if (code.length !== 6) {
@@ -149,24 +96,12 @@ export default function SignupVerifyPage() {
             verify(digits.join(""));
           }}
         >
-          <div className="flex gap-3">
-            {digits.map((digit, index) => (
-              <input
-                key={index}
-                ref={(el) => {
-                  inputRefs.current[index] = el;
-                }}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleChange(index, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-                onPaste={handlePaste}
-                className="h-14 w-11 rounded-lg border-2 border-gray-200 text-center text-xl font-semibold outline-none transition-colors focus:border-black"
-              />
-            ))}
-          </div>
+          <OtpInput
+            digits={digits}
+            onChange={setDigits}
+            onComplete={verify}
+            autoFocus
+          />
 
           <button
             type="submit"

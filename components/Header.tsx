@@ -4,21 +4,32 @@ import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useNavigation } from "@/components/NavigationProvider";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { shortSchoolName } from "@/lib/schoolName";
+import type { SchoolNames } from "@/types/school";
 
 import { Bell, Search, CirclePlus, User } from "lucide-react";
 
-export default function Header({ session }: { session: string | null }) {
+export default function Header({
+  session,
+  school,
+}: {
+  session: string | null;
+  /** 학교 인증을 마친 유저의 학교명. 미인증이면 null */
+  school: SchoolNames | null;
+}) {
   const t = useTranslations("header");
+  const locale = useLocale();
   const isLoggedIn = !!session;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const router = useRouter();
+  const pathname = usePathname();
   const { handleLinkClick } = useNavigation();
   const [keyword, setKeyword] = useState("");
 
@@ -28,8 +39,14 @@ export default function Header({ session }: { session: string | null }) {
     const trimmed = keyword.trim();
     if (!trimmed) return;
 
-    router.push('/search?q=${encodeURIComponent(trimmed)}');
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
+
+  useEffect(() => {
+    if (pathname === "/board") {
+      setKeyword("");
+    }
+  }, [pathname]);
 
   const {
     unreadCount,
@@ -70,13 +87,24 @@ export default function Header({ session }: { session: string | null }) {
   return (
     <header className="border-b border-gray-200 bg-white px-10 py-4">
       <div className="mx-auto flex items-center justify-between">
-        <Link
-          href={isLoggedIn ? "/board" : "/"}
-          onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
-          className="text-xl font-bold"
-        >
-          PoFoL
-        </Link>
+        <div className="flex shrink-0 items-baseline">
+          <Link
+            href={isLoggedIn ? "/board" : "/"}
+            onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
+            className="text-xl font-bold"
+          >
+            PoFoL
+          </Link>
+          {school && (
+            <Link
+              href="/board?category=School"
+              onClick={(e) => handleLinkClick(e, "/board?category=School")}
+              className="ml-1.5 text-base font-medium text-gray-400 hover:text-gray-600"
+            >
+              | {shortSchoolName(school, locale)}
+            </Link>
+          )}
+        </div>
 
         {isLoggedIn ? (
           <>

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { getApplicants } from "@/lib/apply";
-import { getPosts } from "@/lib/post";
+import { getUserPosts } from "@/lib/post";
 import { getSessionUuid } from "@/lib/session";
 import { PostType } from "@/types/post";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -32,10 +32,7 @@ async function RecruitmentContent({ searchParams }: Props) {
     return null;
   }
 
-  const postsData = await getPosts({
-    type: PostType.RECRUIT,
-    authorUuid: uuid,
-  });
+  const postsData = await getUserPosts(uuid, { type: PostType.RECRUIT });
   const posts = postsData.content;
 
   const selectedPostUuid = postId ?? posts[0]?.uuid;
