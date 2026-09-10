@@ -88,7 +88,7 @@ export default function Header({
   return (
     <header className="border-b border-gray-200 bg-white px-4 py-4 sm:px-10">
       <div className="mx-auto flex min-h-9 flex-wrap items-center justify-between gap-x-3 gap-y-3">
-        <div className="flex min-w-0 shrink-0 items-center">
+        <div className="flex min-w-0 shrink-0 items-end">
           <Link
             href={isLoggedIn ? "/board" : "/"}
             onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
