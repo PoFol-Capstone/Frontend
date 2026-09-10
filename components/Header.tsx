@@ -1,6 +1,7 @@
 "use client";
 
 import NotificationDrawer from "@/components/NotificationDrawer";
+import BrandLogo from "@/components/BrandLogo";
 import ProfileMenu from "@/components/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useNavigation } from "@/components/NavigationProvider";
@@ -85,21 +86,21 @@ export default function Header({
   }, []);
 
   return (
-    <header className="border-b border-gray-200 bg-white px-10 py-4">
-      <div className="mx-auto flex items-center justify-between">
-        <div className="flex shrink-0 items-baseline">
+    <header className="border-b border-gray-200 bg-white px-4 py-4 sm:px-10">
+      <div className="mx-auto flex min-h-9 flex-wrap items-center justify-between gap-x-3 gap-y-3">
+        <div className="flex min-w-0 shrink-0 items-center">
           <Link
             href={isLoggedIn ? "/board" : "/"}
             onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
-            className="text-xl font-bold"
+            className="inline-flex shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
           >
-            PoFoL
+            <BrandLogo />
           </Link>
           {school && (
             <Link
               href="/board?category=School"
               onClick={(e) => handleLinkClick(e, "/board?category=School")}
-              className="ml-1.5 text-base font-medium text-gray-400 hover:text-gray-600"
+              className="ml-1.5 max-w-24 truncate text-sm font-medium text-gray-400 hover:text-gray-600 sm:max-w-40 sm:text-base"
             >
               | {shortSchoolName(school, locale)}
             </Link>
@@ -108,7 +109,7 @@ export default function Header({
 
         {isLoggedIn ? (
           <>
-            <div className="flex flex-1 justify-center px-10">
+            <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:px-4 lg:px-10">
               <form
                 onSubmit={handleSearch}
                 className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2">
@@ -123,7 +124,7 @@ export default function Header({
               </form>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex shrink-0 items-center gap-3 sm:gap-4">
               <Link
                 href="/board/write"
                 onClick={(e) => handleLinkClick(e, "/board/write")}

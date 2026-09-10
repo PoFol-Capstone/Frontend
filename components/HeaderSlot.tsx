@@ -1,6 +1,7 @@
 import { getSession } from "@/lib/session";
 import { getSchoolCookie } from "@/lib/school";
 import Header from "@/components/Header";
+import BrandLogo from "@/components/BrandLogo";
 
 /**
  * 세션 쿠키를 읽어 Header에 넘기는 서버 컴포넌트.
@@ -18,9 +19,9 @@ export default async function HeaderSlot() {
 /** static shell에 들어가는 헤더 자리 — 실제 헤더와 높이가 같아야 레이아웃이 흔들리지 않는다 */
 export function HeaderFallback() {
   return (
-    <header className="border-b border-gray-200 bg-white px-10 py-4">
-      <div className="mx-auto flex items-center justify-between">
-        <span className="text-xl font-bold">PoFoL</span>
+    <header className="border-b border-gray-200 bg-white px-4 py-4 sm:px-10">
+      <div className="mx-auto flex min-h-9 items-center justify-between">
+        <BrandLogo />
         <div className="h-9" />
       </div>
     </header>

@@ -9,7 +9,7 @@ import { Suspense } from "react";
 import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
-  title: "PoFol",
+  title: "Pofol",
   description: "개발자 팀 매칭 & 포트폴리오 플랫폼",
 };
 

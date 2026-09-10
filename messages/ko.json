@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "PoFoL",
+    "appName": "Pofol",
     "close": "닫기",
     "retry": "다시 시도",
     "loading": "불러오는 중..."
@@ -118,7 +118,7 @@
       "title": "지금 바로 시작하세요",
       "button": "무료로 시작하기 →"
     },
-    "footer": "© 2026 PoFol"
+    "footer": "© 2026 Pofol"
   },
   "board": {
     "empty": "등록된 게시물이 없습니다.",

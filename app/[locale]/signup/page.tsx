@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "@/i18n/navigation";
+import BrandLogo from "@/components/BrandLogo";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -23,6 +24,7 @@ export default function SignupPage() {
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-16">
       <section className="mx-auto flex w-full max-w-md flex-col items-center px-8 py-12">
+        <BrandLogo variant="symbol" className="mb-6" />
         <h1 className="mb-6 text-3xl font-bold">{t("title")}</h1>
 
         <form
