@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "PoFoL",
+    "appName": "Pofol",
     "close": "Close",
     "retry": "Try again",
     "loading": "Loading..."
@@ -118,7 +118,7 @@
       "title": "Get started right now",
       "button": "Start for free →"
     },
-    "footer": "© 2026 PoFol"
+    "footer": "© 2026 Pofol"
   },
   "board": {
     "empty": "No posts yet.",

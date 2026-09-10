@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import BrandLogo from "@/components/BrandLogo";
 import { getSession } from "@/lib/session";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link, redirect } from "@/i18n/navigation";
@@ -24,7 +25,8 @@ async function HomeContent() {
   return (
     <main className="min-h-screen bg-white text-black">
       {/* 히어로 */}
-      <section className="flex flex-col items-center justify-center text-center py-32 gap-6">
+      <section className="flex flex-col items-center justify-center gap-6 px-6 py-16 text-center sm:py-24">
+        <BrandLogo variant="full" className="mb-2" />
         <h2 className="text-3xl font-bold">{t("hero.title")}</h2>
         <p className="text-gray-600">{t("hero.subtitle")}</p>
 
