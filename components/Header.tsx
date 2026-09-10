@@ -100,9 +100,9 @@ export default function Header({
             <Link
               href="/board?category=School"
               onClick={(e) => handleLinkClick(e, "/board?category=School")}
-              className="ml-1.5 max-w-24 truncate text-sm font-medium text-gray-400 hover:text-gray-600 sm:max-w-40 sm:text-base"
+              className="ml-3 max-w-24 truncate text-sm font-medium text-gray-400 hover:text-gray-600 sm:ml-4 sm:max-w-40 sm:text-base"
             >
-              | {shortSchoolName(school, locale)}
+              | &nbsp;{shortSchoolName(school, locale)}
             </Link>
           )}
         </div>

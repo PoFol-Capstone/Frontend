@@ -39,24 +39,23 @@ export default function BrandLogo({
   }
 
   return (
-    <span className={`inline-flex h-8 shrink-0 items-center gap-2.5 ${className}`}>
+    // Frame the artwork's transparent padding without modifying the supplied PNG.
+    <span
+      className={`relative inline-block aspect-[1020/353] h-6 shrink-0 overflow-hidden sm:h-8 ${className}`}
+    >
       <Image
-        src="/brand/pofol-symbol.png"
+        src="/brand/main-logo-pofol.png"
         alt="Pofol"
-        width={213}
-        height={256}
-        sizes="27px"
+        width={2172}
+        height={724}
+        sizes="(max-width: 639px) 148px, 197px"
         loading="eager"
-        className="h-8 w-auto"
-      />
-      <Image
-        src="/brand/pofol-wordmark.png"
-        alt=""
-        width={565}
-        height={187}
-        sizes="85px"
-        loading="eager"
-        className="hidden h-7 w-auto sm:block"
+        className="absolute h-auto max-w-none"
+        style={{
+          width: `${(2172 / 1020) * 100}%`,
+          left: `${(-576 / 1020) * 100}%`,
+          top: `${(-176 / 353) * 100}%`,
+        }}
       />
     </span>
   );
