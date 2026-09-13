@@ -74,19 +74,22 @@ export default function LoginPage() {
 
         {message && <p className="mt-4 text-sm text-gray-500">{message}</p>}
 
-        <div className="my-6 flex w-full items-center gap-3">
-          <div className="h-px flex-1 bg-gray-200" />
-          <span className="text-xs text-gray-400">{t("or")}</span>
-          <div className="h-px flex-1 bg-gray-200" />
-        </div>
+        {/* TODO: 임시로 GitHub 로그인 숨김 처리 */}
+        <div className="hidden">
+          <div className="my-6 flex w-full items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-xs text-gray-400">{t("or")}</span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
 
-        <div className="flex w-full flex-col gap-3">
-          <button
-            type="button"
-            className="rounded-lg border px-4 py-3 text-sm font-medium"
-          >
-            {t("githubContinue")}
-          </button>
+          <div className="flex w-full flex-col gap-3">
+            <button
+              type="button"
+              className="rounded-lg border px-4 py-3 text-sm font-medium"
+            >
+              {t("githubContinue")}
+            </button>
+          </div>
         </div>
 
         <p className="mt-8 text-sm text-gray-500">

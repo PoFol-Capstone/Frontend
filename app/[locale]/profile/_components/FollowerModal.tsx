@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import { X } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
 import { useModalA11y } from "@/hooks/useModalA11y";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { followUser, unfollowUser } from "@/lib/user";
 import type { FollowerUser } from "@/types/user";
 import { useTranslations } from "next-intl";
@@ -113,10 +113,14 @@ export default function FollowerModal({ onClose, followers, viewerUuid }: Props)
               key={user.uuid}
               className="flex items-center justify-between rounded-lg p-3 transition hover:bg-gray-100"
             >
-              <div className="flex items-center gap-2">
+              <Link
+                href={`/profile/${user.uuid}`}
+                onClick={onClose}
+                className="group flex items-center gap-2"
+              >
                 <Avatar src={user.avatarUrl} name={user.name} size="sm" />
-                <span>{user.name}</span>
-              </div>
+                <span className="group-hover:underline">{user.name}</span>
+              </Link>
 
               {user.uuid !== viewerUuid && (
                 <button

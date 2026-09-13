@@ -4,10 +4,11 @@ import { createPost } from "@/lib/post";
 import type { PostLink } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
 import { useRouter } from "@/i18n/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Monitor, Users, ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { Skill } from "@/types/skill";
 import ProjectInfoSection from "./_components/ProjectInfoSection";
 import TagsSection from "./_components/TagsSection";
 import TeamRecruitSection from "./_components/TeamRecruitSection";
@@ -18,6 +19,26 @@ import { useGithubRepos } from "./_hooks/useGithubRepos";
 import { useProjectForm } from "./_hooks/useProjectForm";
 
 type PostTypeSelection = "project" | "recruit" | null;
+
+// GitHub 연동은 SPA를 벗어나는 풀 페이지 리다이렉트를 거치므로, 돌아왔을 때
+// 폼 상태를 복원할 수 있도록 탭이 열려 있는 동안 sessionStorage에 임시 저장한다.
+const DRAFT_KEY = "board-write-draft";
+
+type Draft = {
+  currentStep: number;
+  postTypeSelection: PostTypeSelection;
+  tags: string[];
+  uploadLinks: Record<UploadSectionId, string>;
+  teamRecruitEnabled: boolean;
+  recruitDescription: string;
+  roleCounts: Record<string, number>;
+  projectName: string;
+  projectDescription: string;
+  mainFeatures: string;
+  deployUrl: string;
+  thumbnailUrl: string;
+  selectedSkills: Skill[];
+};
 
 export default function Page() {
   const t = useTranslations("board.write");
@@ -43,6 +64,77 @@ export default function Page() {
   const [recruitDescription, setRecruitDescription] = useState("");
   const [roleCounts, setRoleCounts] = useState<Record<string, number>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDraftRestored, setIsDraftRestored] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // 마운트 시 1회: 이전에 저장된 임시 작성본이 있으면 복원한다(GitHub 연동
+  // 리다이렉트로 페이지가 완전히 새로 로드된 경우 등).
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const draft = JSON.parse(raw) as Partial<Draft>;
+        if (draft.postTypeSelection) setPostTypeSelection(draft.postTypeSelection);
+        if (draft.currentStep) setCurrentStep(draft.currentStep);
+        if (draft.tags) setTags(draft.tags);
+        if (draft.uploadLinks) setUploadLinks(draft.uploadLinks);
+        if (draft.teamRecruitEnabled) setTeamRecruitEnabled(draft.teamRecruitEnabled);
+        if (draft.recruitDescription) setRecruitDescription(draft.recruitDescription);
+        if (draft.roleCounts) setRoleCounts(draft.roleCounts);
+        if (draft.projectName) project.setProjectName(draft.projectName);
+        if (draft.projectDescription) project.setProjectDescription(draft.projectDescription);
+        if (draft.mainFeatures) project.setMainFeatures(draft.mainFeatures);
+        if (draft.deployUrl) project.setDeployUrl(draft.deployUrl);
+        if (draft.thumbnailUrl) project.setThumbnailUrl(draft.thumbnailUrl);
+        if (draft.selectedSkills) project.handleSkillsChange(draft.selectedSkills);
+      }
+    } catch {
+      // sessionStorage 접근 실패 시 조용히 무시하고 빈 폼으로 진행
+    } finally {
+      setIsDraftRestored(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 복원이 끝난 뒤부터는 입력이 바뀔 때마다 임시 저장한다.
+  useEffect(() => {
+    if (!isDraftRestored) return;
+    const draft: Draft = {
+      currentStep,
+      postTypeSelection,
+      tags,
+      uploadLinks,
+      teamRecruitEnabled,
+      recruitDescription,
+      roleCounts,
+      projectName: project.projectName,
+      projectDescription: project.projectDescription,
+      mainFeatures: project.mainFeatures,
+      deployUrl: project.deployUrl,
+      thumbnailUrl: project.thumbnailUrl,
+      selectedSkills: project.selectedSkills,
+    };
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // 저장 공간 초과 등은 무시 — 임시 저장은 best-effort
+    }
+  }, [
+    isDraftRestored,
+    currentStep,
+    postTypeSelection,
+    tags,
+    uploadLinks,
+    teamRecruitEnabled,
+    recruitDescription,
+    roleCounts,
+    project.projectName,
+    project.projectDescription,
+    project.mainFeatures,
+    project.deployUrl,
+    project.thumbnailUrl,
+    project.selectedSkills,
+  ]);
 
   const isRecruit = postTypeSelection === "recruit";
   const hasProject = !!project.projectName.trim();
@@ -81,6 +173,7 @@ export default function Page() {
   const handleSubmit = async () => {
     if (!canSubmit) return;
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       const projectcontent = [
         project.projectDescription,
@@ -125,9 +218,16 @@ export default function Page() {
         skillIds: project.selectedSkills.map((s) => s.id),
         tagNames: tags,
       });
+      try {
+        sessionStorage.removeItem(DRAFT_KEY);
+      } catch {
+        // 무시
+      }
       router.push(`/board/${post.uuid}`);
-    } catch {
-      // 에러는 서버 로그에서 확인
+    } catch (err) {
+      console.error("[board/write] createPost failed:", err);
+      const message = err instanceof Error ? err.message : String(err);
+      setSubmitError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -490,6 +590,10 @@ export default function Page() {
             }
             githubUrl={githubUrl}
           />
+
+          {submitError && (
+            <p className="text-sm text-red-500">{submitError}</p>
+          )}
 
           <div className="flex justify-between pt-2">
             <button

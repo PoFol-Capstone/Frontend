@@ -1,0 +1,288 @@
+"use client";
+
+import { Link } from "@/i18n/navigation";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { Avatar } from "@/components/Avatar";
+import { getPosts } from "@/lib/post";
+import { followUser, searchUsers, unfollowUser } from "@/lib/user";
+import type { ResponsePosts } from "@/types/post";
+import type { UserSearchResult } from "@/types/user";
+import { Users, Eye, Heart } from "lucide-react";
+import { useTranslations } from "next-intl";
+
+type Props = {
+  viewerUuid: string | null;
+};
+
+export default function SearchPageContent({ viewerUuid }: Props) {
+  const t = useTranslations("search");
+  const searchParams = useSearchParams();
+  const keyword = (searchParams.get("q") ?? "").trim();
+
+  const [showAllUsers, setShowAllUsers] = useState(false);
+  const [userList, setUserList] = useState<UserSearchResult[]>([]);
+  const [projects, setProjects] = useState<ResponsePosts[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [followError, setFollowError] = useState<string | null>(null);
+
+  // 키워드가 바뀌면 렌더링 중에 이전 검색 결과를 리셋한다 (BoardClient의 카테고리 동기화와 동일한 패턴)
+  const [syncedKeyword, setSyncedKeyword] = useState(keyword);
+  if (keyword !== syncedKeyword) {
+    setSyncedKeyword(keyword);
+    setShowAllUsers(false);
+    setFollowError(null);
+    setUserList([]);
+    setProjects([]);
+    setIsLoading(!!keyword);
+  }
+
+  useEffect(() => {
+    if (!keyword) return;
+
+    let cancelled = false;
+
+    Promise.all([
+      searchUsers(keyword).catch(() => []),
+      getPosts({ keyword, size: 20 }).catch(() => null),
+    ])
+      .then(([users, posts]) => {
+        if (cancelled) return;
+        setUserList(users);
+        setProjects(posts?.content ?? []);
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [keyword]);
+
+  const visibleUsers = showAllUsers ? userList : userList.slice(0, 2);
+
+  const handleFollowToggle = async (target: UserSearchResult) => {
+    setFollowError(null);
+    const next = !target.isFollowing;
+
+    setUserList((prev) =>
+      prev.map((user) =>
+        user.uuid === target.uuid
+          ? {
+              ...user,
+              isFollowing: next,
+              followerCount: user.followerCount + (next ? 1 : -1),
+            }
+          : user,
+      ),
+    );
+
+    try {
+      if (next) await followUser(target.uuid);
+      else await unfollowUser(target.uuid);
+    } catch {
+      setUserList((prev) =>
+        prev.map((user) =>
+          user.uuid === target.uuid
+            ? {
+                ...user,
+                isFollowing: target.isFollowing,
+                followerCount: target.followerCount,
+              }
+            : user,
+        ),
+      );
+      setFollowError(t("followFailed"));
+    }
+  };
+
+  return (
+    <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">
+      <div className="mx-auto max-w-6xl space-y-10">
+        {followError && (
+          <p role="alert" className="text-sm text-red-500">
+            {followError}
+          </p>
+        )}
+
+        {userList.length > 0 && (
+          <section>
+            <div className="mb-4 flex items-end justify-between">
+              <div>
+                <h2 className="text-xl font-bold">{t("userSection")}</h2>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {visibleUsers.map((user) => (
+                <div
+                  key={user.uuid}
+                  className="flex items-center justify-between rounded-2xl border border-gray-200 px-4 py-3 transition hover:border-gray-300 hover:bg-gray-50"
+                >
+                  <div className="flex items-center gap-3">
+                    <Avatar src={user.avatarUrl} name={user.name} size="md" />
+
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold">{user.name}</span>
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <Users className="h-3 w-3" />
+                          <span>{user.followerCount}</span>
+                        </div>
+                      </div>
+                      {user.position && (
+                        <p className="text-xs text-gray-500">
+                          {user.position}
+                        </p>
+                      )}
+                      {user.bio && (
+                        <p className="mt-1 text-sm text-gray-600">
+                          {user.bio}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/profile/${user.uuid}`}
+                      className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+                    >
+                      {t("viewProfile")}
+                    </Link>
+
+                    {user.uuid !== viewerUuid && (
+                      <button
+                        type="button"
+                        onClick={() => handleFollowToggle(user)}
+                        className={`rounded-full px-4 py-1.5 text-sm transition ${
+                          user.isFollowing
+                            ? "border border-gray-300 bg-white text-black hover:bg-gray-100"
+                            : "bg-black text-white hover:bg-gray-800"
+                        }`}
+                      >
+                        {user.isFollowing ? t("following") : t("follow")}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {userList.length > 2 && (
+              <div className="my-8 flex items-center gap-4">
+                <div className="h-px flex-1 bg-gray-200" />
+                <button
+                  type="button"
+                  onClick={() => setShowAllUsers((prev) => !prev)}
+                  className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+                >
+                  {showAllUsers ? t("collapse") : t("showMoreUsers")}
+                </button>
+                <div className="h-px flex-1 bg-gray-200" />
+              </div>
+            )}
+          </section>
+        )}
+
+        <section>
+          <div className="mb-4">
+            <h2 className="text-xl font-bold">{t("projectSection")}</h2>
+          </div>
+
+          {isLoading ? (
+            <p className="py-10 text-center text-sm text-gray-500">
+              {t("loading")}
+            </p>
+          ) : projects.length === 0 ? (
+            <p className="py-10 text-center text-sm text-gray-500">
+              {t("noResults")}
+            </p>
+          ) : (
+            <div className="flex flex-col gap-6">
+              {projects.map((project) => (
+                <Link
+                  key={project.uuid}
+                  href={`/board/${project.uuid}`}
+                  className="group flex gap-4 rounded-2xl transition hover:bg-gray-50"
+                >
+                  <div className="relative aspect-video w-[400px] shrink-0 overflow-hidden rounded-2xl bg-gray-100">
+                    {project.thumbnailUrl ? (
+                      <Image
+                        src={project.thumbnailUrl}
+                        alt={project.title ?? ""}
+                        fill
+                        sizes="400px"
+                        className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-gray-300">
+                        <svg
+                          width="40"
+                          height="40"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                        >
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <circle cx="8.5" cy="8.5" r="1.5" />
+                          <path d="m21 15-5-5L5 21" />
+                        </svg>
+                      </div>
+                    )}
+
+                    <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-transparent" />
+                  </div>
+
+                  <div className="flex flex-1 flex-col justify-center">
+                    <h3 className="text-xl font-bold">{project.title}</h3>
+
+                    <p className="mt-3 line-clamp-2 text-sm text-gray-500">
+                      {project.content}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {project.tags?.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-700"
+                        >
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-5 flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2 text-gray-500">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-xs font-semibold text-gray-700">
+                          {project.authorName?.slice(0, 1)}
+                        </div>
+
+                        <span>{project.authorName}</span>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <Eye className="h-4 w-4" />
+                          {project.viewCount}
+                        </span>
+
+                        <span className="flex items-center gap-1">
+                          <Heart className="h-4 w-4" />
+                          {project.likeCount}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    </main>
+  );
+}

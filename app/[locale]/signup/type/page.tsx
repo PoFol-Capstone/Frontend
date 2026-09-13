@@ -17,9 +17,10 @@ export default function SignupPage() {
             {t("emailStart")}
           </Link>
 
+          {/* TODO: 임시로 GitHub 로그인 숨김 처리 */}
           <button
             type="button"
-            className="mt-2 rounded-lg bg-black px-4 py-3 text-sm font-medium text-white hover:opacity-90"
+            className="mt-2 hidden rounded-lg bg-black px-4 py-3 text-sm font-medium text-white hover:opacity-90"
           >
             {t("githubLogin")}
           </button>

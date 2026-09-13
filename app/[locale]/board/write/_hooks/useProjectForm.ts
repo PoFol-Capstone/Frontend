@@ -143,7 +143,7 @@ export function useProjectForm() {
     techStack,
     selectedSkills,
     deployUrl, setDeployUrl,
-    thumbnailUrl,
+    thumbnailUrl, setThumbnailUrl,
     isThumbnailLoading,
     isLoadingRepoData,
     isAIWriting,

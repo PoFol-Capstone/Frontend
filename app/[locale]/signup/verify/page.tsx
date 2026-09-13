@@ -53,6 +53,17 @@ export default function SignupVerifyPage() {
 
       if (result.newUser) {
         const name = sessionStorage.getItem("signupName") ?? "";
+
+        // 로그인 화면에서 들어온 미가입 이메일 — 이름을 받은 적이 없으니
+        // 빈 이름으로 회원가입을 시도하지 않고 이름 입력부터 다시 받는다
+        if (!name.trim()) {
+          sessionStorage.setItem("signupEmail", email);
+          sessionStorage.removeItem("loginEmail");
+          setMessage(t("needSignup"));
+          router.push("/signup");
+          return;
+        }
+
         const authResult = await register(email, name);
         uuid = authResult.uuid;
         accessToken = authResult.accessToken;
