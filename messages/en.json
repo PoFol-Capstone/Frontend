@@ -86,6 +86,7 @@
       "codeRequired": "Please enter the 6-digit verification code.",
       "invalidCode": "The verification code is incorrect.",
       "verifyFailed": "Failed to verify the code.",
+      "needSignup": "This email isn't registered yet. Please enter your name to sign up.",
       "back": "Back"
     },
     "oauth": {

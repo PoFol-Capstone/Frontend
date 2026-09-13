@@ -19,30 +19,31 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestIdRef = useRef(0);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
 
-  const search = useCallback(
-    async (q: string) => {
-      const requestId = ++requestIdRef.current;
-      setIsLoading(true);
-      try {
-        const url = q
-          ? `/api/skills?q=${encodeURIComponent(q)}`
-          : "/api/skills";
-        const res = await fetch(url);
-        const data: Skill[] = await res.json();
-        if (requestId !== requestIdRef.current) return;
-        setResults(
-          data.filter((s) => !selected.some((sel) => sel.id === s.id)),
-        );
-      } catch {
-        if (requestId !== requestIdRef.current) return;
-        setResults([]);
-      } finally {
-        if (requestId === requestIdRef.current) setIsLoading(false);
-      }
-    },
-    [selected],
-  );
+  // selected를 deps에 넣으면 스킬을 고를 때마다 search 아이덴티티가 바뀌어
+  // 아래 useEffect가 다시 실행되고, 방금 받은 결과가 로딩 상태로 잠깐씩 지워지길
+  // 반복했다(연달아 고를수록 두 번째 선택부터 목록이 안 보이는 것처럼 보였음).
+  // ref로 최신값만 읽어서 search 아이덴티티를 선택 여부와 무관하게 유지한다.
+  const search = useCallback(async (q: string) => {
+    const requestId = ++requestIdRef.current;
+    setIsLoading(true);
+    try {
+      const url = q ? `/api/skills?q=${encodeURIComponent(q)}` : "/api/skills";
+      const res = await fetch(url);
+      const data: Skill[] = await res.json();
+      if (requestId !== requestIdRef.current) return;
+      setResults(
+        data.filter((s) => !selectedRef.current.some((sel) => sel.id === s.id)),
+      );
+    } catch {
+      if (requestId !== requestIdRef.current) return;
+      setResults([]);
+    } finally {
+      if (requestId === requestIdRef.current) setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -74,7 +75,11 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
   };
 
   const removeSkill = (id: number) => {
-    onChange(selected.filter((s) => s.id !== id));
+    const next = selected.filter((s) => s.id !== id);
+    onChange(next);
+    // search()가 selectedRef를 바로 읽으므로, 다음 렌더를 기다리지 않고 먼저 갱신해둔다.
+    selectedRef.current = next;
+    if (isOpen) search(query);
   };
 
   return (
