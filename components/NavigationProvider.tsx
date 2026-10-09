@@ -10,6 +10,7 @@ type NavigationContextValue = {
   handleLinkClick: (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
+    options?: { scroll?: boolean },
   ) => void;
 };
 
@@ -34,6 +35,7 @@ export function NavigationProvider({
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
+    options?: { scroll?: boolean },
   ) => {
     if (
       e.defaultPrevented ||
@@ -45,7 +47,7 @@ export function NavigationProvider({
       return;
     }
     e.preventDefault();
-    navigate(href);
+    navigate(href, options);
   };
 
   return (

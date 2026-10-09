@@ -11,7 +11,8 @@ import { useTranslations } from "next-intl";
 
 type Props = {
   onClose: () => void;
-  followers: FollowerUser[];
+  /** 조회 실패면 null — "팔로워가 없습니다"가 아니라 실패로 보여준다 */
+  followers: FollowerUser[] | null;
   /** 로그인한 조회자 uuid — 목록에 본인이 있을 때 팔로우 버튼을 숨기기 위함 */
   viewerUuid?: string | null;
 };
@@ -25,7 +26,7 @@ export default function FollowerModal({ onClose, followers, viewerUuid }: Props)
 
   const [search, setSearch] = useState("");
   // 서버가 준 초기 상태를 로컬에서 낙관적으로 갱신 (모달을 닫아도 페이지 데이터는 다음 조회 때 정확)
-  const [users, setUsers] = useState(followers);
+  const [users, setUsers] = useState(followers ?? []);
   const [pendingUuid, setPendingUuid] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -140,7 +141,13 @@ export default function FollowerModal({ onClose, followers, viewerUuid }: Props)
             </div>
           ))}
 
-          {filteredUsers.length === 0 && (
+          {followers === null && (
+            <p role="alert" className="py-10 text-center text-sm text-red-500">
+              {t("loadFailed")}
+            </p>
+          )}
+
+          {followers !== null && filteredUsers.length === 0 && (
             <p className="py-10 text-center text-sm text-gray-500">
               {search ? t("noResults") : t("empty")}
             </p>

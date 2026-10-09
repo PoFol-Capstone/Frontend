@@ -3,29 +3,21 @@
 import { cookies } from "next/headers";
 import { requireSessionUuid } from "./authGuard";
 import { ApiError, http } from "./http.server";
-import { REFRESH_TOKEN_MAX_AGE } from "./tokenConfig";
+import { SCHOOL_COOKIE, SESSION_COOKIE_OPTIONS } from "./sessionCookies";
 import type { ActionResult } from "@/types/action";
 import type { SchoolNames, SchoolStatus } from "@/types/school";
 
 /**
- * 학교 인증 관련 서버 함수 + `school` 쿠키 소유.
+ * 학교 인증 관련 서버 함수 + `school` 쿠키 읽기/쓰기.
  *
  * 쿠키 읽기/쓰기를 session.ts에 두지 않고 여기서 cookies()를 직접 쓰는 이유:
- * session.ts가 로그인 직후 학교 상태를 조회해야 하므로 school.ts를 import한다.
- * 쿠키 헬퍼가 session.ts에 있으면 school.ts ↔ session.ts 순환 import가 된다.
- * 의존 방향은 session.ts → school.ts 한 방향만 유지한다.
+ * 로그인 직후(auth.ts) 학교 상태를 조회해야 하므로 auth.ts가 school.ts를 import한다.
+ * 의존 방향은 auth.ts → school.ts 한 방향만 유지한다. 쿠키 이름·옵션은 세션 정리 때
+ * 함께 지워야 해서 lib/sessionCookies.ts에 둔다.
  */
 
-// "use server" 파일은 async 함수만 export할 수 있으므로 상수는 모듈 로컬로 둔다
-const SCHOOL_COOKIE = "school";
-
-const SCHOOL_COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
-  maxAge: REFRESH_TOKEN_MAX_AGE,
-  path: "/",
-};
+// refresh token이 살아있는 동안 유지 — 세션 쿠키와 같은 옵션
+const SCHOOL_COOKIE_OPTIONS = SESSION_COOKIE_OPTIONS;
 
 // ---------------------------------------------------------------- HTTP
 
@@ -80,7 +72,7 @@ export async function verifySchoolOtp(
  * 백엔드에서 학교 인증 상태를 읽어 `school` 쿠키를 맞춘다.
  *
  * 로그인 직후 호출된다. Next.js 쿠키 스토어는 같은 요청 안에서 read-your-writes라서
- * saveLogin이 access_token을 심은 직후에 호출해도 http 인터셉터가 새 토큰을 집어간다.
+ * signInWithEmailOtp가 access_token을 심은 직후에 호출해도 http 인터셉터가 새 토큰을 집어간다.
  */
 export async function syncSchoolCookie(): Promise<void> {
   const status = await fetchSchoolStatus();

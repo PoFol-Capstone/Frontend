@@ -10,10 +10,10 @@ import { useTranslations } from "next-intl";
  */
 export default function BoardError({
   error,
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   const t = useTranslations("board.error");
 
@@ -27,7 +27,7 @@ export default function BoardError({
       <p className="text-sm text-gray-500">{t("desc")}</p>
       <button
         type="button"
-        onClick={reset}
+        onClick={() => unstable_retry()}
         className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
       >
         {t("retry")}

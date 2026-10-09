@@ -1,17 +1,19 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-
-const RECRUIT_ROLES = ["Frontend", "Backend", "Designer"];
+import { MAX_ROLE_COUNT, RECRUIT_ROLES } from "@/lib/recruitPositions";
 
 type Props = {
   enabled: boolean;
-  onEnabledChange: (v: boolean) => void;
+  /** hideToggle이면 쓰지 않는다 (작성 1단계, 유형을 바꿀 수 없는 수정 화면) */
+  onEnabledChange?: (v: boolean) => void;
   description: string;
   onDescriptionChange: (v: string) => void;
   roleCounts: Record<string, number>;
   onRoleCountsChange: (roleCounts: Record<string, number>) => void;
   hideToggle?: boolean;
+  /** 포지션 검사 실패 메시지 — 포지션 선택 영역 아래에 보여준다 */
+  positionsError?: string | null;
 };
 
 export default function TeamRecruitSection({
@@ -22,6 +24,7 @@ export default function TeamRecruitSection({
   roleCounts,
   onRoleCountsChange,
   hideToggle = false,
+  positionsError = null,
 }: Props) {
   const t = useTranslations("board.write.teamRecruit");
   const recruitRef = useRef<HTMLTextAreaElement>(null);
@@ -44,7 +47,7 @@ export default function TeamRecruitSection({
   };
 
   const updateCount = (role: string, value: number) => {
-    if (value < 1) return;
+    if (value < 1 || value > MAX_ROLE_COUNT) return;
     onRoleCountsChange({ ...roleCounts, [role]: value });
   };
 
@@ -57,7 +60,7 @@ export default function TeamRecruitSection({
               type="checkbox"
               id="teamRecruit"
               checked={enabled}
-              onChange={(e) => onEnabledChange(e.target.checked)}
+              onChange={(e) => onEnabledChange?.(e.target.checked)}
               className="w-5 h-5 rounded accent-black cursor-pointer"
             />
             <label htmlFor="teamRecruit" className="text-base font-semibold cursor-pointer">
@@ -94,6 +97,7 @@ export default function TeamRecruitSection({
                     <button
                       type="button"
                       onClick={() => toggleRole(role)}
+                      aria-pressed={isSelected}
                       className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
                         isSelected
                           ? "bg-black text-white border-black"
@@ -107,6 +111,7 @@ export default function TeamRecruitSection({
                         <button
                           type="button"
                           onClick={() => updateCount(role, roleCounts[role] - 1)}
+                          aria-label={t("decrease", { role })}
                           className="px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
                         >
                           -
@@ -117,6 +122,7 @@ export default function TeamRecruitSection({
                         <button
                           type="button"
                           onClick={() => updateCount(role, roleCounts[role] + 1)}
+                          aria-label={t("increase", { role })}
                           className="px-2.5 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
                         >
                           +
@@ -130,6 +136,11 @@ export default function TeamRecruitSection({
                 );
               })}
             </div>
+            {positionsError && (
+              <p role="alert" className="text-sm text-red-500">
+                {positionsError}
+              </p>
+            )}
           </div>
         </div>
       )}

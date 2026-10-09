@@ -15,7 +15,8 @@ import type { FollowerUser } from "@/types/user";
 interface Props {
   profile: Profile;
   isOwner: boolean;
-  followers?: FollowerUser[];
+  /** 조회 실패면 null — 모달이 빈 목록 대신 실패를 보여준다 */
+  followers?: FollowerUser[] | null;
   /** 로그인한 조회자 uuid — 팔로워 목록에서 본인 항목의 팔로우 버튼을 숨기기 위함 */
   viewerUuid?: string | null;
 }

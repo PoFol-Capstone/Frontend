@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 // 인메모리 슬라이딩 윈도우 rate limiter.
 //
 // OpenAI 호출·Blob 업로드처럼 요청당 실제 비용이 발생하는 라우트에서 인증된 사용자 1명이
@@ -21,7 +23,9 @@ export type RateLimitResult = {
 };
 
 /**
- * @param key 제한 단위 (예: `ai:summarize:${userUuid}`)
+ * @param key 제한 단위 (예: `ai:summarize:${userUuid}`) — 사용자 단위 제한이면 반드시
+ *   백엔드가 확인한 uuid(lib/verifiedUser.ts)를 써야 한다. 쿠키 값처럼 클라이언트가 바꿀 수 있는
+ *   값을 키로 쓰면 값을 바꿔가며 제한을 우회할 수 있다.
  * @param limit 윈도우 내 허용 요청 수
  * @param windowMs 윈도우 길이(ms)
  */
@@ -62,9 +66,9 @@ export function rateLimit(
   };
 }
 
-/** rate limit 초과 시 공통 429 응답 */
-export function rateLimitResponse(result: RateLimitResult): Response {
-  return Response.json(
+/** rate limit 초과 시 공통 429 응답 (갱신된 세션 쿠키를 실을 수 있도록 NextResponse) */
+export function rateLimitResponse(result: RateLimitResult): NextResponse {
+  return NextResponse.json(
     {
       error: `요청이 너무 많습니다. ${result.retryAfterSeconds}초 후에 다시 시도해주세요.`,
     },

@@ -119,6 +119,7 @@ export default function PostDetail({
 
           <PostContent
             content={post.content}
+            recruitNote={post.recruitNote}
             tags={post.tags}
             links={post.links ?? []}
             postType={post.postType}

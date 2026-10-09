@@ -5,10 +5,10 @@ import { useTranslations } from "next-intl";
 
 export default function ProfileError({
   error,
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   const t = useTranslations("profile.error");
 
@@ -25,7 +25,7 @@ export default function ProfileError({
         {t("desc")}
       </p>
       <button
-        onClick={reset}
+        onClick={() => unstable_retry()}
         className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
       >
         {t("retry")}

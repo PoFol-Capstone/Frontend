@@ -22,9 +22,13 @@ const FOCUSABLE = [
  * 반환한 ref를 모달 패널(`role="dialog"`를 붙일 요소)에 연결해서 사용한다.
  *
  * @param onClose ESC를 눌렀을 때 호출될 닫기 핸들러
+ * @param enabled 열려 있을 때만 true. 닫힘 애니메이션 때문에 항상 마운트돼 있는 패널(알림창 등)은
+ *   열림 상태를 넘겨서, 열릴 때 포커스를 옮기고 닫힐 때 원래 요소로 돌려준다. 기본값 true
+ *   (열릴 때 마운트되고 닫힐 때 언마운트되는 모달).
  */
 export function useModalA11y<T extends HTMLElement = HTMLDivElement>(
   onClose: () => void,
+  enabled = true,
 ) {
   const panelRef = useRef<T>(null);
   // onClose가 렌더마다 새로 만들어지는 인라인 함수여도 아래 effect가 재실행되지 않도록 ref에 담아둔다.
@@ -35,6 +39,8 @@ export function useModalA11y<T extends HTMLElement = HTMLDivElement>(
   });
 
   useEffect(() => {
+    if (!enabled) return;
+
     const previouslyFocused = document.activeElement as HTMLElement | null;
 
     const focusables = () =>
@@ -83,7 +89,7 @@ export function useModalA11y<T extends HTMLElement = HTMLDivElement>(
       document.body.style.overflow = previousOverflow;
       previouslyFocused?.focus?.();
     };
-  }, []);
+  }, [enabled]);
 
   return panelRef;
 }

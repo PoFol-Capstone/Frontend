@@ -2,6 +2,7 @@
 
 import { useRouter } from "@/i18n/navigation";
 import BrandLogo from "@/components/BrandLogo";
+import { saveSignupName } from "@/lib/authFlow";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
@@ -17,7 +18,7 @@ export default function SignupPage() {
       return;
     }
 
-    sessionStorage.setItem("signupName", name.trim());
+    saveSignupName(sessionStorage, name.trim());
     router.push("/signup/type");
   };
 

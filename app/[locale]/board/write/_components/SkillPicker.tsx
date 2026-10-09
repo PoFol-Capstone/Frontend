@@ -83,7 +83,19 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
   };
 
   return (
-    <div ref={containerRef} className="relative">
+    <div
+      ref={containerRef}
+      className="relative"
+      onKeyDown={(e) => {
+        // Escape로 목록을 닫고 입력창으로 돌아온다 (모달 안에서 쓰여도 모달까지 닫지 않도록 전파 차단)
+        if (e.key === "Escape" && isOpen) {
+          e.stopPropagation();
+          // focus()가 입력창 onFocus로 다시 여는 것보다 닫기가 나중에 반영되도록 순서를 지킨다
+          inputRef.current?.focus();
+          setIsOpen(false);
+        }
+      }}
+    >
       <div
         className="flex flex-wrap gap-2 min-h-10.5 w-full border border-gray-300 rounded-lg px-3 py-2 cursor-text focus-within:border-black"
         onClick={() => {
@@ -132,9 +144,11 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
                 key={skill.id}
                 type="button"
                 onMouseDown={(e) => {
+                  // 마우스로 누를 때 입력창 포커스를 잃지 않게만 막고, 선택은 click에서 한다.
+                  // 예전엔 선택이 onMouseDown에만 있어 Tab으로 와서 Enter/Space를 눌러도 선택되지 않았다
                   e.preventDefault();
-                  addSkill(skill);
                 }}
+                onClick={() => addSkill(skill)}
                 className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-gray-50 text-left"
               >
                 <span

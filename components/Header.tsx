@@ -43,30 +43,35 @@ export default function Header({
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
-  useEffect(() => {
-    if (pathname === "/board") {
-      setKeyword("");
-    }
-  }, [pathname]);
+  // 게시판으로 돌아오면 검색어를 비운다. effect 안에서 setState하면 렌더가 한 번 더 돌기 때문에
+  // (react-hooks/set-state-in-effect) 경로가 바뀐 렌더에서 바로 상태를 맞춘다 — BoardClient 등과 같은 패턴.
+  const [keywordPathname, setKeywordPathname] = useState(pathname);
+  if (pathname !== keywordPathname) {
+    setKeywordPathname(pathname);
+    if (pathname === "/board") setKeyword("");
+  }
 
   const {
     unreadCount,
     notifications,
     hasMore,
     isLoading,
-    isLoaded,
-    loadFirstPage,
+    loadError,
+    refresh: refreshNotifications,
     loadMore,
+    retry: retryNotifications,
     markOneRead,
     markAllRead,
   } = useNotifications(isLoggedIn);
 
   const profileRef = useRef<HTMLDivElement>(null);
 
+  // 열 때마다 최신 목록을 다시 받는다 — 예전엔 처음 한 번만 불러서, 이후 도착한 알림은
+  // 배지에만 보이고 목록에는 나타나지 않았다
   const handleOpenNotifications = () => {
     setIsNotificationOpen(true);
     setIsProfileOpen(false);
-    if (!isLoaded) loadFirstPage();
+    refreshNotifications();
   };
 
   useEffect(() => {
@@ -139,6 +144,8 @@ export default function Header({
                 onClick={handleOpenNotifications}
                 className="relative flex items-center justify-center text-gray-600 transition hover:text-black"
                 aria-label={t("openNotifications")}
+                aria-haspopup="dialog"
+                aria-expanded={isNotificationOpen}
               >
                 <Bell className="h-5 w-5" />
 
@@ -175,7 +182,9 @@ export default function Header({
               notifications={notifications}
               unreadCount={unreadCount}
               isLoading={isLoading}
+              loadError={loadError}
               hasMore={hasMore}
+              onRetry={retryNotifications}
               onLoadMore={loadMore}
               onItemRead={markOneRead}
               onMarkAllRead={markAllRead}
