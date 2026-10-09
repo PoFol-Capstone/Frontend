@@ -3,7 +3,6 @@
 import type { ApplicantResponse, ResponsePosts } from "@/types/post";
 import { useTranslations } from "next-intl";
 import ApplicantCard from "./ApplicantCard";
-import { deriveStatus } from "./utils";
 
 interface Props {
   applicants: ApplicantResponse[];
@@ -25,7 +24,6 @@ export default function ApplicantSection({
   onReject,
 }: Props) {
   const t = useTranslations("recruitment.applicantSection");
-  const isClosed = selectedPost ? deriveStatus(selectedPost) === "CLOSED" : false;
 
   return (
     <aside className="rounded-3xl border border-gray-200 bg-white p-6 shadow-[0_12px_32px_rgba(15,23,42,0.06)]">
@@ -59,7 +57,7 @@ export default function ApplicantSection({
           <ApplicantCard
             key={applicant.applyUuid}
             applicant={applicant}
-            isClosed={isClosed}
+            post={selectedPost}
             isPending={isPending}
             onAccept={onAccept}
             onReject={onReject}

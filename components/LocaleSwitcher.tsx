@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { buildLocaleSwitchHref } from "@/lib/localeSwitch";
 import { Globe } from "lucide-react";
 
 const LOCALE_LABELS: Record<(typeof routing.locales)[number], string> = {
@@ -34,7 +35,12 @@ export default function LocaleSwitcher() {
   const handleSelect = (nextLocale: (typeof routing.locales)[number]) => {
     setIsOpen(false);
     if (nextLocale === locale) return;
-    router.replace(pathname, { locale: nextLocale });
+    // 검색어·필터·페이지(query)와 hash를 유지한다. useSearchParams 대신 클릭 시점의 주소를 읽어
+    // 정적 렌더 페이지에서 Suspense 경계 없이도 동작하게 한다.
+    const { search, hash } = window.location;
+    router.replace(buildLocaleSwitchHref(pathname, search, hash), {
+      locale: nextLocale,
+    });
   };
 
   return (

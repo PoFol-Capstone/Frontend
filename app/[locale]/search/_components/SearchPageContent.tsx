@@ -5,9 +5,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Avatar } from "@/components/Avatar";
+import { Pagination } from "@/components/Pagination";
+import { parsePageParam } from "@/lib/pagination";
 import { getPosts } from "@/lib/post";
 import { followUser, searchUsers, unfollowUser } from "@/lib/user";
-import type { ResponsePosts } from "@/types/post";
+import type { PagedResponse, ResponsePosts } from "@/types/post";
 import type { UserSearchResult } from "@/types/user";
 import { Users, Eye, Heart } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -16,25 +18,39 @@ type Props = {
   viewerUuid: string | null;
 };
 
+const PROJECTS_PAGE_SIZE = 20;
+
 export default function SearchPageContent({ viewerUuid }: Props) {
   const t = useTranslations("search");
+  const tCommon = useTranslations("common");
   const searchParams = useSearchParams();
   const keyword = (searchParams.get("q") ?? "").trim();
+  // 프로젝트 결과는 서버 페이지네이션을 따른다 (예전엔 첫 20개만 받고 다음 페이지로 갈 수 없었다)
+  const page = parsePageParam(searchParams.get("page"));
 
   const [showAllUsers, setShowAllUsers] = useState(false);
   const [userList, setUserList] = useState<UserSearchResult[]>([]);
-  const [projects, setProjects] = useState<ResponsePosts[]>([]);
+  const [projects, setProjects] = useState<PagedResponse<ResponsePosts> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  // 조회 실패를 "검색 결과가 없습니다"로 보이지 않게 따로 표시하고 다시 시도할 수 있게 한다
+  const [usersFailed, setUsersFailed] = useState(false);
+  const [projectsFailed, setProjectsFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [followError, setFollowError] = useState<string | null>(null);
 
-  // 키워드가 바뀌면 렌더링 중에 이전 검색 결과를 리셋한다 (BoardClient의 카테고리 동기화와 동일한 패턴)
-  const [syncedKeyword, setSyncedKeyword] = useState(keyword);
-  if (keyword !== syncedKeyword) {
-    setSyncedKeyword(keyword);
-    setShowAllUsers(false);
-    setFollowError(null);
-    setUserList([]);
-    setProjects([]);
+  // 검색 조건이 바뀌면 렌더링 중에 이전 검색 결과를 리셋한다 (BoardClient의 카테고리 동기화와 동일한 패턴)
+  const requestKey = `${keyword}\u0000${page}\u0000${attempt}`;
+  const [syncedRequestKey, setSyncedRequestKey] = useState(requestKey);
+  if (requestKey !== syncedRequestKey) {
+    setSyncedRequestKey(requestKey);
+    if (!syncedRequestKey.startsWith(`${keyword}\u0000`)) {
+      setShowAllUsers(false);
+      setFollowError(null);
+      setUserList([]);
+    }
+    setProjects(null);
+    setUsersFailed(false);
+    setProjectsFailed(false);
     setIsLoading(!!keyword);
   }
 
@@ -43,14 +59,22 @@ export default function SearchPageContent({ viewerUuid }: Props) {
 
     let cancelled = false;
 
-    Promise.all([
-      searchUsers(keyword).catch(() => []),
-      getPosts({ keyword, size: 20 }).catch(() => null),
+    Promise.allSettled([
+      searchUsers(keyword),
+      getPosts({ keyword, page, size: PROJECTS_PAGE_SIZE }),
     ])
       .then(([users, posts]) => {
         if (cancelled) return;
-        setUserList(users);
-        setProjects(posts?.content ?? []);
+        if (users.status === "fulfilled") setUserList(users.value);
+        else {
+          console.error("[search] 유저 검색 실패:", users.reason);
+          setUsersFailed(true);
+        }
+        if (posts.status === "fulfilled") setProjects(posts.value);
+        else {
+          console.error("[search] 프로젝트 검색 실패:", posts.reason);
+          setProjectsFailed(true);
+        }
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false);
@@ -59,7 +83,9 @@ export default function SearchPageContent({ viewerUuid }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [keyword]);
+  }, [keyword, page, attempt]);
+
+  const retry = () => setAttempt((n) => n + 1);
 
   const visibleUsers = showAllUsers ? userList : userList.slice(0, 2);
 
@@ -105,6 +131,24 @@ export default function SearchPageContent({ viewerUuid }: Props) {
           <p role="alert" className="text-sm text-red-500">
             {followError}
           </p>
+        )}
+
+        {usersFailed && (
+          <section>
+            <h2 className="mb-4 text-xl font-bold">{t("userSection")}</h2>
+            <div className="flex items-center gap-3">
+              <p role="alert" className="text-sm text-red-500">
+                {t("usersFailed")}
+              </p>
+              <button
+                type="button"
+                onClick={retry}
+                className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+              >
+                {tCommon("retry")}
+              </button>
+            </div>
+          </section>
         )}
 
         {userList.length > 0 && (
@@ -196,13 +240,26 @@ export default function SearchPageContent({ viewerUuid }: Props) {
             <p className="py-10 text-center text-sm text-gray-500">
               {t("loading")}
             </p>
-          ) : projects.length === 0 ? (
+          ) : projectsFailed ? (
+            <div className="flex flex-col items-center gap-3 py-10">
+              <p role="alert" className="text-sm text-red-500">
+                {t("projectsFailed")}
+              </p>
+              <button
+                type="button"
+                onClick={retry}
+                className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+              >
+                {tCommon("retry")}
+              </button>
+            </div>
+          ) : !projects || projects.content.length === 0 ? (
             <p className="py-10 text-center text-sm text-gray-500">
               {t("noResults")}
             </p>
           ) : (
             <div className="flex flex-col gap-6">
-              {projects.map((project) => (
+              {projects.content.map((project) => (
                 <Link
                   key={project.uuid}
                   href={`/board/${project.uuid}`}
@@ -280,6 +337,15 @@ export default function SearchPageContent({ viewerUuid }: Props) {
                 </Link>
               ))}
             </div>
+          )}
+
+          {!isLoading && !projectsFailed && projects && (
+            <Pagination
+              page={projects.number}
+              totalPages={projects.totalPages}
+              pathname="/search"
+              query={{ q: keyword }}
+            />
           )}
         </section>
       </div>

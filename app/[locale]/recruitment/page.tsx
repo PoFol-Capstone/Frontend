@@ -1,23 +1,30 @@
-import { Suspense } from "react";
-import { getApplicants } from "@/lib/apply";
-import { getUserPosts } from "@/lib/post";
+import SessionExpired from "@/components/SessionExpired";
+import { getApplicants, getMyRecruitPosts } from "@/lib/apply";
+import { isSessionRejected } from "@/lib/http.server";
 import { getSessionUuid } from "@/lib/session";
-import { PostType } from "@/types/post";
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import RecruitmentClient from "./_components/RecruitmentClient";
-import RecruitmentLoading from "./loading";
 
 type Props = {
   searchParams: Promise<{ postId?: string }>;
 };
 
 export default function RecruitmentPage({ searchParams }: Props) {
-  return (
-    <Suspense fallback={<RecruitmentLoading />}>
-      <RecruitmentContent searchParams={searchParams} />
-    </Suspense>
-  );
+  // 로딩 화면은 같은 세그먼트(또는 상위)의 loading.tsx가 Suspense 경계로 보여준다.
+  // 여기에 Suspense를 한 겹 더 두면, 서버 오류 뒤 error.tsx의 "다시 시도"(unstable_retry)가
+  // 데이터를 다시 받아 와도 오류 화면이 남거나 React #310으로 깨졌다(Next 16.2.0 프로덕션 빌드에서 재현).
+  return <RecruitmentContent searchParams={searchParams} />;
+}
+
+async function loadRecruitment(postId: string | undefined) {
+  const posts = await getMyRecruitPosts();
+  // 쿼리의 postId는 내 모집글일 때만 쓴다 (남의 글이면 지원자 조회가 거절된다)
+  const selectedPostUuid = posts.some((p) => p.uuid === postId)
+    ? postId
+    : posts[0]?.uuid;
+  const applicants = selectedPostUuid ? await getApplicants(selectedPostUuid) : [];
+  return { posts, applicants, selectedPostUuid };
 }
 
 async function RecruitmentContent({ searchParams }: Props) {
@@ -32,13 +39,19 @@ async function RecruitmentContent({ searchParams }: Props) {
     return null;
   }
 
-  const postsData = await getUserPosts(uuid, { type: PostType.RECRUIT });
-  const posts = postsData.content;
-
-  const selectedPostUuid = postId ?? posts[0]?.uuid;
-  const applicants = selectedPostUuid
-    ? await getApplicants(selectedPostUuid)
-    : [];
+  // 실패는 빈 목록으로 바꾸지 않는다 — 거절된 세션은 재로그인, 그 외는 recruitment/error.tsx(재시도)
+  let data: Awaited<ReturnType<typeof loadRecruitment>>;
+  try {
+    data = await loadRecruitment(postId);
+  } catch (error) {
+    if (isSessionRejected(error)) {
+      const returnTo = postId
+        ? `/recruitment?postId=${encodeURIComponent(postId)}`
+        : "/recruitment";
+      return <SessionExpired returnTo={returnTo} />;
+    }
+    throw error;
+  }
 
   const t = await getTranslations("recruitment");
 
@@ -60,9 +73,9 @@ async function RecruitmentContent({ searchParams }: Props) {
         </div>
 
         <RecruitmentClient
-          posts={posts}
-          applicants={applicants}
-          selectedPostUuid={selectedPostUuid}
+          posts={data.posts}
+          applicants={data.applicants}
+          selectedPostUuid={data.selectedPostUuid}
         />
       </section>
     </main>

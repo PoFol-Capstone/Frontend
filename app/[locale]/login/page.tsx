@@ -3,6 +3,8 @@
 import { Link, useRouter } from "@/i18n/navigation";
 import BrandLogo from "@/components/BrandLogo";
 import { sendOtp } from "@/lib/auth";
+import { beginLoginFlow } from "@/lib/authFlow";
+import { toSafeInternalPath } from "@/lib/safeRedirect";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -25,11 +27,12 @@ export default function LoginPage() {
 
       await sendOtp(email);
 
-      sessionStorage.setItem("loginEmail", email);
-      const callbackUrl =
-        new URLSearchParams(window.location.search).get("callbackUrl") ??
-        "/board";
-      sessionStorage.setItem("callbackUrl", callbackUrl);
+      // 외부 주소·javascript: 등은 저장하지 않는다 (인증 화면이 이동 직전에 한 번 더 검사한다)
+      const callbackUrl = toSafeInternalPath(
+        new URLSearchParams(window.location.search).get("callbackUrl"),
+        window.location.origin,
+      );
+      beginLoginFlow(sessionStorage, email, callbackUrl);
       router.push("/signup/verify");
     } catch (error) {
       console.error(error);

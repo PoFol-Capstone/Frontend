@@ -5,6 +5,7 @@ import type {
   PostListParams,
   RequestPosts,
   ResponsePosts,
+  UpdatePostRequest,
 } from "@/types/post";
 import { requireSessionUuid } from "./authGuard";
 import { http } from "./http.server";
@@ -24,6 +25,8 @@ export async function getPosts(
 ): Promise<PagedResponse<ResponsePosts>> {
   const res = await http.get<PagedResponse<ResponsePosts>>("/api/posts", {
     params,
+    // 학교 필터는 로그인 사용자 기준이다 — 토큰 없이 보내면 백엔드가 빈 목록(200)을 준다
+    requireAuth: !!params?.mySchoolOnly,
   });
   return res.data;
 }
@@ -41,7 +44,7 @@ export async function getPost(uuid: string): Promise<ResponsePosts> {
 
 export async function updatePost(
   uuid: string,
-  body: Partial<RequestPosts>,
+  body: UpdatePostRequest,
 ): Promise<ResponsePosts> {
   await requireSessionUuid();
   const res = await http.patch<ResponsePosts>(`/api/posts/${uuid}`, body);
@@ -69,9 +72,21 @@ export async function toggleBookmark(
   return res.data;
 }
 
-export async function getBookmarkedPosts(): Promise<ResponsePosts[]> {
+/**
+ * 내 북마크 목록 — 백엔드 `GET /api/posts/bookmarked` → `Page<PostResponse>` (북마크한 순서, 최신 먼저).
+ *
+ * 이 경로는 공개 GET 규칙(`/api/posts/*`)에 걸려 토큰 없이도 200·빈 목록이 오므로,
+ * 토큰을 확보하지 못하면 보내지 않고 401로 실패시킨다(빈 북마크로 보이지 않게).
+ */
+export async function getBookmarkedPosts(params?: {
+  page?: number;
+  size?: number;
+}): Promise<PagedResponse<ResponsePosts>> {
   await requireSessionUuid();
-  const res = await http.get<ResponsePosts[]>("/api/post/bookmarked");
+  const res = await http.get<PagedResponse<ResponsePosts>>(
+    "/api/posts/bookmarked",
+    { params, requireAuth: true },
+  );
   return res.data;
 }
 

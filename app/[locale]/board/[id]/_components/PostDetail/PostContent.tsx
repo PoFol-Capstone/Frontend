@@ -2,6 +2,7 @@
 
 import type { PostLink, RecruitPositionResponse } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
+import { getRecruitNoteDisplay, splitPostContent } from "@/lib/postContent";
 import { useTranslations } from "next-intl";
 
 const LINK_ICON: Record<LinkType, string> = {
@@ -24,6 +25,8 @@ const LINK_LABEL_KEYS: Record<LinkType, string> = {
 
 type Props = {
   content: string;
+  /** 모집 조건 (RECRUIT 글 작성 시 "모집 설명"으로 입력한 값) */
+  recruitNote?: string | null;
   tags: string[];
   links: PostLink[];
   postType: PostType;
@@ -32,32 +35,38 @@ type Props = {
 
 export default function PostContent({
   content,
+  recruitNote,
   tags,
   links,
   postType,
   recruitPositionInfos,
 }: Props) {
   const t = useTranslations("board.detail");
-  const [description, features] = content.split("\n\n## 주요 기능\n");
+  // 첫 구분자에서만 나눈다 — 구분자가 여러 번 있어도 뒤쪽 내용이 사라지지 않는다
+  const { description, features } = splitPostContent(content);
+  const { note, showContent } = getRecruitNoteDisplay(content, recruitNote, postType);
+  const isRecruit = postType === PostType.RECRUIT;
 
   return (
     <div className="space-y-8">
-      <section>
-        <p className="whitespace-pre-line text-[15px] leading-7 text-gray-700">
-          {description}
-        </p>
+      {showContent && (
+        <section>
+          <p className="whitespace-pre-line text-[15px] leading-7 text-gray-700">
+            {description}
+          </p>
 
-        {features && (
-          <div className="mt-6 border-t border-gray-100 pt-6">
-            <h2 className="mb-3 text-base font-semibold text-gray-900">
-              {t("mainFeatures")}
-            </h2>
-            <p className="whitespace-pre-line text-[15px] leading-7 text-gray-700">
-              {features}
-            </p>
-          </div>
-        )}
-      </section>
+          {features && (
+            <div className="mt-6 border-t border-gray-100 pt-6">
+              <h2 className="mb-3 text-base font-semibold text-gray-900">
+                {t("mainFeatures")}
+              </h2>
+              <p className="whitespace-pre-line text-[15px] leading-7 text-gray-700">
+                {features}
+              </p>
+            </div>
+          )}
+        </section>
+      )}
 
       {tags.length > 0 && (
         <section className="flex flex-wrap gap-2 border-t border-gray-100 pt-6">
@@ -89,24 +98,40 @@ export default function PostContent({
         </section>
       )}
 
-      {postType === PostType.RECRUIT && recruitPositionInfos.length > 0 && (
-        <section className="rounded-2xl bg-gray-50 p-5">
-          <h2 className="mb-3 text-sm font-semibold text-gray-900">
-            {t("recruitPositions")}
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {recruitPositionInfos.map((rp) => (
-              <span
-                key={rp.positionType}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-100"
-              >
-                {rp.positionType}
-                <span className="text-emerald-500">
-                  {rp.currentCount}/{rp.maxCount}
-                </span>
-              </span>
-            ))}
-          </div>
+      {isRecruit && (note || recruitPositionInfos.length > 0) && (
+        <section className="space-y-5 rounded-2xl bg-gray-50 p-5">
+          {/* 작성 화면에서 받은 모집 조건 — 예전엔 저장만 되고 상세에서 보이지 않았다 */}
+          {note && (
+            <div>
+              <h2 className="mb-2 text-sm font-semibold text-gray-900">
+                {t("recruitNote")}
+              </h2>
+              <p className="whitespace-pre-line text-[15px] leading-7 text-gray-700">
+                {note}
+              </p>
+            </div>
+          )}
+
+          {recruitPositionInfos.length > 0 && (
+            <div>
+              <h2 className="mb-3 text-sm font-semibold text-gray-900">
+                {t("recruitPositions")}
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {recruitPositionInfos.map((rp) => (
+                  <span
+                    key={rp.positionType}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-emerald-700 ring-1 ring-emerald-100"
+                  >
+                    {rp.positionType}
+                    <span className="text-emerald-500">
+                      {rp.currentCount}/{rp.maxCount}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       )}
     </div>

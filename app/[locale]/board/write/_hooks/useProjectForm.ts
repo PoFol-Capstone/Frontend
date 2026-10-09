@@ -2,9 +2,17 @@
 import { useRef, useState } from "react";
 import type { Skill } from "@/types/skill";
 import { useTranslations } from "next-intl";
+import {
+  replaceThumbnail,
+  requestAiThumbnail,
+  thumbnailErrorMessage,
+  uploadThumbnailFile,
+  type ThumbnailFailure,
+} from "@/lib/thumbnailClient";
 
 export function useProjectForm() {
   const t = useTranslations("board.write.ai");
+  const tThumbnail = useTranslations("board.thumbnail");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [mainFeatures, setMainFeatures] = useState("");
@@ -13,11 +21,37 @@ export function useProjectForm() {
   const [deployUrl, setDeployUrl] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [isThumbnailLoading, setIsThumbnailLoading] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState("");
   const [isLoadingRepoData, setIsLoadingRepoData] = useState(false);
   const [isAIWriting, setIsAIWriting] = useState(false);
   const [aiError, setAiError] = useState("");
 
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
+
+  const showThumbnailError = (failure: ThumbnailFailure | null) => {
+    if (!failure) {
+      setThumbnailError("");
+      return;
+    }
+    const { key, values } = thumbnailErrorMessage(failure);
+    setThumbnailError(tThumbnail(key, values));
+  };
+
+  // 성공했을 때만 URL을 바꾼다. 실패하면 기존 이미지(와 그걸 담은 임시 저장본)를 그대로 두고
+  // 썸네일 단계에 사유를 보여준다 — 예전엔 요청 전에 URL을 지워서 실패하면 원래 이미지도 사라졌다.
+  const runThumbnailReplacement = async (
+    attempt: Parameters<typeof replaceThumbnail>[1],
+  ) => {
+    setIsThumbnailLoading(true);
+    setThumbnailError("");
+    try {
+      const next = await replaceThumbnail(thumbnailUrl, attempt);
+      setThumbnailUrl(next.url);
+      showThumbnailError(next.error);
+    } finally {
+      setIsThumbnailLoading(false);
+    }
+  };
 
   const handleSkillsChange = (skills: Skill[]) => {
     setSelectedSkills(skills);
@@ -41,7 +75,6 @@ export function useProjectForm() {
       }
       setTechStack(stack);
       setDeployUrl(data.deployUrl ?? "");
-      setThumbnailUrl("");
 
       const mappedSkills = (
         await Promise.all(
@@ -70,63 +103,38 @@ export function useProjectForm() {
         setMainFeatures(aiData.mainFeatures ?? "");
         setIsAIWriting(false);
 
-        setIsThumbnailLoading(true);
-        const thumbRes = await fetch("/api/ai/thumbnail", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        // 썸네일 생성 실패는 요약 결과를 버리지 않고 썸네일 단계에서 알린다
+        await runThumbnailReplacement(() =>
+          requestAiThumbnail({
             projectName: name,
             techStack: stack,
             projectDescription: aiData.projectDescription ?? "",
             mainFeatures: aiData.mainFeatures ?? "",
           }),
-        });
-        const thumbData = await thumbRes.json();
-        if (!thumbRes.ok) throw new Error(thumbData.error ?? t("thumbnailFailed"));
-        setThumbnailUrl(thumbData.url ?? "");
-        setIsThumbnailLoading(false);
+        );
       }
     } catch (err) {
       setIsLoadingRepoData(false);
       setIsAIWriting(false);
-      setIsThumbnailLoading(false);
       if (err instanceof Error) setAiError(err.message);
     }
   };
 
   const handleGenerateThumbnail = async () => {
     if (!projectName) return;
-    setIsThumbnailLoading(true);
-    setThumbnailUrl("");
-    try {
-      const res = await fetch("/api/ai/thumbnail", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectName, techStack, projectDescription, mainFeatures }),
-      });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setThumbnailUrl(data.url ?? "");
-    } catch { /* ignore */ }
-    finally { setIsThumbnailLoading(false); }
+    await runThumbnailReplacement(() =>
+      requestAiThumbnail({ projectName, techStack, projectDescription, mainFeatures }),
+    );
   };
 
   const handleThumbnailFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const input = e.target;
+    const file = input.files?.[0];
     if (!file) return;
-    setIsThumbnailLoading(true);
-    setThumbnailUrl("");
-    const formData = new FormData();
-    formData.append("file", file);
     try {
-      const res = await fetch("/api/upload/thumbnail", { method: "POST", body: formData });
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      setThumbnailUrl(data.url ?? "");
-    } catch { /* ignore */ }
-    finally {
-      setIsThumbnailLoading(false);
-      e.target.value = "";
+      await runThumbnailReplacement(() => uploadThumbnailFile(file));
+    } finally {
+      input.value = "";
     }
   };
 
@@ -145,6 +153,7 @@ export function useProjectForm() {
     deployUrl, setDeployUrl,
     thumbnailUrl, setThumbnailUrl,
     isThumbnailLoading,
+    thumbnailError,
     isLoadingRepoData,
     isAIWriting,
     aiError,

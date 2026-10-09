@@ -1,6 +1,18 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 import { cookies } from "next/headers";
-import { ACCESS_TOKEN_MAX_AGE } from "./tokenConfig";
+import { refreshAccessToken } from "./backendAuth";
+import { isJwtExpired } from "./jwt";
+
+declare module "axios" {
+  interface AxiosRequestConfig {
+    /**
+     * 공개(permitAll) API지만 로그인한 사용자 기준으로 결과가 달라지는 요청
+     * (예: 내 북마크, 내 학교 게시물). 토큰 없이 보내면 백엔드가 익명 200·빈 목록을 돌려줘
+     * "결과 없음"처럼 보이므로, 토큰을 확보하지 못하면 보내지 않고 401로 실패시킨다.
+     */
+    requireAuth?: boolean;
+  }
+}
 
 type RetryableConfig = InternalAxiosRequestConfig & { _retry?: boolean };
 
@@ -17,6 +29,7 @@ export class ApiError extends Error {
 }
 
 function toApiError(error: unknown): ApiError {
+  if (error instanceof ApiError) return error;
   if (axios.isAxiosError(error)) {
     const status = error.response?.status;
     // 백엔드는 에러 메시지를 두 가지 형태로 보낸다:
@@ -50,50 +63,62 @@ export const http = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-http.interceptors.request.use(async (config) => {
+/**
+ * 이 요청에 쓸 access token을 구한다. 쿠키는 읽기만 한다.
+ *
+ * 쿠키 저장은 쓸 수 있는 경계에서만 한다 — 페이지·Server Action 요청은 proxy.ts가 렌더 전에
+ * 갱신·저장해 두고, 비용이 드는 Route Handler는 lib/verifiedUser.ts가 응답 쿠키로 저장한다.
+ * Server Component 렌더 중 cookies().set()은 Next가 거절하므로(예전엔 그 예외가 삼켜져
+ * 갱신 자체가 실패 처리됐다), 여기서 갱신한 토큰은 이번 요청에만 메모리로 쓴다.
+ */
+async function resolveAccessToken(): Promise<
+  | { kind: "token"; token: string }
+  | { kind: "none" }
+  | { kind: "unavailable" }
+> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("access_token")?.value;
+  const accessToken = cookieStore.get("access_token")?.value;
+  if (accessToken && !isJwtExpired(accessToken)) {
+    return { kind: "token", token: accessToken };
+  }
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const refreshToken = cookieStore.get("refresh_token")?.value;
+  if (!refreshToken) return { kind: "none" };
+
+  const result = await refreshAccessToken(refreshToken);
+  if (result.kind === "ok") return { kind: "token", token: result.accessToken };
+  return result.kind === "unavailable" ? { kind: "unavailable" } : { kind: "none" };
+}
+
+http.interceptors.request.use(async (config) => {
+  // 재시도 요청에는 retryWithNewToken이 새 토큰을 이미 넣었다 — 쿠키의 거절된 토큰으로 덮어쓰지 않는다
+  if ((config as RetryableConfig)._retry) return config;
+
+  const resolved = await resolveAccessToken();
+
+  if (resolved.kind === "token") {
+    config.headers.Authorization = `Bearer ${resolved.token}`;
+  } else if (config.requireAuth) {
+    throw resolved.kind === "unavailable"
+      ? new ApiError(503, "인증 서버에 연결할 수 없습니다.")
+      : new ApiError(401, "로그인이 필요합니다.");
   }
 
   return config;
 });
 
-async function refreshAccessToken(): Promise<string | null> {
-  try {
-    const cookieStore = await cookies();
-    const refreshToken = cookieStore.get("refresh_token")?.value;
-
-    if (!refreshToken) return null;
-
-    // 서버는 refreshToken을 쿠키가 아닌 요청 body(TokenRefreshRequest)로 받는 구조
-    const res = await axios.post<{ accessToken: string }>(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh`,
-      { refreshToken },
-    );
-
-    const newToken = res.data.accessToken;
-    cookieStore.set("access_token", newToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: ACCESS_TOKEN_MAX_AGE,
-      path: "/",
-    });
-
-    return newToken;
-  } catch {
-    return null;
-  }
-}
-
+/** 토큰이 거절됐을 때(폐기·위조 등 만료 전 무효) refresh token으로 한 번만 재발급해 재시도한다 */
 async function retryWithNewToken(config: RetryableConfig): Promise<boolean> {
-  const newToken = await refreshAccessToken();
-  if (!newToken) return false;
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get("refresh_token")?.value;
+  if (!refreshToken) return false;
+
+  const result = await refreshAccessToken(refreshToken);
+  // invalid면 원래의 401/403을 그대로 돌려줘서 호출부가 재로그인 흐름을 타게 한다
+  if (result.kind !== "ok") return false;
+
   config._retry = true;
-  config.headers.Authorization = `Bearer ${newToken}`;
+  config.headers.Authorization = `Bearer ${result.accessToken}`;
   return true;
 }
 
@@ -124,3 +149,10 @@ http.interceptors.response.use(
     return Promise.reject(toApiError(error));
   },
 );
+
+/** 세션이 더 이상 유효하지 않아 재로그인이 필요한 실패인지 */
+export function isSessionRejected(error: unknown): boolean {
+  return (
+    error instanceof ApiError && (error.status === 401 || error.status === 403)
+  );
+}

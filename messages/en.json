@@ -3,7 +3,17 @@
     "appName": "Pofol",
     "close": "Close",
     "retry": "Try again",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {page}"
+    },
+    "loadError": {
+      "title": "Couldn't load this list",
+      "desc": "Please try again in a moment."
+    }
   },
   "header": {
     "createPost": "Create post",
@@ -42,7 +52,8 @@
     "justNow": "Just now",
     "minutesAgo": "{minutes}m ago",
     "hoursAgo": "{hours}h ago",
-    "daysAgo": "{days}d ago"
+    "daysAgo": "{days}d ago",
+    "loadFailed": "Couldn't load notifications."
   },
   "auth": {
     "login": {
@@ -90,7 +101,9 @@
       "back": "Back"
     },
     "oauth": {
-      "connecting": "Connecting to GitHub..."
+      "unsupportedTitle": "GitHub login isn't supported right now",
+      "unsupportedDesc": "Log in with your email, then link your GitHub account from the write page.",
+      "goToLogin": "Go to login"
     }
   },
   "home": {
@@ -124,12 +137,12 @@
   "board": {
     "empty": "No posts yet.",
     "schoolVerificationRequired": "Verify your school to see posts only from people at your school.",
-    "schoolLoading": "Loading posts from your school...",
     "categories": {
       "all": "All",
       "recruiting": "Recruiting",
       "school": "School",
-      "bookmarks": "Bookmarks"
+      "bookmarks": "Bookmarks",
+      "label": "Post categories"
     },
     "relatedPosts": {
       "title": "Related Projects",
@@ -160,7 +173,8 @@
       "deleteFailed": "Failed to delete. Please try again shortly.",
       "bookmarkFailed": "Failed to update the bookmark.",
       "likeFailed": "Failed to update the like.",
-      "copyFailed": "Failed to copy the link."
+      "copyFailed": "Failed to copy the link.",
+      "recruitNote": "Recruitment details"
     },
     "apply": {
       "sectionCompleteTitle": "Application submitted",
@@ -304,7 +318,10 @@
         "description": "Project description",
         "descriptionPlaceholder": "Describe your project",
         "roles": "Roles and headcount",
-        "unit": ""
+        "unit": "",
+        "positionsRequired": "Select at least one position and set its headcount to 1 or more.",
+        "increase": "Increase {role} headcount",
+        "decrease": "Decrease {role} headcount"
       },
       "uploadLinks": {
         "title": "Additional resource links",
@@ -338,13 +355,25 @@
       "submitting": "Saving...",
       "submit": "Save changes",
       "titleRequired": "Please enter a project name.",
-      "uploadFailed": "Failed to upload the thumbnail. Please try again shortly.",
-      "saveFailed": "Failed to save changes. Please try again shortly."
+      "saveFailed": "Failed to save changes. Please try again shortly.",
+      "typeLocked": "The post type ({type}) can't be changed.",
+      "typeRecruit": "Team recruitment",
+      "typeDisplay": "Project showcase"
     },
     "error": {
       "title": "Couldn't load this post.",
       "desc": "It may have been deleted, or this could be a temporary error.",
       "retry": "Try again"
+    },
+    "thumbnail": {
+      "tooLarge": "Images must be {max}MB or smaller.",
+      "invalidType": "Only PNG, JPG, WebP, and GIF images are supported.",
+      "invalidInput": "The project info for the thumbnail is invalid. Please check the project name.",
+      "rateLimited": "Too many requests. Please try again in {seconds} seconds.",
+      "rateLimitedLater": "Too many requests. Please try again shortly.",
+      "unauthorized": "Please log in again.",
+      "failed": "Couldn't process the thumbnail. Your current thumbnail was kept.",
+      "network": "A network error occurred. Your current thumbnail was kept."
     }
   },
   "profile": {
@@ -366,7 +395,8 @@
       "title": "Followers",
       "searchPlaceholder": "Search users",
       "noResults": "No results found.",
-      "empty": "No followers yet."
+      "empty": "No followers yet.",
+      "loadFailed": "Couldn't load followers."
     },
     "editModal": {
       "title": "Edit profile",
@@ -416,7 +446,9 @@
       "accept": "Accept",
       "reject": "Reject",
       "accepted": "Accepted",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "pending": "Pending",
+      "positionFull": "This position is full. You can only reject."
     },
     "applicantSection": {
       "title": "Applicants",
@@ -464,13 +496,8 @@
     },
     "notifications": {
       "title": "Notifications",
-      "desc": "Manage notifications for follows, likes, bookmarks, applications, and recruiting.",
-      "follow": "Follow notifications",
-      "like": "Like notifications",
-      "bookmark": "Bookmark notifications",
-      "apply": "Application notifications",
-      "recruit": "Recruiting notifications",
-      "toggleLabel": "Toggle {name}"
+      "unsupportedBadge": "Coming soon",
+      "unsupported": "Per-type notification settings aren't supported yet. You currently receive all notifications."
     }
   },
   "search": {
@@ -483,10 +510,18 @@
     "showMoreUsers": "Show more users",
     "noResults": "No results found.",
     "loading": "Searching...",
-    "followFailed": "Failed to update follow status."
+    "followFailed": "Failed to update follow status.",
+    "usersFailed": "User search failed.",
+    "projectsFailed": "Project search failed."
   },
   "bookmark": {
     "title": "Bookmarks",
     "empty": "No bookmarked posts yet."
+  },
+  "session": {
+    "expiredTitle": "Your session has expired",
+    "redirecting": "Taking you to the login page...",
+    "clearFailed": "Couldn't clear your login info. Please try again.",
+    "retry": "Try again"
   }
 }

@@ -3,6 +3,7 @@
 import { Link, useRouter } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { sendOtp } from "@/lib/auth";
+import { beginSignupFlow, hasSignupName } from "@/lib/authFlow";
 import { useTranslations } from "next-intl";
 
 export default function SignupEmailPage() {
@@ -13,8 +14,7 @@ export default function SignupEmailPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const savedName = sessionStorage.getItem("signupName");
-    if (!savedName) {
+    if (!hasSignupName(sessionStorage)) {
       router.push("/signup");
     }
   }, [router]);
@@ -31,7 +31,7 @@ export default function SignupEmailPage() {
 
       await sendOtp(email);
 
-      sessionStorage.setItem("signupEmail", email);
+      beginSignupFlow(sessionStorage, email);
       sessionStorage.setItem("toastMessage", t("otpSentToast"));
 
       router.push("/signup/verify");

@@ -1,6 +1,12 @@
 "use client";
 
 import { createPost } from "@/lib/post";
+import { joinPostContent } from "@/lib/postContent";
+import {
+  hasValidRecruitPositions,
+  toRecruitPositionRequests,
+} from "@/lib/recruitPositions";
+import { THUMBNAIL_ACCEPT } from "@/lib/uploadLimits";
 import type { PostLink } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
 import { useRouter } from "@/i18n/navigation";
@@ -138,11 +144,16 @@ export default function Page() {
 
   const isRecruit = postTypeSelection === "recruit";
   const hasProject = !!project.projectName.trim();
-  const hasRecruit = isRecruit && !!recruitDescription.trim();
-  const canSubmit = hasProject || hasRecruit;
+  // 모집글은 지원할 포지션(양의 정원)이 하나 이상 있어야 한다 — 빈 포지션 모집글은
+  // 지원 선택지가 없고 모집 관리에서 바로 "마감"으로 보였다
+  const recruitPositionsValid = !isRecruit || hasValidRecruitPositions(roleCounts);
+  const hasRecruit =
+    isRecruit && !!recruitDescription.trim() && recruitPositionsValid;
+  const canSubmit = (hasProject || hasRecruit) && recruitPositionsValid;
 
   const step1Valid =
-    postTypeSelection !== null && (!isRecruit || !!recruitDescription.trim());
+    postTypeSelection !== null &&
+    (!isRecruit || (!!recruitDescription.trim() && recruitPositionsValid));
   const step2Valid = isRecruit || hasProject;
 
   const githubUrl = github.selectedRepo
@@ -171,16 +182,21 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    if (!canSubmit) return;
+    // 버튼 비활성화와 별개로 제출 직전에 한 번 더 확인한다 (임시 저장 복원으로 단계를 건너뛴 경우 등)
+    if (!canSubmit) {
+      if (!recruitPositionsValid) {
+        setSubmitError(t("teamRecruit.positionsRequired"));
+        setCurrentStep(1);
+      }
+      return;
+    }
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const projectcontent = [
+      const projectcontent = joinPostContent(
         project.projectDescription,
-        project.mainFeatures ? `## 주요 기능\n${project.mainFeatures}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n\n");
+        project.mainFeatures,
+      );
 
       const links: PostLink[] = [
         ...(github.selectedRepo
@@ -210,10 +226,10 @@ export default function Page() {
         type: teamRecruitEnabled ? PostType.RECRUIT : PostType.DISPLAY,
         links,
         recruitNote: recruitDescription,
-        recruitPositions: Object.entries(roleCounts).map(([role, count]) => ({
-          positionType: role.toUpperCase(),
-          maxCount: count,
-        })),
+        // 일반 게시글에는 (유형을 바꾸기 전에 골라 둔) 포지션을 붙이지 않는다
+        recruitPositions: teamRecruitEnabled
+          ? toRecruitPositionRequests(roleCounts)
+          : [],
         isPublished: true,
         skillIds: project.selectedSkills.map((s) => s.id),
         tagNames: tags,
@@ -326,6 +342,9 @@ export default function Page() {
               roleCounts={roleCounts}
               onRoleCountsChange={setRoleCounts}
               hideToggle
+              positionsError={
+                recruitPositionsValid ? null : t("teamRecruit.positionsRequired")
+              }
             />
           )}
 
@@ -528,10 +547,15 @@ export default function Page() {
             <input
               ref={project.thumbnailInputRef}
               type="file"
-              accept="image/*"
+              accept={THUMBNAIL_ACCEPT}
               className="hidden"
               onChange={project.handleThumbnailFileChange}
             />
+            {project.thumbnailError && (
+              <p role="alert" className="text-center text-sm text-red-500">
+                {project.thumbnailError}
+              </p>
+            )}
             <div className="flex justify-center gap-2">
               <button
                 type="button"
@@ -592,7 +616,7 @@ export default function Page() {
           />
 
           {submitError && (
-            <p className="text-sm text-red-500">{submitError}</p>
+            <p role="alert" className="text-sm text-red-500">{submitError}</p>
           )}
 
           <div className="flex justify-between pt-2">

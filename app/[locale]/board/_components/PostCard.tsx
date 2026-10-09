@@ -12,13 +12,14 @@ interface Props {
 }
 
 export default function PostCard({ post }: Props) {
-  const { navigate } = useNavigation();
+  const { handleLinkClick } = useNavigation();
+  const href = `/board/${post.uuid}`;
 
+  // 카드 전체를 클릭 영역으로 쓰되 실제 링크는 제목 하나다(::after가 카드를 덮는다).
+  // 예전엔 onClick만 있는 div라 키보드로 열 수 없었고, 작성자 링크를 카드 링크 안에
+  // 중첩하지 않도록 작성자 링크는 z-10으로 덮개 위에 올린다.
   return (
-    <div
-      onClick={() => navigate(`/board/${post.uuid}`)}
-      className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-    >
+    <article className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition focus-within:ring-2 focus-within:ring-black hover:-translate-y-0.5 hover:shadow-md">
       <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-gray-100">
         {post.thumbnailUrl ? (
           <Image
@@ -38,9 +39,15 @@ export default function PostCard({ post }: Props) {
           </div>
         )}
         <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/70 via-black/20 to-transparent p-4">
-          <p className="line-clamp-2 text-sm font-bold leading-snug text-white drop-shadow-sm">
-            {post.title}
-          </p>
+          <h3 className="line-clamp-2 text-sm font-bold leading-snug text-white drop-shadow-sm">
+            <Link
+              href={href}
+              onClick={(e) => handleLinkClick(e, href)}
+              className="outline-none after:absolute after:inset-0 after:content-['']"
+            >
+              {post.title}
+            </Link>
+          </h3>
           {post.skills.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">
               {post.skills.slice(0, 4).map((skill) => (
@@ -87,8 +94,7 @@ export default function PostCard({ post }: Props) {
         <div className="mt-auto flex h-9 items-center justify-between border-t border-gray-100">
           <Link
             href={`/profile/${post.authorUuid}`}
-            onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-black"
+            className="relative z-10 flex items-center gap-1.5 text-xs text-gray-500 hover:text-black"
           >
             <Avatar src={null} name={post.authorName} size="xs" />
             {post.authorName}
@@ -105,6 +111,6 @@ export default function PostCard({ post }: Props) {
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

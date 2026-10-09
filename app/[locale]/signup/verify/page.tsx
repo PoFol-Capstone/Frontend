@@ -1,36 +1,43 @@
 "use client";
 
 import { useSessionToast } from "@/hooks/useSessionToast";
-import { login, register, verifyOtp } from "@/lib/auth";
-import { saveLogin } from "@/lib/session";
+import { signInWithEmailOtp } from "@/lib/auth";
+import {
+  finishAuthFlow,
+  handOffToSignup,
+  readPendingAuth,
+  type PendingAuth,
+} from "@/lib/authFlow";
+import { resolvePostLoginPath } from "@/lib/safeRedirect";
 import { useRouter } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import OtpInput, { OTP_LENGTH } from "@/components/OtpInput";
 
 export default function SignupVerifyPage() {
   const t = useTranslations("auth.verify");
+  const locale = useLocale();
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [pending, setPending] = useState<PendingAuth | null>(null);
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const toastMessage = useSessionToast("toastMessage");
 
   useEffect(() => {
-    const singupEmail = sessionStorage.getItem("signupEmail");
-    const loginEmail = sessionStorage.getItem("loginEmail");
-    const savedEmail = singupEmail || loginEmail;
+    // 진행 중인 흐름(로그인/회원가입)의 이메일 하나만 쓴다 — 다른 흐름의 이메일과 섞지 않는다
+    const saved = readPendingAuth(sessionStorage);
 
-    if (!savedEmail) {
-      router.push("/signup/email");
+    if (!saved) {
+      router.push("/login");
       return;
     }
 
-    setEmail(savedEmail);
+    setPending(saved);
   }, [router]);
 
   const verify = async (code: string) => {
+    if (!pending) return;
     if (code.length !== 6) {
       setMessage(t("codeRequired"));
       return;
@@ -40,48 +47,37 @@ export default function SignupVerifyPage() {
       setLoading(true);
       setMessage("");
 
-      const result = await verifyOtp(email, code);
+      // 토큰은 서버에서 바로 쿠키로 저장되고 브라우저로 넘어오지 않는다
+      const result = await signInWithEmailOtp(
+        pending.email,
+        code,
+        pending.flow === "signup" ? pending.name : undefined,
+      );
 
-      if (!result.verified) {
-        setMessage(t("invalidCode"));
-        return;
-      }
-
-      let uuid: string;
-      let accessToken: string;
-      let refreshToken: string;
-
-      if (result.newUser) {
-        const name = sessionStorage.getItem("signupName") ?? "";
-
-        // 로그인 화면에서 들어온 미가입 이메일 — 이름을 받은 적이 없으니
-        // 빈 이름으로 회원가입을 시도하지 않고 이름 입력부터 다시 받는다
-        if (!name.trim()) {
-          sessionStorage.setItem("signupEmail", email);
-          sessionStorage.removeItem("loginEmail");
+      switch (result.status) {
+        case "signedIn": {
+          // 기존 계정으로 가입 화면을 거쳐 로그인한 경우까지 흐름 상태를 전부 정리한다
+          const callbackUrl = finishAuthFlow(sessionStorage);
+          // 이동 직전에 같은 origin의 내부 경로인지 다시 확인한다
+          window.location.assign(
+            resolvePostLoginPath(callbackUrl, window.location.origin, locale),
+          );
+          return;
+        }
+        case "needSignup":
+          // 로그인 화면에서 들어온 미가입 이메일 — 이름을 받은 적이 없으니
+          // 빈 이름으로 회원가입을 시도하지 않고 이름 입력부터 다시 받는다
+          handOffToSignup(sessionStorage);
           setMessage(t("needSignup"));
           router.push("/signup");
           return;
-        }
-
-        const authResult = await register(email, name);
-        uuid = authResult.uuid;
-        accessToken = authResult.accessToken;
-        refreshToken = authResult.refreshToken;
-        sessionStorage.removeItem("signupName");
-        sessionStorage.removeItem("signupEmail");
-      } else {
-        const authResult = await login(email, code);
-        uuid = authResult.uuid;
-        accessToken = authResult.accessToken;
-        refreshToken = authResult.refreshToken;
+        case "invalidCode":
+          setMessage(t("invalidCode"));
+          return;
+        case "failed":
+          setMessage(t("verifyFailed"));
+          return;
       }
-
-      await saveLogin(email, uuid, accessToken, refreshToken);
-      sessionStorage.removeItem("loginEmail");
-      const callbackUrl = sessionStorage.getItem("callbackUrl") ?? "/board";
-      sessionStorage.removeItem("callbackUrl");
-      window.location.href = callbackUrl;
     } catch (error) {
       console.error(error);
       setMessage(t("verifyFailed"));
@@ -116,7 +112,7 @@ export default function SignupVerifyPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !pending}
             className="w-full rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white disabled:opacity-50"
           >
             {loading ? t("verifying") : t("submit")}
@@ -127,7 +123,9 @@ export default function SignupVerifyPage() {
 
         <button
           type="button"
-          onClick={() => router.push("/signup/email")}
+          onClick={() =>
+            router.push(pending?.flow === "login" ? "/login" : "/signup/email")
+          }
           className="mt-8 text-sm text-gray-500 underline"
         >
           {t("back")}

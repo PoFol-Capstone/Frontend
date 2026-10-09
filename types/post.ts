@@ -64,6 +64,12 @@ export type RequestPosts = {
   tagNames: string[];
 };
 
+/**
+ * PATCH /api/posts/{uuid} 본문. 백엔드 UpdatePostRequest·Post.update는 게시글 유형을 바꾸지
+ * 않으므로 type을 보내지 않는다 (모집↔일반 전환은 지원자 처리까지 포함한 백엔드 계약이 필요).
+ */
+export type UpdatePostRequest = Omit<RequestPosts, "type">;
+
 export type ResponsePosts = {
   uuid: string;
   title: string;

@@ -1,30 +1,35 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import {
   getNotifications,
   getUnreadCount,
   markAllAsRead,
   markAsRead,
 } from "@/lib/notification";
-import type { Notification } from "@/types/notification";
+import {
+  createNotificationListStore,
+  initialNotificationListState,
+} from "./notificationList";
 
 const POLL_INTERVAL_MS = 30000;
 
 export function useNotifications(isLoggedIn: boolean) {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [store] = useState(() =>
+    createNotificationListStore((page) => getNotifications(page)),
+  );
+  const list = useSyncExternalStore(
+    store.subscribe,
+    store.getState,
+    () => initialNotificationListState,
+  );
 
-  const refreshUnreadCount = useCallback(async () => {
-    try {
-      setUnreadCount(await getUnreadCount());
-    } catch {
+  // 응답이 온 뒤 콜백에서만 상태를 바꾼다 (effect에서 동기적으로 setState하지 않음)
+  const refreshUnreadCount = useCallback(() => {
+    getUnreadCount().then(setUnreadCount, () => {
       // 폴링 실패는 조용히 무시 — 다음 주기에 재시도
-    }
+    });
   }, []);
 
   // 로그인 상태에서만, 탭이 보이는 동안 30초마다 안읽음 개수 폴링 (WebSocket 없이 폴링 전략)
@@ -48,48 +53,36 @@ export function useNotifications(isLoggedIn: boolean) {
     };
   }, [isLoggedIn, refreshUnreadCount]);
 
-  const loadFirstPage = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const data = await getNotifications(0);
-      setNotifications(data.content);
-      setPage(0);
-      setHasMore(!data.last);
-      setIsLoaded(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  /** 알림창을 열 때마다 호출 — 목록과 안읽음 개수를 함께 최신으로 맞춘다 */
+  const refresh = useCallback(() => {
+    void store.reload();
+    refreshUnreadCount();
+  }, [store, refreshUnreadCount]);
 
-  const loadMore = useCallback(async () => {
-    if (isLoading || !hasMore) return;
-    setIsLoading(true);
-    try {
-      const nextPage = page + 1;
-      const data = await getNotifications(nextPage);
-      setNotifications((prev) => [...prev, ...data.content]);
-      setPage(nextPage);
-      setHasMore(!data.last);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [page, hasMore, isLoading]);
+  const loadMore = useCallback(() => {
+    void store.loadMore();
+  }, [store]);
 
-  const markOneRead = useCallback(async (uuid: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.uuid === uuid ? { ...n, isRead: true } : n)),
-    );
-    setUnreadCount((prev) => Math.max(0, prev - 1));
+  const retry = useCallback(() => {
+    void store.retry();
+  }, [store]);
 
-    try {
-      await markAsRead(uuid);
-    } catch {
-      // 실패해도 롤백하지 않음 — 다음 목록 새로고침 때 서버 상태로 정정
-    }
-  }, []);
+  const markOneRead = useCallback(
+    async (uuid: string) => {
+      store.markRead(uuid);
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+
+      try {
+        await markAsRead(uuid);
+      } catch {
+        // 실패해도 롤백하지 않음 — 다음 목록 새로고침 때 서버 상태로 정정
+      }
+    },
+    [store],
+  );
 
   const markAllRead = useCallback(async () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    store.markAllRead();
     setUnreadCount(0);
 
     try {
@@ -97,16 +90,17 @@ export function useNotifications(isLoggedIn: boolean) {
     } catch {
       // 실패해도 롤백하지 않음 — 다음 목록 새로고침 때 서버 상태로 정정
     }
-  }, []);
+  }, [store]);
 
   return {
     unreadCount,
-    notifications,
-    hasMore,
-    isLoading,
-    isLoaded,
-    loadFirstPage,
+    notifications: list.items,
+    hasMore: list.hasMore,
+    isLoading: list.isLoading,
+    loadError: list.error,
+    refresh,
     loadMore,
+    retry,
     markOneRead,
     markAllRead,
   };

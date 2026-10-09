@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --test --import ./tests/setup/register.mjs \"tests/**/*.test.ts\""
   },
   "dependencies": {
     "@google/genai": "^1.51.0",
