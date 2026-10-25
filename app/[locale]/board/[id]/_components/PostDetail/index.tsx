@@ -16,6 +16,7 @@ import AuthorBar from "./AuthorBar";
 import DeleteModal from "./DeleteModal";
 import PostContent from "./PostContent";
 import PostHero from "./PostHero";
+import DocumentViewer from "../DocumentViewer";
 
 type Props = {
   post: ResponsePosts;
@@ -116,6 +117,8 @@ export default function PostDetail({
               </div>
             )}
           </div>
+
+          {post.document && <DocumentViewer document={post.document} />}
 
           <PostContent
             content={post.content}

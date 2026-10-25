@@ -19,6 +19,13 @@ export type PostLink = {
   url: string;
 };
 
+/** 게시글 발표자료 (게시글당 최대 1건). 슬라이드 url은 /embed 형식 */
+export type PostDocument = {
+  type: "PDF" | "GOOGLE_SLIDES";
+  url: string;
+  fileSize: number | null;
+};
+
 export type ApplicationStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
 export type RecruitmentRole = {
@@ -62,6 +69,8 @@ export type RequestPosts = {
   isPublished: boolean;
   skillIds: number[];
   tagNames: string[];
+  /** 생성: null/생략 = 없음. 수정(PATCH): 생략 = 유지, null = 삭제 */
+  document?: PostDocument | null;
 };
 
 /**
@@ -92,6 +101,8 @@ export type ResponsePosts = {
   skills: Skill[];
   tags: string[];
   createdAt: string;
+  /** 상세·작성·수정 응답에만 채워진다 (목록은 null) */
+  document: PostDocument | null;
 };
 
 export type PostListParams = {

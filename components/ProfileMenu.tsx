@@ -12,6 +12,7 @@ export default function ProfileMenu() {
   const MENU_ITEMS = [
     { label: t("profile"), href: "/profile" },
     { label: t("recruitment"), href: "/recruitment" },
+    { label: t("resume"), href: "/resume" },
     { label: t("settings"), href: "/settings" },
   ];
 

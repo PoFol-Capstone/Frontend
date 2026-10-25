@@ -18,7 +18,8 @@ import {
   uploadThumbnailFile,
 } from "@/lib/thumbnailClient";
 import { THUMBNAIL_ACCEPT } from "@/lib/uploadLimits";
-import type { PostLink, ResponsePosts } from "@/types/post";
+import type { PostDocument, PostLink, ResponsePosts } from "@/types/post";
+import DocumentSection from "@/app/[locale]/board/write/_components/DocumentSection";
 import { LinkType, PostType } from "@/types/post";
 import type { Skill } from "@/types/skill";
 import Image from "next/image";
@@ -65,6 +66,8 @@ export default function EditPostClient({ post }: Props) {
   const [isThumbnailLoading, setIsThumbnailLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [postDocument, setPostDocument] = useState<PostDocument | null>(post.document ?? null);
+  const [isDocumentUploading, setIsDocumentUploading] = useState(false);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
   const githubLink = post.links?.find((l) => l.type === LinkType.GITHUB);
@@ -156,6 +159,8 @@ export default function EditPostClient({ post }: Props) {
         isPublished: post.isPublished,
         skillIds: selectedSkills.map((s) => s.id),
         tagNames: tags,
+        // 바뀌었을 때만 보낸다 (생략 = 유지, null = 삭제)
+        ...(postDocument?.url !== post.document?.url ? { document: postDocument } : {}),
       });
 
       router.push(`/board/${post.uuid}`);
@@ -290,6 +295,12 @@ export default function EditPostClient({ post }: Props) {
         }
       />
 
+      <DocumentSection
+        value={postDocument}
+        onChange={setPostDocument}
+        onUploadingChange={setIsDocumentUploading}
+      />
+
       <TagsSection tags={tags} onChange={setTags} />
 
       {/* 유형 전환은 저장되지 않으므로 토글을 숨기고, 모집글일 때만 모집 정보를 편집한다 */}
@@ -324,7 +335,7 @@ export default function EditPostClient({ post }: Props) {
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={isSubmitting || !title.trim() || !recruitPositionsValid}
+          disabled={isSubmitting || !title.trim() || !recruitPositionsValid || isDocumentUploading}
           className="flex-1 rounded-xl bg-black py-4 text-base font-semibold text-white hover:bg-gray-900 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? t("submitting") : t("submit")}

@@ -22,3 +22,22 @@ export const THUMBNAIL_EXTENSIONS: Record<string, string> = {
 };
 
 export const THUMBNAIL_ACCEPT = Object.keys(THUMBNAIL_EXTENSIONS).join(",");
+
+/**
+ * 발표자료 PDF — 함수 본문 한도를 피하려고 브라우저 → Vercel Blob 직접 업로드한다
+ * (/api/upload/document는 업로드 토큰만 발급). 백엔드 PostDocumentValidator와 같은 30MB.
+ */
+export const MAX_DOCUMENT_BYTES = 30 * 1024 * 1024;
+export const MAX_DOCUMENT_MB = MAX_DOCUMENT_BYTES / (1024 * 1024);
+export const DOCUMENT_CONTENT_TYPE = "application/pdf";
+
+/** 프로필 사진 — 썸네일과 같은 서버 경유 업로드, 2MB·png/jpg/webp */
+export const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
+export const MAX_AVATAR_MB = MAX_AVATAR_BYTES / (1024 * 1024);
+export const MAX_AVATAR_REQUEST_BYTES = MAX_AVATAR_BYTES + 64 * 1024;
+export const AVATAR_EXTENSIONS: Record<string, string> = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/webp": "webp",
+};
+export const AVATAR_ACCEPT = Object.keys(AVATAR_EXTENSIONS).join(",");

@@ -7,7 +7,7 @@ import {
   toRecruitPositionRequests,
 } from "@/lib/recruitPositions";
 import { THUMBNAIL_ACCEPT } from "@/lib/uploadLimits";
-import type { PostLink } from "@/types/post";
+import type { PostDocument, PostLink } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
 import { useRouter } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
@@ -23,6 +23,7 @@ import UploadLinksSection, {
 } from "./_components/UploadLinksSection";
 import { useGithubRepos } from "./_hooks/useGithubRepos";
 import { useProjectForm } from "./_hooks/useProjectForm";
+import DocumentSection from "./_components/DocumentSection";
 
 type PostTypeSelection = "project" | "recruit" | null;
 
@@ -44,6 +45,7 @@ type Draft = {
   deployUrl: string;
   thumbnailUrl: string;
   selectedSkills: Skill[];
+  document: PostDocument | null;
 };
 
 export default function Page() {
@@ -72,6 +74,8 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDraftRestored, setIsDraftRestored] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [postDocument, setPostDocument] = useState<PostDocument | null>(null);
+  const [isDocumentUploading, setIsDocumentUploading] = useState(false);
 
   // 마운트 시 1회: 이전에 저장된 임시 작성본이 있으면 복원한다(GitHub 연동
   // 리다이렉트로 페이지가 완전히 새로 로드된 경우 등).
@@ -93,6 +97,7 @@ export default function Page() {
         if (draft.deployUrl) project.setDeployUrl(draft.deployUrl);
         if (draft.thumbnailUrl) project.setThumbnailUrl(draft.thumbnailUrl);
         if (draft.selectedSkills) project.handleSkillsChange(draft.selectedSkills);
+        if (draft.document) setPostDocument(draft.document);
       }
     } catch {
       // sessionStorage 접근 실패 시 조용히 무시하고 빈 폼으로 진행
@@ -119,6 +124,7 @@ export default function Page() {
       deployUrl: project.deployUrl,
       thumbnailUrl: project.thumbnailUrl,
       selectedSkills: project.selectedSkills,
+      document: postDocument,
     };
     try {
       sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
@@ -140,6 +146,7 @@ export default function Page() {
     project.deployUrl,
     project.thumbnailUrl,
     project.selectedSkills,
+    postDocument,
   ]);
 
   const isRecruit = postTypeSelection === "recruit";
@@ -233,6 +240,7 @@ export default function Page() {
         isPublished: true,
         skillIds: project.selectedSkills.map((s) => s.id),
         tagNames: tags,
+        document: postDocument,
       });
       try {
         sessionStorage.removeItem(DRAFT_KEY);
@@ -615,6 +623,12 @@ export default function Page() {
             githubUrl={githubUrl}
           />
 
+          <DocumentSection
+            value={postDocument}
+            onChange={setPostDocument}
+            onUploadingChange={setIsDocumentUploading}
+          />
+
           {submitError && (
             <p role="alert" className="text-sm text-red-500">{submitError}</p>
           )}
@@ -630,7 +644,7 @@ export default function Page() {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isSubmitting || !canSubmit}
+              disabled={isSubmitting || !canSubmit || isDocumentUploading}
               className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               {isSubmitting ? t("step4.submitting") : t("step4.submit")}

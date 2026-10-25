@@ -54,4 +54,6 @@ export type ProfileUpdateRequest = {
   position: string;
   positionMonths: number;
   portfolioUrl: string;
+  /** 생략 = 유지, null = 기본 이미지 (백엔드는 Vercel Blob URL만 받는다) */
+  avatarUrl?: string | null;
 };

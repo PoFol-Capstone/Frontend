@@ -1,7 +1,9 @@
 "use client";
 
-import { useId, useState } from "react";
-import { X, Link2, Mail } from "lucide-react";
+import { useId, useRef, useState } from "react";
+import { X, Link2, Mail, Camera } from "lucide-react";
+import { Avatar } from "@/components/Avatar";
+import { AVATAR_ACCEPT, AVATAR_EXTENSIONS, MAX_AVATAR_BYTES, MAX_AVATAR_MB } from "@/lib/uploadLimits";
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { FaGithub } from "react-icons/fa";
 import { Profile } from "@/types/user";
@@ -53,6 +55,9 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
     portfolioUrl,
   });
   const [startMonth, setStartMonth] = useState(() => toStartMonth(profile.positionMonths));
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(profile.avatarUrl ?? null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const panelRef = useModalA11y(onClose);
@@ -61,6 +66,39 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // 사진은 고르는 즉시 업로드하고, 저장 버튼을 눌러야 프로필에 반영된다
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    if (!AVATAR_EXTENSIONS[file.type]) {
+      setError(t("avatarInvalidType"));
+      return;
+    }
+    if (file.size > MAX_AVATAR_BYTES) {
+      setError(t("avatarTooLarge", { max: MAX_AVATAR_MB }));
+      return;
+    }
+    setError(null);
+    setIsUploadingAvatar(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/upload/avatar", { method: "POST", body: formData });
+      const data = (await res.json().catch(() => null)) as { url?: string; error?: string } | null;
+      if (!res.ok || !data?.url) {
+        setError(data?.error ?? t("avatarUploadFailed"));
+        return;
+      }
+      setAvatarUrl(data.url);
+    } catch {
+      setError(t("avatarUploadFailed"));
+    } finally {
+      setIsUploadingAvatar(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -78,6 +116,7 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
         ...form,
         name: form.name.trim(),
         positionMonths: duration?.totalMonths ?? 0,
+        avatarUrl,
       });
       onClose();
       window.location.reload();
@@ -137,6 +176,39 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
 
         {/* 폼 */}
         <div className="px-8 pb-8 pt-2 space-y-6 text-left">
+          {/* 프로필 사진 — 원형으로 잘린 모습 그대로 미리 보여준다 */}
+          <div className="flex items-center gap-5">
+            <Avatar src={avatarUrl} name={form.name || profile.name} size="lg" />
+            <div className="space-y-2">
+              <input
+                ref={avatarInputRef}
+                type="file"
+                accept={AVATAR_ACCEPT}
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={isUploadingAvatar}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+              >
+                <Camera className="h-4 w-4" />
+                {isUploadingAvatar ? t("avatarUploading") : t("avatarChange")}
+              </button>
+              {avatarUrl && (
+                <button
+                  type="button"
+                  onClick={() => setAvatarUrl(null)}
+                  className="block text-xs text-gray-500 hover:text-black"
+                >
+                  {t("avatarReset")}
+                </button>
+              )}
+              <p className="text-xs text-gray-400">{t("avatarHint", { max: MAX_AVATAR_MB })}</p>
+            </div>
+          </div>
+
           {/* 이름 */}
           <div>
             <label className="mb-2.5 block text-sm font-semibold text-gray-900">
@@ -260,7 +332,7 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isUploadingAvatar}
             className="mt-3 min-h-10.5 w-full rounded-lg bg-black px-3 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50"
           >
             {isSubmitting ? t("saving") : t("save")}

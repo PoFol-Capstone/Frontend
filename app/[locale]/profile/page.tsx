@@ -8,9 +8,12 @@ import { redirect } from "@/i18n/navigation";
 import SessionExpired from "@/components/SessionExpired";
 import ProfileSidebar from "./_components/ProfileSidebar";
 import PostCarousel, { PROFILE_POSTS_PAGE_SIZE } from "./_components/PostCarousel";
+import ProfileTabs, { parseProfileTab } from "./_components/ProfileTabs";
+import GitHubTab from "./_components/GitHubTab";
+import { getGithubConnected, getMyAnalysis } from "@/lib/githubAnalysis";
 
 type Props = {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; tab?: string }>;
 };
 
 export default function ProfilePage({ searchParams }: Props) {
@@ -27,7 +30,9 @@ async function ProfileContent({ searchParams }: Props) {
     redirect({ href: "/login", locale });
     return;
   }
-  const page = parsePageParam((await searchParams).page);
+  const params = await searchParams;
+  const page = parsePageParam(params.page);
+  const tab = parseProfileTab(params.tab);
 
   // 세 요청을 병렬로 시작하되, 결과 처리는 각자 따로 (getUser 실패가 나머지를 막지 않도록)
   const profilePromise = getUser(uuid);
@@ -37,6 +42,11 @@ async function ProfileContent({ searchParams }: Props) {
     return null;
   });
   const postsPromise = getUserPosts(uuid, { page, size: PROFILE_POSTS_PAGE_SIZE });
+  // GitHub 탭일 때만 분석 결과·연동 여부를 읽는다 (실패하면 탭 안에서 안내한다)
+  const githubPromise =
+    tab === "github"
+      ? Promise.all([getGithubConnected(), getMyAnalysis()])
+      : Promise.resolve(null);
   // 아래에서 프로필 실패로 먼저 반환해도 unhandled rejection이 되지 않게 한다
   postsPromise.catch(() => {});
 
@@ -57,9 +67,10 @@ async function ProfileContent({ searchParams }: Props) {
   }
 
   // 게시물 조회 실패는 "게시물 없음"으로 바꾸지 않고 error.tsx(재시도)로 보낸다
-  const [postsResult, followers] = await Promise.all([
+  const [postsResult, followers, github] = await Promise.all([
     postsPromise,
     followersPromise,
+    githubPromise,
   ]);
   const t = await getTranslations("profile");
 
@@ -82,16 +93,24 @@ async function ProfileContent({ searchParams }: Props) {
           viewerUuid={uuid}
         />
 
-        <section className="space-y-12">
-          <section>
-            <h2 className="mb-4 text-3xl font-bold">{t("postsHeading")}</h2>
-            <PostCarousel
-              posts={sitePosts}
-              page={postsResult.number}
-              totalPages={postsResult.totalPages}
-              pathname="/profile"
+        <section className="space-y-8">
+          <ProfileTabs active={tab} />
+          {github ? (
+            <GitHubTab
+              connected={github[0]}
+              initialAnalysis={github[1].ok ? github[1].data : null}
             />
-          </section>
+          ) : (
+            <section>
+              <h2 className="mb-4 text-3xl font-bold">{t("postsHeading")}</h2>
+              <PostCarousel
+                posts={sitePosts}
+                page={postsResult.number}
+                totalPages={postsResult.totalPages}
+                pathname="/profile"
+              />
+            </section>
+          )}
         </section>
       </div>
     </main>

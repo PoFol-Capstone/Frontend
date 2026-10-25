@@ -131,3 +131,115 @@ export function parseSummarizeInput(
     value: { projectName: projectName.value, readmeText, techStack: techStack.value },
   };
 }
+
+// ---------- 포트폴리오 코치 ----------
+
+export const COACH_INPUT_LIMITS = {
+  targetRole: 50,
+  surveyText: 200,
+  strengths: 3,
+  strengthItem: 30,
+  solvedacId: 40,
+  blogRss: 300,
+} as const;
+
+const README_DECORATIONS = ["badges", "stats", "streak", "header", "solvedac", "blog"] as const;
+type ReadmeDecorationInput = (typeof README_DECORATIONS)[number];
+
+function optionalShortText(
+  value: unknown,
+  field: string,
+  max: number,
+): Parsed<string | null> {
+  if (value === undefined || value === null || value === "") return { ok: true, value: null };
+  if (typeof value !== "string") return { ok: false, error: `${field}은(는) 문자열이어야 합니다.` };
+  if (value.length > max) return { ok: false, error: `${field}은(는) ${max}자 이하여야 합니다.` };
+  const trimmed = value.trim();
+  return { ok: true, value: trimmed || null };
+}
+
+export function parseDirectionInput(body: unknown): Parsed<{ targetRole: string | null }> {
+  if (!isRecord(body)) return { ok: false, error: "잘못된 요청 형식입니다." };
+  const targetRole = optionalShortText(body.targetRole, "targetRole", COACH_INPUT_LIMITS.targetRole);
+  if (!targetRole.ok) return targetRole;
+  return { ok: true, value: { targetRole: targetRole.value } };
+}
+
+export function parseProfileReadmeInput(body: unknown): Parsed<{
+  targetRole: string | null;
+  decorations: ReadmeDecorationInput[];
+  solvedacId: string | null;
+  blogRss: string | null;
+}> {
+  if (!isRecord(body)) return { ok: false, error: "잘못된 요청 형식입니다." };
+  const targetRole = optionalShortText(body.targetRole, "targetRole", COACH_INPUT_LIMITS.targetRole);
+  if (!targetRole.ok) return targetRole;
+
+  const raw = body.decorations ?? [];
+  if (!Array.isArray(raw) || raw.some((d) => !README_DECORATIONS.includes(d as ReadmeDecorationInput))) {
+    return { ok: false, error: "decorations 값이 올바르지 않습니다." };
+  }
+  const decorations = [...new Set(raw as ReadmeDecorationInput[])];
+
+  const solvedacId = optionalShortText(body.solvedacId, "solvedacId", COACH_INPUT_LIMITS.solvedacId);
+  if (!solvedacId.ok) return solvedacId;
+  if (solvedacId.value && !/^[A-Za-z0-9_]+$/.test(solvedacId.value)) {
+    return { ok: false, error: "백준 아이디 형식이 올바르지 않습니다." };
+  }
+  const blogRss = optionalShortText(body.blogRss, "blogRss", COACH_INPUT_LIMITS.blogRss);
+  if (!blogRss.ok) return blogRss;
+  if (blogRss.value && !/^https:\/\//.test(blogRss.value)) {
+    return { ok: false, error: "블로그 RSS 주소는 https로 시작해야 합니다." };
+  }
+
+  return {
+    ok: true,
+    value: { targetRole: targetRole.value, decorations, solvedacId: solvedacId.value, blogRss: blogRss.value },
+  };
+}
+
+export function parseResumeInput(body: unknown): Parsed<{
+  targetRole: string;
+  interests: string;
+  teamRole: string;
+  strengths: string[];
+  goal: string;
+}> {
+  if (!isRecord(body) || !isRecord(body.survey)) return { ok: false, error: "설문 응답이 필요합니다." };
+  const survey = body.survey;
+  const text = (field: string) =>
+    optionalShortText(survey[field], field, COACH_INPUT_LIMITS.surveyText);
+
+  const targetRole = text("targetRole");
+  if (!targetRole.ok) return targetRole;
+  if (!targetRole.value) return { ok: false, error: "희망 직무를 입력해주세요." };
+  const interests = text("interests");
+  if (!interests.ok) return interests;
+  const teamRole = text("teamRole");
+  if (!teamRole.ok) return teamRole;
+  const goal = text("goal");
+  if (!goal.ok) return goal;
+
+  const rawStrengths = survey.strengths ?? [];
+  if (!Array.isArray(rawStrengths) || rawStrengths.length > COACH_INPUT_LIMITS.strengths) {
+    return { ok: false, error: `강점 키워드는 ${COACH_INPUT_LIMITS.strengths}개까지 입력할 수 있습니다.` };
+  }
+  const strengths: string[] = [];
+  for (const item of rawStrengths) {
+    if (typeof item !== "string" || item.length > COACH_INPUT_LIMITS.strengthItem) {
+      return { ok: false, error: `강점 키워드는 ${COACH_INPUT_LIMITS.strengthItem}자 이하 문자열이어야 합니다.` };
+    }
+    if (item.trim()) strengths.push(item.trim());
+  }
+
+  return {
+    ok: true,
+    value: {
+      targetRole: targetRole.value,
+      interests: interests.value ?? "",
+      teamRole: teamRole.value ?? "",
+      strengths,
+      goal: goal.value ?? "",
+    },
+  };
+}

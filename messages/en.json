@@ -30,7 +30,8 @@
     "profile": "Profile",
     "recruitment": "Recruitment",
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "resume": "Resume"
   },
   "notification": {
     "title": "Notifications",
@@ -374,6 +375,27 @@
       "unauthorized": "Please log in again.",
       "failed": "Couldn't process the thumbnail. Your current thumbnail was kept.",
       "network": "A network error occurred. Your current thumbnail was kept."
+    },
+    "document": {
+      "heading": "Presentation",
+      "desc": "Upload a PDF or paste a Google Slides link. Viewers can flip through it on the post.",
+      "pdfTab": "PDF",
+      "slidesTab": "Google Slides",
+      "pdfPick": "Choose a PDF (up to {max}MB)",
+      "pdfHint": "PowerPoint, Keynote and Google Slides can all export to PDF.",
+      "uploading": "Uploading... {percent}%",
+      "pdfOnly": "Only PDF files are allowed.",
+      "tooLarge": "PDFs must be {max}MB or smaller.",
+      "uploadFailed": "Couldn't upload the PDF.",
+      "apply": "Apply",
+      "invalidSlides": "That's not a Google Slides link (docs.google.com/presentation/d/...).",
+      "slidesHint": "Private slides won't display. Share with 'Anyone with the link' or use File → Share → Publish to web.",
+      "pdfAttached": "PDF attached",
+      "slidesAttached": "Google Slides linked",
+      "remove": "Remove presentation",
+      "viewerHeading": "Presentation",
+      "fullscreen": "Fullscreen",
+      "openNewTab": "Open in new tab"
     }
   },
   "profile": {
@@ -421,13 +443,213 @@
       "yearsLabel": "{years}y",
       "monthsLabel": "{months}mo",
       "nameRequired": "Please enter a name.",
-      "saveFailed": "Failed to save. Please try again shortly."
+      "saveFailed": "Failed to save. Please try again shortly.",
+      "avatarChange": "Change photo",
+      "avatarUploading": "Uploading...",
+      "avatarReset": "Use default",
+      "avatarHint": "png, jpg or webp, up to {max}MB",
+      "avatarInvalidType": "Only png, jpg or webp images are allowed.",
+      "avatarTooLarge": "Photos must be {max}MB or smaller.",
+      "avatarUploadFailed": "Couldn't upload the photo."
     },
     "editPageStub": "Edit Profile",
     "error": {
       "title": "Couldn't load the profile.",
       "desc": "Please try again in a moment.",
       "retry": "Try again"
+    },
+    "tabs": {
+      "label": "Profile tabs",
+      "posts": "Posts",
+      "github": "GitHub"
+    },
+    "github": {
+      "pollTimeout": "Analysis is taking a while. Please refresh in a moment.",
+      "alreadyAnalyzing": "An analysis is already running.",
+      "cooldown": "You can re-run the analysis once every 10 minutes.",
+      "startFailed": "Couldn't start the analysis.",
+      "loadFailed": "Couldn't load your GitHub analysis.",
+      "lastAnalyzed": "Last analyzed: {when}",
+      "neverAnalyzed": "Not analyzed yet",
+      "cacheHint": "Re-run the analysis to pick up changes made on GitHub.",
+      "analyzing": "Analyzing...",
+      "analyze": "Analyze my GitHub",
+      "reanalyze": "Re-analyze",
+      "reconnect": "Reconnect GitHub",
+      "emptyTitle": "Turn your GitHub into a portfolio",
+      "emptyDesc": "We read public repos only to summarize, check, and pick highlights. No code is stored.",
+      "noProfileReadmeBanner": "You don't have a GitHub profile README",
+      "noProfileReadmeHint": "Generate a draft below under 'Profile README' and copy it.",
+      "dashboardHeading": "GitHub summary",
+      "ownedRepos": "Own repos",
+      "forkedRepos": "{count} forks",
+      "totalStars": "Stars",
+      "activeRepos": "Active in 90 days",
+      "lastPush": "Last push",
+      "languages": "Languages",
+      "otherLanguage": "Other",
+      "repoList": "Repositories",
+      "warnings": "{count} to fix",
+      "noDescription": "No description",
+      "showLess": "Show less",
+      "showAll": "Show all {count}",
+      "visibility": {
+        "heading": "Visible to others",
+        "desc": "Everything is private by default. Pinned projects always show on your profile.",
+        "summary": "Repo, star and activity summary",
+        "languages": "Language breakdown",
+        "topRepos": "Suggested top projects",
+        "direction": "Direction analysis"
+      },
+      "connectTitle": "Connect your GitHub",
+      "connectDesc": "Once connected, we'll analyze your public repos and suggest what to improve.",
+      "connect": "Connect GitHub",
+      "connectFailed": "Couldn't start GitHub connection.",
+      "publicHeading": "GitHub",
+      "demo": "Demo",
+      "publicSummary": "{owned} own repos · {stars} stars · {active} active in the last 90 days",
+      "roles": {
+        "backend": "Backend",
+        "frontend": "Frontend",
+        "fullstack": "Full-stack",
+        "mobile": "Mobile",
+        "data": "Data / AI",
+        "devops": "DevOps / Infra",
+        "game": "Game"
+      },
+      "checklist": {
+        "heading": "To-do",
+        "desc": "A checklist, not a score. Fix items on GitHub and re-analyze to clear them.",
+        "allClear": "Nothing to fix. Nicely kept!",
+        "chip": "{label}: {count}",
+        "partial": "partially checked",
+        "remaining": "{count} left",
+        "done": "Done",
+        "ignore": "Ignore",
+        "unignore": "Restore",
+        "copied": "Copied",
+        "copyReadmeTemplate": "Copy README template",
+        "openRepoAbout": "Edit About on GitHub",
+        "testGuide": "Getting started with {language} tests",
+        "openSettings": "Open repo settings (private / archive)",
+        "profileReadmeAction": "Generate a draft in 'Profile README' below.",
+        "codes": {
+          "NO_README": {
+            "label": "No README",
+            "guide": "Add an overview, how to run it, and the tech stack so visitors can understand the project."
+          },
+          "NO_DESCRIPTION": {
+            "label": "No description or topics",
+            "guide": "Add a one-line description and topics in the repo's About section."
+          },
+          "NO_HOMEPAGE": {
+            "label": "No deploy link",
+            "guide": "If it's deployed, add the URL to Website in About — a live demo stands out."
+          },
+          "NO_TESTS": {
+            "label": "No tests",
+            "guide": "No test folder found. Start by testing one core feature."
+          },
+          "TOO_FEW_COMMITS": {
+            "label": "Too few commits",
+            "guide": "Two commits or fewer. If it's practice, consider making it private or archiving it."
+          },
+          "WEAK_COMMIT_MESSAGES": {
+            "label": "Weak commit messages",
+            "guide": "Most recent commits say little (\"update\", \"fix\"). Describe what changed and why."
+          },
+          "FORK_HEAVY": {
+            "label": "Mostly forks",
+            "guide": "Under 30% of your repos are your own. Try starting a small personal project."
+          },
+          "NO_PROFILE_README": {
+            "label": "No profile README",
+            "guide": "A README in the repo named after your username shows on your GitHub profile."
+          }
+        }
+      },
+      "top": {
+        "heading": "Top projects",
+        "desc": "Top 3 by README, deployment, history and collaboration. Pin them to show on your profile.",
+        "empty": "No projects to suggest yet.",
+        "pin": "Pin to profile",
+        "unpin": "Unpin",
+        "featuredLimit": "You can pin up to {max} projects.",
+        "reasons": {
+          "RICH_README": "Detailed README",
+          "DEPLOYED": "Deployed",
+          "ACTIVE_HISTORY": "Active history",
+          "LONG_RUNNING": "Built over 2+ weeks",
+          "TEAM_PROJECT": "Team project",
+          "STARRED": "Starred",
+          "RECENT": "Recently active"
+        },
+        "directionHeading": "Direction (AI)",
+        "directionEmpty": "We'll summarize what kind of developer your repos suggest.",
+        "fits": "Fits for {role}",
+        "gaps": "To improve",
+        "targetRole": "Target role",
+        "targetRoleNone": "Target role (optional)",
+        "generate": "Analyze direction",
+        "regenerate": "Re-run",
+        "generating": "Analyzing...",
+        "remaining": "{count} left this month",
+        "limitReached": "You've used this month's quota.",
+        "aiFailed": "AI analysis failed."
+      },
+      "readme": {
+        "heading": "Profile README",
+        "exists": "You already have a profile README. Generate a new draft to compare.",
+        "missing": "A README in {login}/{login} shows on your GitHub profile.",
+        "decorations": "Decorations (only checked ones are added)",
+        "decoration": {
+          "badges": {
+            "label": "Tech stack badges",
+            "hint": "shields.io — built from your profile skills"
+          },
+          "stats": {
+            "label": "Stats card",
+            "hint": "github-readme-stats — the public instance can be slow; self-hosting is recommended"
+          },
+          "streak": {
+            "label": "Contribution streak",
+            "hint": "github-readme-streak-stats"
+          },
+          "header": {
+            "label": "Header banner",
+            "hint": "capsule-render"
+          },
+          "solvedac": {
+            "label": "Algorithm tier",
+            "hint": "solved.ac badge — needs your Baekjoon ID"
+          },
+          "blog": {
+            "label": "Latest blog posts",
+            "hint": "blog-post-workflow (GitHub Actions) — your blog's RSS feed"
+          }
+        },
+        "lessIsMore": "Too many decorations hurt readability. Pick only what matters.",
+        "solvedacPlaceholder": "Baekjoon ID",
+        "blogPlaceholder": "Blog RSS URL (https://...)",
+        "targetRole": "Target role",
+        "targetRoleNone": "Target role (optional)",
+        "generate": "Generate draft",
+        "regenerate": "Regenerate",
+        "generating": "Generating...",
+        "remaining": "{count} left this month",
+        "failed": "Couldn't generate the draft.",
+        "preview": "Preview",
+        "edit": "Edit",
+        "save": "Save",
+        "saved": "Saved.",
+        "copy": "Copy",
+        "copied": "Copied. Paste it on GitHub.",
+        "copyFailed": "Couldn't copy. Select the text in Edit and copy it.",
+        "openEditor": "Edit on GitHub",
+        "createRepo": "Create {login} repo",
+        "workflowHeading": "Blog post workflow",
+        "workflowHint": "Save as .github/workflows/blog-post.yml."
+      }
     }
   },
   "recruitment": {
@@ -523,5 +745,64 @@
     "redirecting": "Taking you to the login page...",
     "clearFailed": "Couldn't clear your login info. Please try again.",
     "retry": "Try again"
+  },
+  "resume": {
+    "heading": "AI resume",
+    "desc": "Draft from a short survey, your GitHub analysis and Pofol posts, then edit. Every sentence shows its source.",
+    "listHeading": "My resumes",
+    "listEmpty": "No resumes yet.",
+    "loadFailed": "Couldn't load your resumes.",
+    "survey": {
+      "heading": "New resume (1-minute survey)",
+      "desc": "Run the GitHub analysis first for better project details.",
+      "title": "Resume name",
+      "titlePlaceholder": "e.g. Backend applications",
+      "defaultTitle": "For {role}",
+      "targetRole": "Target role *",
+      "targetRolePlaceholder": "e.g. Backend developer",
+      "targetRoleRequired": "Please enter a target role.",
+      "interests": "Interests",
+      "interestsPlaceholder": "e.g. high traffic, payments",
+      "teamRole": "Your usual role on a team",
+      "teamRolePlaceholder": "e.g. API design and deployment",
+      "strengths": "3 strength keywords",
+      "strengthN": "Strength {n}",
+      "goal": "One-line goal",
+      "goalPlaceholder": "e.g. Building resilient services",
+      "generate": "Generate AI draft",
+      "generating": "Generating...",
+      "blank": "Start blank",
+      "aiFailed": "Couldn't generate the draft.",
+      "aiNotice": "AI drafts have a monthly limit. Please correct anything inaccurate."
+    },
+    "editor": {
+      "title": "Resume name",
+      "showPhoto": "Show photo",
+      "save": "Save",
+      "saving": "Saving...",
+      "saved": "Saved.",
+      "print": "Save as PDF",
+      "delete": "Delete resume",
+      "deleteConfirm": "Delete this resume?",
+      "legend": "✅ Verified by GitHub data · ✏️ Written by you · 🤖 Written by AI — edited sentences become yours. Only verified badges appear in the PDF.",
+      "headlinePlaceholder": "Who you are, in one line",
+      "summary": "Summary",
+      "summaryPlaceholder": "A summary sentence",
+      "projects": "Projects",
+      "addProject": "Add project",
+      "removeProject": "Remove project",
+      "projectName": "Project name",
+      "rolePlaceholder": "Your role",
+      "highlightPlaceholder": "What you did and achieved",
+      "skills": "Skills",
+      "skillsPlaceholder": "Comma-separated (e.g. Java, Spring, PostgreSQL)",
+      "addLine": "Add line",
+      "removeLine": "Remove line",
+      "source": {
+        "VERIFIED": "✅ Verified",
+        "SELF": "✏️ You",
+        "AI": "🤖 AI"
+      }
+    }
   }
 }
