@@ -32,7 +32,9 @@ export async function signInWithEmailOtp(
   code: string,
   name?: string,
 ): Promise<EmailSignInResult> {
-  let verified: { data: { verified: boolean; newUser: boolean } };
+  let verified: {
+    data: { verified: boolean; newUser: boolean; verificationToken: string };
+  };
   try {
     verified = await http.post("/api/auth/email/verify", { email, code });
   } catch (error) {
@@ -44,6 +46,9 @@ export async function signInWithEmailOtp(
   }
   if (!verified.data.verified) return { status: "invalidCode" };
 
+  // OTP를 인증한 요청자에게만 발급되는 일회성 증표 (10분, 1회) — login/register에 그대로 넘긴다
+  const { verificationToken } = verified.data;
+
   try {
     let auth: AuthResponse;
     if (verified.data.newUser) {
@@ -53,11 +58,16 @@ export async function signInWithEmailOtp(
         await http.post<AuthResponse>("/api/auth/register", {
           email,
           name: trimmedName,
+          verificationToken,
         })
       ).data;
     } else {
-      auth = (await http.post<AuthResponse>("/api/auth/login", { email, code }))
-        .data;
+      auth = (
+        await http.post<AuthResponse>("/api/auth/login", {
+          email,
+          verificationToken,
+        })
+      ).data;
     }
 
     writeSessionCookies(await cookies(), {

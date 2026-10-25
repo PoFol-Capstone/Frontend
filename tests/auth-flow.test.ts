@@ -149,9 +149,17 @@ describe("이메일 OTP 로그인 Server Function", () => {
     backend.route("POST /api/auth/email/verify", (req) => {
       const { email, code } = req.body as { email: string; code: string };
       if (code !== "123456") return { status: 400, body: { error: "인증 코드가 일치하지 않습니다" } };
-      return { status: 200, body: { verified: true, newUser: !registered.has(email) } };
+      return {
+        status: 200,
+        body: { verified: true, newUser: !registered.has(email), verificationToken: `proof:${email}` },
+      };
     });
-    const issue = (email: string) => {
+    const issue = (req: { body: unknown }) => {
+      // 실제 백엔드처럼 /email/verify가 준 증표가 없으면 거절한다
+      const { email, verificationToken } = req.body as { email: string; verificationToken?: string };
+      if (verificationToken !== `proof:${email}`) {
+        return { status: 400, body: { error: "이메일 인증이 필요합니다" } };
+      }
       const existing = registered.get(email);
       const user = backend.createUser(existing ? { email, uuid: existing.uuid } : { email });
       registered.set(email, { uuid: user.uuid });
@@ -165,8 +173,8 @@ describe("이메일 OTP 로그인 Server Function", () => {
         },
       };
     };
-    backend.route("POST /api/auth/login", (req) => issue((req.body as { email: string }).email));
-    backend.route("POST /api/auth/register", (req) => issue((req.body as { email: string }).email));
+    backend.route("POST /api/auth/login", issue);
+    backend.route("POST /api/auth/register", issue);
   });
 
   after(async () => {
