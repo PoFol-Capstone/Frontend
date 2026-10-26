@@ -12,7 +12,15 @@ import {
   toRecruitPositionRequests,
   toRoleCounts,
 } from "@/lib/recruitPositions";
-import { deriveStatus, getApplicantActions } from "@/app/[locale]/recruitment/_components/utils";
+import {
+  countByStatus,
+  deriveStatus,
+  fillPercent,
+  filterApplicants,
+  formatAppliedDate,
+  getApplicantActions,
+  isKnownPosition,
+} from "@/app/[locale]/recruitment/_components/utils";
 import { getPathname } from "@/i18n/navigation";
 import { PostType } from "@/types/post";
 import type {
@@ -80,6 +88,7 @@ const post = (overrides: Partial<ResponsePosts> = {}): ResponsePosts => ({
   isBookmarked: false,
   isAuthorFollowed: false,
   isPublished: true,
+  isRecruiting: true,
   skills: [],
   tags: [],
   createdAt: "2026-10-09T00:00:00",
@@ -95,11 +104,13 @@ const applicant = (
   applyUuid,
   applicantUuid: `user-${applyUuid}`,
   applicantName: applyUuid,
+  applicantAvatarUrl: null,
   applicantSkills: [],
   positionType: "FRONTEND",
   introduction: "자기소개",
   portfolioUrl,
   status,
+  appliedAt: "2026-10-20T09:30:00",
 });
 
 describe("모집 마감 후 지원자 처리 (P2-10)", () => {
@@ -119,7 +130,7 @@ describe("모집 마감 후 지원자 처리 (P2-10)", () => {
     const after = post({
       recruitPositionInfos: [{ positionType: "FRONTEND", maxCount: 1, currentCount: 1, isFull: true }],
     });
-    assert.equal(deriveStatus(after), "CLOSED");
+    assert.equal(deriveStatus(after), "FULL");
 
     const remaining = getApplicantActions(second, after);
     assert.equal(remaining.canAccept, false, "정원이 찼으니 수락은 막는다");
@@ -134,6 +145,50 @@ describe("모집 마감 후 지원자 처리 (P2-10)", () => {
     const actions = getApplicantActions(applicant("c", "PENDING"), post());
     assert.equal(actions.canAccept, false);
     assert.equal(actions.canReject, true);
+  });
+});
+
+describe("모집 마감/재개와 지원자 필터", () => {
+  const open = post({
+    recruitPositionInfos: [{ positionType: "BACKEND", maxCount: 2, currentCount: 0, isFull: false }],
+  });
+
+  it("작성자가 마감한 글은 자리가 남아도 마감이고, 재개하면 다시 모집중이다", () => {
+    assert.equal(deriveStatus(open), "RECRUITING");
+    assert.equal(deriveStatus({ ...open, isRecruiting: false }), "CLOSED");
+    assert.equal(deriveStatus({ ...open, isPublished: false }), "CLOSED");
+  });
+
+  it("마감한 글이어도 대기 중인 지원서는 수락할 수 있다 (백엔드와 같은 규칙)", () => {
+    const closed = { ...open, isRecruiting: false };
+    const actions = getApplicantActions({ ...applicant("e", "PENDING"), positionType: "BACKEND" }, closed);
+    assert.equal(actions.canAccept, true);
+    assert.equal(actions.canReject, true);
+  });
+
+  it("상태별로 지원자를 거르고 개수를 센다", () => {
+    const list = [
+      applicant("p1", "PENDING"),
+      applicant("p2", "PENDING"),
+      applicant("a1", "ACCEPTED"),
+      applicant("r1", "REJECTED"),
+    ];
+    assert.deepEqual(countByStatus(list), { ALL: 4, PENDING: 2, ACCEPTED: 1, REJECTED: 1 });
+    assert.deepEqual(filterApplicants(list, "PENDING").map((a) => a.applyUuid), ["p1", "p2"]);
+    assert.equal(filterApplicants(list, "ALL").length, 4);
+    assert.deepEqual(countByStatus([]), { ALL: 0, PENDING: 0, ACCEPTED: 0, REJECTED: 0 });
+  });
+
+  it("포지션 라벨·진행바·지원일 표시 값", () => {
+    assert.equal(isKnownPosition("FRONTEND"), true);
+    assert.equal(isKnownPosition("PM"), false);
+    assert.equal(fillPercent(1, 2), 50);
+    assert.equal(fillPercent(3, 2), 100);
+    assert.equal(fillPercent(0, 0), 0);
+    // 시간대와 상관없이 날짜 부분 그대로 보여준다
+    assert.equal(formatAppliedDate("2026-10-20T23:59:59", "ko"), "2026년 10월 20일");
+    assert.equal(formatAppliedDate("2026-10-20T00:00:00", "en"), "Oct 20, 2026");
+    assert.equal(formatAppliedDate(undefined, "ko"), "");
   });
 });
 

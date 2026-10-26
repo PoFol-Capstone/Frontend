@@ -98,6 +98,8 @@ export type ResponsePosts = {
   /** 조회자가 이 글의 작성자를 팔로우 중인지 (비로그인/본인 글이면 false) */
   isAuthorFollowed: boolean;
   isPublished: boolean;
+  /** 작성자가 모집을 마감했으면 false (포지션 정원이 찬 것과는 별개 — isFull 참고) */
+  isRecruiting: boolean;
   skills: Skill[];
   tags: string[];
   createdAt: string;
@@ -171,9 +173,11 @@ export type ApplicantResponse = {
   applyUuid: string;
   applicantUuid: string;
   applicantName: string;
+  applicantAvatarUrl: string | null;
   applicantSkills: string[];
   positionType: string;
   introduction: string;
   portfolioUrl?: string;
   status: ApplicationStatus;
+  appliedAt: string;
 };

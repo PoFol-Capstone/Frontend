@@ -133,6 +133,7 @@ export default function PostDetail({
             postUuid={post.uuid}
             postType={post.postType}
             recruitPositions={post.recruitPositionInfos}
+            isRecruiting={post.isRecruiting !== false}
             isAuthor={isAuthor}
           />
 

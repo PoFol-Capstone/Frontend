@@ -7,15 +7,13 @@ import type {
   ResponsePosts,
 } from "@/types/post";
 import { getOptionalSessionUuid, requireSessionUuid } from "./authGuard";
-import { http } from "./http.server";
+import { ApiError, http } from "./http.server";
 
 /**
  * 로그인한 사용자의 이 게시글 지원서. 지원하지 않았으면 null.
  *
- * 백엔드가 "지원 내역이 없습니다"를 `RuntimeException`으로 던져서 500으로 내려오기 때문에
- * status만으로는 "미지원"과 "실제 장애"를 구분할 수 없다. 그래서 예외는 계속 null로
- * 흡수하되, 원인을 추적할 수 있도록 서버 로그는 남긴다.
- * (예전에는 아무 로그도 없이 통째로 삼켜서 장애가 조용히 묻혔다.)
+ * 백엔드는 미지원을 404("지원 내역이 없습니다")로 내려준다. 지원 버튼 표시가 막히지 않도록
+ * 그 외 실패도 null로 흡수하되, 원인을 추적할 수 있도록 404가 아닌 실패는 서버 로그를 남긴다.
  */
 export async function getApply(
   postUuid: string,
@@ -29,10 +27,12 @@ export async function getApply(
     );
     return res.data;
   } catch (err) {
-    console.info(
-      "[apply] getApply 미지원 또는 조회 실패:",
-      err instanceof Error ? err.message : err,
-    );
+    if (!(err instanceof ApiError && err.status === 404)) {
+      console.info(
+        "[apply] getApply 조회 실패:",
+        err instanceof Error ? err.message : err,
+      );
+    }
     return null;
   }
 }
@@ -104,6 +104,20 @@ export async function acceptApplicant(
 ): Promise<void> {
   await requireSessionUuid();
   await http.put(`/api/posts/${postUuid}/applicants/${applyUuid}/accept`);
+}
+
+/** 모집 마감(false)/재개(true) — 작성자 전용. 마감해도 대기 중인 지원서는 계속 처리할 수 있다. */
+export async function setRecruiting(
+  postUuid: string,
+  recruiting: boolean,
+): Promise<ResponsePosts> {
+  await requireSessionUuid();
+  const res = await http.patch<ResponsePosts>(
+    `/api/recruitment/posts/${postUuid}/status`,
+    { recruiting },
+    { requireAuth: true },
+  );
+  return res.data;
 }
 
 export async function rejectApplicant(

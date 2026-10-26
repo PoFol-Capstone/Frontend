@@ -4,7 +4,7 @@ import { updateApply } from "@/lib/apply";
 import type { ResponseApplication } from "@/types/post";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
 
 type Props = {
   postUuid: string;

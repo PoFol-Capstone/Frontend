@@ -56,17 +56,17 @@ async function RecruitmentContent({ searchParams }: Props) {
   const t = await getTranslations("recruitment");
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] px-8 py-10">
+    <main className="min-h-screen bg-[#F8FAFC] px-4 py-8 sm:px-8 sm:py-10">
       <section className="mx-auto max-w-280">
-        <div className="mb-8 flex items-end justify-between">
+        <div className="mb-6 sm:mb-8">
           <div>
             <p className="mb-2 text-sm font-medium text-gray-500">
               {t("breadcrumb")}
             </p>
-            <h1 className="text-[32px] font-bold tracking-[-0.03em] text-gray-950">
+            <h1 className="text-2xl font-bold tracking-[-0.03em] text-gray-950 sm:text-[32px]">
               {t("pageTitle")}
             </h1>
-            <p className="mt-3 text-[15px] text-gray-500">
+            <p className="mt-2 text-sm text-gray-500 sm:mt-3 sm:text-[15px]">
               {t("pageSubtitle")}
             </p>
           </div>

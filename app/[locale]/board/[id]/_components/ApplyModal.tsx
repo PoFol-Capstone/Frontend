@@ -4,7 +4,7 @@ import { submitApply } from "@/lib/apply";
 import type { RecruitPositionResponse, ResponseApplication } from "@/types/post";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
 import PositionSelector from "./PositionSelector";
 
 type Props = {

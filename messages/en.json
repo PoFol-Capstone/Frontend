@@ -209,7 +209,8 @@
       "canceling": "Canceling...",
       "submitFailed": "Failed to submit. Please try again shortly.",
       "saveFailed": "Failed to save. Please try again shortly.",
-      "cancelFailed": "Failed to cancel the application. Please try again shortly."
+      "cancelFailed": "Failed to cancel the application. Please try again shortly.",
+      "recruitmentClosed": "Recruiting closed"
     },
     "comment": {
       "count": "{count} comments",
@@ -658,7 +659,8 @@
     "pageSubtitle": "Review and manage your recruiting posts and applicants in one place.",
     "status": {
       "closed": "Closed",
-      "recruiting": "Recruiting"
+      "recruiting": "Recruiting",
+      "full": "Full"
     },
     "applicantCard": {
       "viewProfile": "View profile",
@@ -670,7 +672,11 @@
       "accepted": "Accepted",
       "rejected": "Rejected",
       "pending": "Pending",
-      "positionFull": "This position is full. You can only reject."
+      "positionFull": "This position is full. You can only reject.",
+      "appliedAt": "Applied {date}",
+      "skills": "Skills",
+      "showMore": "Show more",
+      "showLess": "Show less"
     },
     "applicantSection": {
       "title": "Applicants",
@@ -678,17 +684,47 @@
       "selectPostHint": "Select a post.",
       "selectPostFromLeft": "Select a post on the left.",
       "noApplicants": "No applicants yet.",
-      "actionFailed": "Action failed. Please try again shortly."
+      "actionFailed": "Action failed. Please try again shortly.",
+      "positionSummary": "Positions filled",
+      "noFilteredApplicants": "No {status} applicants."
     },
     "postCard": {
       "applicantCount": "Applicants",
-      "edit": "Edit"
+      "edit": "Edit",
+      "close": "Close recruiting",
+      "reopen": "Reopen recruiting"
     },
     "postListSection": {
       "title": "My recruiting posts",
       "subtitle": "Team recruiting posts you've published.",
-      "count": "{count}",
-      "empty": "No recruiting posts yet."
+      "count": "{count, plural, one {# post} other {# posts}}",
+      "empty": "No recruiting posts yet.",
+      "write": "Write a recruiting post"
+    },
+    "positions": {
+      "FRONTEND": "Frontend",
+      "BACKEND": "Backend",
+      "DESIGNER": "Designer"
+    },
+    "filter": {
+      "label": "Filter by status",
+      "ALL": "All",
+      "PENDING": "Pending",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    },
+    "confirm": {
+      "cancel": "Cancel",
+      "processing": "Processing...",
+      "rejectTitle": "Reject this applicant?",
+      "rejectDescription": "You're rejecting {name}'s application. This can't be undone, and the applicant will be notified.",
+      "closeTitle": "Close recruiting?",
+      "closeDescription": "Closing \"{title}\" stops new applications. You can still process applications you've received and reopen recruiting at any time."
+    },
+    "errors": {
+      "acceptFailed": "Failed to accept the applicant.",
+      "rejectFailed": "Failed to reject the applicant.",
+      "toggleFailed": "Failed to change the recruiting status."
     }
   },
   "settings": {
