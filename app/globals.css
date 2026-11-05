@@ -8,8 +8,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -26,7 +27,36 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 공통 폼/버튼/카드. utilities 레이어가 뒤에 오므로 사용처에서 Tailwind 클래스로 덮어쓸 수 있다. */
+@layer components {
+  .input {
+    @apply block h-12 w-full rounded-xl border border-gray-200 bg-white px-4 text-[15px] text-gray-900 outline-none transition placeholder:text-gray-400 hover:border-gray-300 focus:border-gray-900 focus:ring-4 focus:ring-gray-900/5 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400 aria-invalid:border-red-400 aria-invalid:focus:ring-red-500/10;
+  }
+  textarea.input {
+    @apply h-auto min-h-28 py-3 leading-relaxed;
+  }
+  .btn {
+    @apply inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl px-6 text-[15px] font-semibold transition outline-none focus-visible:ring-4 focus-visible:ring-gray-900/10 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-sm {
+    @apply h-10 rounded-lg px-4 text-sm;
+  }
+  .btn-primary {
+    @apply bg-gray-900 text-white hover:bg-black;
+  }
+  .btn-secondary {
+    @apply border border-gray-200 bg-white text-gray-900 hover:border-gray-300 hover:bg-gray-50;
+  }
+  .btn-ghost {
+    @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
+  }
+  .card {
+    @apply rounded-2xl border border-gray-200 bg-white p-6 md:p-8;
+  }
 }
 
 @keyframes fade-in-up {
