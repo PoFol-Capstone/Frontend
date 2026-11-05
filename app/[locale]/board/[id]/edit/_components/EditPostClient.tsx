@@ -26,6 +26,7 @@ import Image from "next/image";
 import { useRouter } from "@/i18n/navigation";
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import Field from "@/components/ui/Field";
 
 type Props = { post: ResponsePosts };
 
@@ -174,7 +175,7 @@ export default function EditPostClient({ post }: Props) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-5">
+    <div className="max-w-2xl mx-auto px-4 py-8 space-y-10">
       <h1 className="text-2xl font-bold">{t("title")}</h1>
 
       <p className="rounded-xl bg-gray-50 px-4 py-3 text-sm text-gray-600">
@@ -183,67 +184,54 @@ export default function EditPostClient({ post }: Props) {
         })}
       </p>
 
-      <section className="border border-gray-200 rounded-2xl p-6 space-y-5 bg-white">
-        <div className="space-y-1.5">
-          <label htmlFor="edit-title" className="text-sm font-medium">
-            {t("projectName")}
-          </label>
+      <section className="card space-y-6">
+        <Field label={t("projectName")}>
           <input
             id="edit-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="input"
           />
-        </div>
+        </Field>
 
-        <div className="space-y-1.5">
-          <label htmlFor="edit-description" className="text-sm font-medium">
-            {t("projectDescription")}
-          </label>
+        <Field label={t("projectDescription")}>
           <textarea
             id="edit-description"
             value={projectDescription}
             onChange={(e) => setProjectDescription(e.target.value)}
             rows={4}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="input resize-y"
           />
-        </div>
+        </Field>
 
-        <div className="space-y-1.5">
-          <label htmlFor="edit-features" className="text-sm font-medium">
-            {t("mainFeatures")}
-          </label>
+        <Field label={t("mainFeatures")}>
           <textarea
             id="edit-features"
             value={mainFeatures}
             onChange={(e) => setMainFeatures(e.target.value)}
             rows={4}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="input resize-y"
           />
-        </div>
+        </Field>
 
-        <div className="space-y-1.5">
-          <label htmlFor="edit-deploy-url" className="text-sm font-medium">
-            {t("deployUrl")}
-          </label>
+        <Field label={t("deployUrl")}>
           <input
             id="edit-deploy-url"
             type="url"
             value={deployUrl}
             onChange={(e) => setDeployUrl(e.target.value)}
             placeholder="https://..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="input"
           />
-        </div>
+        </Field>
 
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium">{t("techStack")}</label>
+        <Field label={t("techStack")}>
           <SkillPicker selected={selectedSkills} onChange={setSelectedSkills} />
-        </div>
+        </Field>
 
-        <div className="space-y-3">
-          <label className="text-sm font-medium">{t("thumbnail")}</label>
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-gray-900">{t("thumbnail")}</label>
           <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
             {!thumbnailUrl && (
               <span className="text-sm text-gray-400">{t("noThumbnail")}</span>
@@ -266,12 +254,12 @@ export default function EditPostClient({ post }: Props) {
             className="hidden"
             onChange={handleThumbnailFileChange}
           />
-          <div className="flex gap-2">
+          <div className="mt-3 flex gap-2">
             <button
               type="button"
               onClick={() => thumbnailInputRef.current?.click()}
               disabled={isThumbnailLoading}
-              className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-40"
+              className="btn btn-secondary"
             >
               {isThumbnailLoading ? t("uploading") : t("changeThumbnail")}
             </button>
@@ -279,7 +267,7 @@ export default function EditPostClient({ post }: Props) {
               <button
                 type="button"
                 onClick={() => setThumbnailUrl("")}
-                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="btn btn-secondary"
               >
                 {t("removeThumbnail")}
               </button>
@@ -328,7 +316,7 @@ export default function EditPostClient({ post }: Props) {
         <button
           type="button"
           onClick={() => router.back()}
-          className="flex-1 rounded-xl border border-gray-300 py-4 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+          className="btn btn-secondary flex-1"
         >
           {t("cancel")}
         </button>
@@ -336,7 +324,7 @@ export default function EditPostClient({ post }: Props) {
           type="button"
           onClick={handleSubmit}
           disabled={isSubmitting || !title.trim() || !recruitPositionsValid || isDocumentUploading}
-          className="flex-1 rounded-xl bg-black py-4 text-base font-semibold text-white hover:bg-gray-900 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn btn-primary flex-1"
         >
           {isSubmitting ? t("submitting") : t("submit")}
         </button>

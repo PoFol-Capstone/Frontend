@@ -19,7 +19,7 @@ export default function PostListSection({
   const t = useTranslations("recruitment.postListSection");
 
   return (
-    <section className="rounded-3xl border border-gray-200 bg-white p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6">
+    <section className="card">
       <div className="mb-5 flex items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold text-gray-950">{t("title")}</h2>
@@ -38,7 +38,7 @@ export default function PostListSection({
             <p className="text-sm text-gray-400">{t("empty")}</p>
             <Link
               href="/board/write"
-              className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800"
+              className="btn btn-primary btn-sm"
             >
               {t("write")}
             </Link>

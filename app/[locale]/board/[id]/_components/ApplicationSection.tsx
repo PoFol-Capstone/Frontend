@@ -66,7 +66,7 @@ export default function ApplicationSection({
             <button
               type="button"
               disabled
-              className="w-full cursor-not-allowed rounded-xl bg-gray-200 py-3 text-sm font-semibold text-gray-500"
+              className="btn w-full bg-gray-200 text-gray-500 disabled:opacity-100"
             >
               {t("recruitmentClosed")}
             </button>
@@ -74,7 +74,7 @@ export default function ApplicationSection({
             <button
               type="button"
               onClick={openApplicationModal}
-              className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800"
+              className="btn btn-primary w-full"
             >
               {application ? t("viewApplication") : t("applyNow")}
             </button>

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Pin, PinOff, Sparkles } from "lucide-react";
 import { setFeaturedRepos } from "@/lib/githubAnalysis";
 import { parseDirection } from "@/lib/coachContent";
+import Section from "@/components/ui/Section";
 import type { AiUsage, DirectionResult, GitHubAnalysis } from "@/types/githubAnalysis";
 
 /** 희망 직무 선택지 — 표시 문구(profile.github.roles.*)를 그대로 AI에 보낸다 */
@@ -79,11 +80,7 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
   ];
 
   return (
-    <section className="space-y-6">
-      <div>
-        <h2 className="text-xl font-bold">{t("heading")}</h2>
-        <p className="mt-1 text-sm text-gray-500">{t("desc")}</p>
-      </div>
+    <Section title={t("heading")} description={t("desc")}>
 
       {shown.length === 0 ? (
         <p className="text-sm text-gray-500">{t("empty")}</p>
@@ -117,7 +114,7 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
         </ul>
       )}
 
-      <div className="rounded-2xl border border-gray-200 p-5">
+      <div className="card">
         <h3 className="font-semibold">{t("directionHeading")}</h3>
         {direction ? (
           <div className="mt-3 space-y-3 text-sm">
@@ -146,15 +143,15 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
           <p className="mt-2 text-sm text-gray-500">{t("directionEmpty")}</p>
         )}
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-6 flex flex-wrap items-center gap-2">
           <select value={targetRole} onChange={(e) => setTargetRole(e.target.value)}
             aria-label={t("targetRole")}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+            className="input w-auto">
             <option value="">{t("targetRoleNone")}</option>
             {TARGET_ROLES.map((role) => <option key={role} value={tRole(role)}>{tRole(role)}</option>)}
           </select>
           <button type="button" onClick={generateDirection} disabled={isGenerating || remaining === 0}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50">
+            className="btn btn-primary">
             <Sparkles size={14} />
             {isGenerating ? t("generating") : direction ? t("regenerate") : t("generate")}
           </button>
@@ -163,6 +160,6 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
       </div>
 
       {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
-    </section>
+    </Section>
   );
 }

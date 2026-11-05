@@ -72,7 +72,7 @@ export default function RepoImportModal({ registered, onCreated, onClose }: Prop
         onChange={(e) => setQuery(e.target.value)}
         placeholder={t("searchPlaceholder")}
         aria-label={t("searchPlaceholder")}
-        className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black"
+        className="input mb-3"
       />
       <p className="mb-3 text-xs text-gray-500">{t("manualHint")}</p>
 

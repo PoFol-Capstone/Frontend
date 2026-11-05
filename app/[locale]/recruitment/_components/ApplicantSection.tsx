@@ -41,7 +41,7 @@ export default function ApplicantSection({
   return (
     <aside
       id="applicants"
-      className="scroll-mt-6 rounded-3xl border border-gray-200 bg-white p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] sm:p-6 lg:sticky lg:top-6"
+      className="card scroll-mt-6 lg:sticky lg:top-6"
     >
       <div className="mb-5">
         <h2 className="text-xl font-bold text-gray-950">{t("title")}</h2>

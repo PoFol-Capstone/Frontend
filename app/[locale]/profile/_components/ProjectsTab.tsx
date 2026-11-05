@@ -100,7 +100,7 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
 
   if (!connected && projects.length === 0) return <ConnectCard />;
   if (initialProjects === null) {
-    return <p role="alert" className="rounded-2xl border border-gray-200 p-10 text-center text-sm text-gray-500">{t("loadFailed")}</p>;
+    return <p role="alert" className="card p-10 text-center text-sm text-gray-500">{t("loadFailed")}</p>;
   }
 
   const importModal = importing && (
@@ -113,12 +113,12 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
 
   if (projects.length === 0) {
     return (
-      <div className="rounded-2xl border border-gray-200 p-10 text-center">
+      <div className="card p-10 text-center">
         <FolderGit2 className="mx-auto mb-3 h-9 w-9 text-gray-400" />
         <p className="font-semibold">{t("emptyTitle")}</p>
         <p className="mt-1 text-sm text-gray-500">{t("emptyDesc")}</p>
         <button type="button" onClick={() => setImporting(true)}
-          className="mt-4 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800">
+          className="btn btn-primary mt-6">
           {t("import")}
         </button>
         {importModal}
@@ -128,7 +128,7 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
 
   return (
     <div className="mx-auto w-full max-w-3xl">
-      <header className="mb-4 flex flex-wrap items-center gap-3">
+      <header className="mb-6 flex flex-wrap items-center gap-3">
         <ProjectList projects={projects} selected={selected} onSelect={select} onImport={() => setImporting(true)} />
         {detail && (
           <>
@@ -174,7 +174,7 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
             {tab === "card" && <ProjectCardEditor project={detail} onSaved={applySaved} />}
           </>
         ) : detailError ? (
-          <p role="alert" className="rounded-2xl border border-gray-200 p-10 text-center text-sm text-gray-500">{t("detailFailed")}</p>
+          <p role="alert" className="card p-10 text-center text-sm text-gray-500">{t("detailFailed")}</p>
         ) : (
           <div className="space-y-4">
             <Skeleton className="h-8 w-1/2" />

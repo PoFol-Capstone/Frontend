@@ -23,7 +23,7 @@ export default function DeleteModal({
   const descId = useId();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
       <div
         ref={panelRef}
         role="dialog"
@@ -31,12 +31,12 @@ export default function DeleteModal({
         aria-labelledby={titleId}
         aria-describedby={descId}
         tabIndex={-1}
-        className="mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+        className="mx-4 w-full max-w-sm rounded-3xl bg-white p-6 shadow-lg sm:p-8"
       >
-        <h2 id={titleId} className="text-base font-semibold">
+        <h2 id={titleId} className="text-xl font-bold tracking-tight">
           {t("deleteConfirmTitle")}
         </h2>
-        <p id={descId} className="mt-1.5 text-sm text-gray-500">
+        <p id={descId} className="mt-2 text-[15px] leading-relaxed text-gray-500">
           {t("deleteConfirmDesc")}
         </p>
 
@@ -46,12 +46,12 @@ export default function DeleteModal({
           </p>
         )}
 
-        <div className="mt-5 flex gap-2">
+        <div className="mt-8 flex gap-2">
           <button
             type="button"
             onClick={onClose}
             disabled={isDeleting}
-            className="flex-1 rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            className="btn btn-secondary flex-1"
           >
             {t("cancel")}
           </button>
@@ -59,7 +59,7 @@ export default function DeleteModal({
             type="button"
             onClick={onConfirm}
             disabled={isDeleting}
-            className="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-50"
+            className="btn flex-1 bg-red-500 text-white hover:bg-red-600"
           >
             {isDeleting ? t("deleting") : t("delete")}
           </button>

@@ -47,7 +47,7 @@ export default function PostCard({ post, isSelected, isPending, onToggleRecruiti
   // 마감된 글도 정원을 늘리거나 내용을 고칠 수 있도록 수정 버튼은 항상 보인다.
   return (
     <article
-      className={`relative rounded-[18px] border p-4 transition focus-within:ring-2 focus-within:ring-black hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-5 ${
+      className={`relative rounded-2xl border p-5 transition focus-within:ring-2 focus-within:ring-black hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:p-6 ${
         isSelected ? "border-gray-900 bg-white" : "border-gray-200 bg-white"
       } ${status === "CLOSED" ? "opacity-80" : ""}`}
     >
@@ -99,7 +99,7 @@ export default function PostCard({ post, isSelected, isPending, onToggleRecruiti
         <Link
           href={editHref}
           onClick={(e) => handleLinkClick(e, editHref)}
-          className="relative z-10 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+          className="btn btn-secondary btn-sm relative z-10"
         >
           {t("edit")}
         </Link>
@@ -107,11 +107,7 @@ export default function PostCard({ post, isSelected, isPending, onToggleRecruiti
           type="button"
           onClick={() => onToggleRecruiting(post)}
           disabled={isPending}
-          className={`relative z-10 rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
-            isRecruiting
-              ? "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
-              : "bg-black text-white hover:bg-gray-800"
-          }`}
+          className={`btn btn-sm relative z-10 ${isRecruiting ? "btn-secondary" : "btn-primary"}`}
         >
           {isRecruiting ? t("close") : t("reopen")}
         </button>

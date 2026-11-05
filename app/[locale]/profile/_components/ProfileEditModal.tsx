@@ -1,10 +1,11 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
-import { X, Link2, Mail, Camera } from "lucide-react";
+import { useRef, useState } from "react";
+import { Link2, Mail, Camera } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
 import { AVATAR_ACCEPT, AVATAR_EXTENSIONS, MAX_AVATAR_BYTES, MAX_AVATAR_MB } from "@/lib/uploadLimits";
-import { useModalA11y } from "@/hooks/useModalA11y";
+import Modal from "@/components/Modal";
+import Field from "@/components/ui/Field";
 import { FaGithub } from "react-icons/fa";
 import { Profile } from "@/types/user";
 import { updateProfile } from "@/lib/user";
@@ -44,7 +45,6 @@ function toStartMonth(positionMonths: number | null | undefined): string {
 
 export default function ProfileEditModal({ profile, onClose }: Props) {
   const t = useTranslations("profile.editModal");
-  const tCommon = useTranslations("common");
   const githubUrl = profile.links.find((l) => l.type === "GITHUB")?.url ?? "";
   const portfolioUrl = profile.links.find((l) => l.type !== "GITHUB")?.url ?? "";
 
@@ -60,8 +60,6 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const panelRef = useModalA11y(onClose);
-  const titleId = useId();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -130,216 +128,144 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
 
   const duration = calcDuration(startMonth, t);
 
-  const inputClass =
-    "min-h-10.5 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-black";
-  const disabledClass =
-    "min-h-10.5 w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-400 cursor-not-allowed";
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-      onClick={onClose}
+    <Modal
+      title={t("title")}
+      onClose={onClose}
+      className="max-w-2xl
+        [&::-webkit-scrollbar]:w-1.5
+        [&::-webkit-scrollbar-track]:bg-gray-100
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        [&::-webkit-scrollbar-thumb]:bg-gray-300
+        hover:[&::-webkit-scrollbar-thumb]:bg-gray-400"
     >
-      {/* overflow-hidden + rounded으로 스크롤바가 모달 모서리 안에 클리핑됨 */}
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        tabIndex={-1}
-        className="relative w-full max-w-2xl rounded-3xl bg-white shadow-2xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div
-          className="max-h-[90vh] overflow-y-auto
-            [&::-webkit-scrollbar]:w-1.5
-            [&::-webkit-scrollbar-track]:bg-gray-100
-            [&::-webkit-scrollbar-thumb]:rounded-full
-            [&::-webkit-scrollbar-thumb]:bg-gray-300
-            hover:[&::-webkit-scrollbar-thumb]:bg-gray-400"
-        >
-        {/* 헤더 */}
-        <div className="px-8 pt-8 pb-4">
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={tCommon("close")}
-            className="absolute right-7 top-7 text-gray-400 transition hover:text-black"
-          >
-            <X size={24} />
-          </button>
-          <h2 id={titleId} className="text-lg font-bold">{t("title")}</h2>
-          <p className="mt-1 text-sm text-gray-400">
-            {t("subtitle")}
-          </p>
-        </div>
+      <div className="space-y-6 text-left">
+        <p className="-mt-4 text-sm text-gray-400">{t("subtitle")}</p>
 
-        {/* 폼 */}
-        <div className="px-8 pb-8 pt-2 space-y-6 text-left">
-          {/* 프로필 사진 — 원형으로 잘린 모습 그대로 미리 보여준다 */}
-          <div className="flex items-center gap-5">
-            <Avatar src={avatarUrl} name={form.name || profile.name} size="lg" />
-            <div className="space-y-2">
-              <input
-                ref={avatarInputRef}
-                type="file"
-                accept={AVATAR_ACCEPT}
-                onChange={handleAvatarChange}
-                className="hidden"
-              />
+        {/* 프로필 사진 — 원형으로 잘린 모습 그대로 미리 보여준다 */}
+        <div className="flex items-center gap-5">
+          <Avatar src={avatarUrl} name={form.name || profile.name} size="lg" />
+          <div className="space-y-2">
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept={AVATAR_ACCEPT}
+              onChange={handleAvatarChange}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={isUploadingAvatar}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+            >
+              <Camera className="h-4 w-4" />
+              {isUploadingAvatar ? t("avatarUploading") : t("avatarChange")}
+            </button>
+            {avatarUrl && (
               <button
                 type="button"
-                onClick={() => avatarInputRef.current?.click()}
-                disabled={isUploadingAvatar}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
+                onClick={() => setAvatarUrl(null)}
+                className="block text-xs text-gray-500 hover:text-black"
               >
-                <Camera className="h-4 w-4" />
-                {isUploadingAvatar ? t("avatarUploading") : t("avatarChange")}
+                {t("avatarReset")}
               </button>
-              {avatarUrl && (
-                <button
-                  type="button"
-                  onClick={() => setAvatarUrl(null)}
-                  className="block text-xs text-gray-500 hover:text-black"
-                >
-                  {t("avatarReset")}
-                </button>
-              )}
-              <p className="text-xs text-gray-400">{t("avatarHint", { max: MAX_AVATAR_MB })}</p>
-            </div>
-          </div>
-
-          {/* 이름 */}
-          <div>
-            <label className="mb-2.5 block text-sm font-semibold text-gray-900">
-              {t("name")}
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              placeholder={t("namePlaceholder")}
-              className={inputClass}
-            />
-          </div>
-
-          {/* 이메일 */}
-          <div>
-            <label className="mb-2.5 flex items-center gap-1.5 text-sm font-semibold text-gray-900">
-              <Mail className="h-4 w-4" />
-              {t("email")}
-            </label>
-            <input
-              type="email"
-              value={profile.email}
-              disabled
-              className={disabledClass}
-            />
-            <p className="mt-1 text-xs text-gray-400">
-              {t("emailHint")}
-            </p>
-          </div>
-
-          {/* GitHub */}
-          <div>
-            <label className="mb-2.5 flex items-center gap-1.5 text-sm font-semibold text-gray-900">
-              <FaGithub className="h-4 w-4" />
-              {t("github")}
-            </label>
-            <input
-              type="text"
-              value={githubUrl || t("githubNotConnected")}
-              disabled
-              className={disabledClass}
-            />
-            <p className="mt-1 text-xs text-gray-400">
-              {t("githubHint")}
-            </p>
-          </div>
-
-          {/* 포트폴리오 */}
-          <div>
-            <label className="mb-2.5 flex items-center gap-1.5 text-sm font-semibold text-gray-900">
-              <Link2 className="h-4 w-4" />
-              {t("portfolio")}
-            </label>
-            <input
-              type="text"
-              name="portfolioUrl"
-              value={form.portfolioUrl}
-              onChange={handleChange}
-              placeholder="https://..."
-              className={inputClass}
-            />
-          </div>
-
-          {/* 직무 */}
-          <div>
-            <label className="mb-2.5 block text-sm font-semibold text-gray-900">
-              {t("position")}
-            </label>
-            <input
-              type="text"
-              name="position"
-              value={form.position}
-              onChange={handleChange}
-              placeholder={t("positionPlaceholder")}
-              className={inputClass}
-            />
-          </div>
-
-          {/* 경력 시작월 */}
-          <div>
-            <label className="mb-2.5 block text-sm font-semibold text-gray-900">
-              {t("startMonth")}
-            </label>
-            <input
-              type="month"
-              value={startMonth}
-              max={new Date().toISOString().slice(0, 7)}
-              onChange={(e) => setStartMonth(e.target.value)}
-              className={inputClass}
-            />
-            {duration && (
-              <p className="mt-1.5 text-sm font-medium text-gray-700">
-                {t("currentLabel")} <span className="text-black">{duration.label}</span>
-              </p>
             )}
+            <p className="text-xs text-gray-400">{t("avatarHint", { max: MAX_AVATAR_MB })}</p>
           </div>
-
-          {/* 소개글 */}
-          <div>
-            <label className="mb-2.5 block text-sm font-semibold text-gray-900">
-              {t("bio")}
-            </label>
-            <textarea
-              name="bio"
-              value={form.bio}
-              onChange={handleChange}
-              rows={5}
-              placeholder={t("bioPlaceholder")}
-              className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-black"
-            />
-          </div>
-
-          {error && (
-            <p role="alert" className="text-sm text-red-500">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={isSubmitting || isUploadingAvatar}
-            className="mt-3 min-h-10.5 w-full rounded-lg bg-black px-3 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50"
-          >
-            {isSubmitting ? t("saving") : t("save")}
-          </button>
         </div>
-        </div> {/* overflow-y-auto 스크롤 컨테이너 닫기 */}
+
+        <Field label={t("name")}>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder={t("namePlaceholder")}
+            className="input"
+          />
+        </Field>
+
+        <Field label={<span className="inline-flex items-center gap-1.5"><Mail className="h-4 w-4" />{t("email")}</span>} hint={t("emailHint")}>
+          <input type="email" value={profile.email} disabled className="input" />
+        </Field>
+
+        <Field label={<span className="inline-flex items-center gap-1.5"><FaGithub className="h-4 w-4" />{t("github")}</span>} hint={t("githubHint")}>
+          <input
+            type="text"
+            value={githubUrl || t("githubNotConnected")}
+            disabled
+            className="input"
+          />
+        </Field>
+
+        <Field label={<span className="inline-flex items-center gap-1.5"><Link2 className="h-4 w-4" />{t("portfolio")}</span>}>
+          <input
+            type="text"
+            name="portfolioUrl"
+            value={form.portfolioUrl}
+            onChange={handleChange}
+            placeholder="https://..."
+            className="input"
+          />
+        </Field>
+
+        <Field label={t("position")}>
+          <input
+            type="text"
+            name="position"
+            value={form.position}
+            onChange={handleChange}
+            placeholder={t("positionPlaceholder")}
+            className="input"
+          />
+        </Field>
+
+        <Field
+          label={t("startMonth")}
+          hint={
+            duration && (
+              <span className="text-sm font-medium text-gray-700">
+                {t("currentLabel")} <span className="text-black">{duration.label}</span>
+              </span>
+            )
+          }
+        >
+          <input
+            type="month"
+            value={startMonth}
+            max={new Date().toISOString().slice(0, 7)}
+            onChange={(e) => setStartMonth(e.target.value)}
+            className="input"
+          />
+        </Field>
+
+        <Field label={t("bio")}>
+          <textarea
+            name="bio"
+            value={form.bio}
+            onChange={handleChange}
+            rows={5}
+            placeholder={t("bioPlaceholder")}
+            className="input resize-none"
+          />
+        </Field>
+
+        {error && (
+          <p role="alert" className="text-sm text-red-500">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={isSubmitting || isUploadingAvatar}
+          className="btn btn-primary w-full"
+        >
+          {isSubmitting ? t("saving") : t("save")}
+        </button>
       </div>
-    </div>
+    </Modal>
   );
 }

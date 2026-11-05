@@ -7,6 +7,8 @@ import { useRouter } from "@/i18n/navigation";
 import { createResume } from "@/lib/resume";
 import { emptyResumeContent } from "@/lib/coachContent";
 import type { ResumeContent, ResumeSurvey } from "@/types/resume";
+import Field from "@/components/ui/Field";
+import Section from "@/components/ui/Section";
 
 const EMPTY_SURVEY: ResumeSurvey = { targetRole: "", interests: "", teamRole: "", strengths: ["", "", ""], goal: "" };
 
@@ -71,64 +73,50 @@ export default function ResumeSurveyForm() {
     }
   };
 
-  const inputClass = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black";
-
   return (
-    <section className="space-y-5 rounded-2xl border border-gray-200 p-6">
-      <div>
-        <h2 className="text-lg font-semibold">{t("heading")}</h2>
-        <p className="mt-1 text-sm text-gray-500">{t("desc")}</p>
-      </div>
-
-      <label className="block text-sm">
-        <span className="mb-1.5 block font-medium">{t("title")}</span>
+    <Section card title={t("heading")} description={t("desc")}>
+      <Field label={t("title")}>
         <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100}
-          placeholder={t("titlePlaceholder")} className={inputClass} />
-      </label>
-      <label className="block text-sm">
-        <span className="mb-1.5 block font-medium">{t("targetRole")}</span>
-        <input value={survey.targetRole} onChange={set("targetRole")} maxLength={50} className={inputClass}
+          placeholder={t("titlePlaceholder")} className="input" />
+      </Field>
+      <Field label={t("targetRole")}>
+        <input value={survey.targetRole} onChange={set("targetRole")} maxLength={50} className="input"
           placeholder={t("targetRolePlaceholder")} />
-      </label>
-      <label className="block text-sm">
-        <span className="mb-1.5 block font-medium">{t("interests")}</span>
-        <input value={survey.interests} onChange={set("interests")} maxLength={200} className={inputClass}
+      </Field>
+      <Field label={t("interests")}>
+        <input value={survey.interests} onChange={set("interests")} maxLength={200} className="input"
           placeholder={t("interestsPlaceholder")} />
-      </label>
-      <label className="block text-sm">
-        <span className="mb-1.5 block font-medium">{t("teamRole")}</span>
-        <input value={survey.teamRole} onChange={set("teamRole")} maxLength={200} className={inputClass}
+      </Field>
+      <Field label={t("teamRole")}>
+        <input value={survey.teamRole} onChange={set("teamRole")} maxLength={200} className="input"
           placeholder={t("teamRolePlaceholder")} />
-      </label>
-      <fieldset className="text-sm">
-        <legend className="mb-1.5 font-medium">{t("strengths")}</legend>
-        <div className="grid gap-2 sm:grid-cols-3">
+      </Field>
+      <fieldset>
+        <legend className="mb-2 text-sm font-semibold text-gray-900">{t("strengths")}</legend>
+        <div className="grid gap-3 sm:grid-cols-3">
           {survey.strengths.map((value, i) => (
             <input key={i} value={value} maxLength={30} aria-label={t("strengthN", { n: i + 1 })}
               onChange={(e) => setSurvey((s) => ({ ...s, strengths: s.strengths.map((x, j) => (j === i ? e.target.value : x)) }))}
-              className={inputClass} />
+              className="input" />
           ))}
         </div>
       </fieldset>
-      <label className="block text-sm">
-        <span className="mb-1.5 block font-medium">{t("goal")}</span>
-        <input value={survey.goal} onChange={set("goal")} maxLength={200} className={inputClass}
+      <Field label={t("goal")}>
+        <input value={survey.goal} onChange={set("goal")} maxLength={200} className="input"
           placeholder={t("goalPlaceholder")} />
-      </label>
+      </Field>
 
       {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
 
-      <div className="flex flex-wrap gap-2">
-        <button type="button" onClick={generate} disabled={busy !== null}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-black px-5 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50">
-          <Sparkles size={14} /> {busy === "ai" ? t("generating") : t("generate")}
+      <div className="flex flex-wrap gap-3">
+        <button type="button" onClick={generate} disabled={busy !== null} className="btn btn-primary">
+          <Sparkles size={16} /> {busy === "ai" ? t("generating") : t("generate")}
         </button>
-        <button type="button" onClick={startBlank} disabled={busy !== null}
-          className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50">
+        <button type="button" onClick={startBlank} disabled={busy !== null} className="btn btn-secondary">
           {t("blank")}
         </button>
       </div>
-      <p className="text-xs text-gray-400">{t("aiNotice")}</p>
-    </section>
+      <p className="text-[13px] text-gray-400">{t("aiNotice")}</p>
+    </Section>
   );
 }

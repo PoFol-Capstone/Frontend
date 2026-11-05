@@ -126,7 +126,7 @@ export default function ProjectInfoSection({
 
       <Field label={t("techStack")}>
         {isLoadingRepoData ? (
-          <div className="animate-pulse flex flex-wrap gap-2 min-h-10.5 rounded-lg border border-gray-200 px-3 py-2">
+          <div className="flex min-h-12 animate-pulse flex-wrap gap-2 rounded-xl border border-gray-200 px-4 py-2">
             <div className="h-7 w-20 rounded-full bg-gray-200" />
             <div className="h-7 w-16 rounded-full bg-gray-200" />
             <div className="h-7 w-24 rounded-full bg-gray-200" />

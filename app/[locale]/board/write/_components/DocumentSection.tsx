@@ -7,6 +7,7 @@ import { FileText, Presentation, Trash2 } from "lucide-react";
 import { toSlidesEmbedUrl } from "@/lib/slides";
 import { DOCUMENT_CONTENT_TYPE, MAX_DOCUMENT_BYTES, MAX_DOCUMENT_MB } from "@/lib/uploadLimits";
 import type { PostDocument } from "@/types/post";
+import Section from "@/components/ui/Section";
 
 type Props = {
   value: PostDocument | null;
@@ -90,11 +91,7 @@ export default function DocumentSection({ value, onChange, onUploadingChange }: 
     `inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm ${active ? "bg-black text-white" : "border border-gray-300 text-gray-700"}`;
 
   return (
-    <section className="space-y-3 rounded-2xl border border-gray-200 p-5">
-      <div>
-        <h3 className="font-semibold">{t("heading")}</h3>
-        <p className="mt-1 text-sm text-gray-500">{t("desc")}</p>
-      </div>
+    <Section title={t("heading")} description={t("desc")} card>
 
       {value ? (
         <div className="flex items-center justify-between gap-3 rounded-xl bg-gray-50 p-4 text-sm">
@@ -130,26 +127,26 @@ export default function DocumentSection({ value, onChange, onUploadingChange }: 
                 className="w-full rounded-xl border-2 border-dashed border-gray-300 p-6 text-sm text-gray-500 hover:border-gray-400 disabled:opacity-60">
                 {progress !== null ? t("uploading", { percent: progress }) : t("pdfPick", { max: MAX_DOCUMENT_MB })}
               </button>
-              <p className="mt-2 text-xs text-gray-400">{t("pdfHint")}</p>
+              <p className="mt-2 text-[13px] text-gray-500">{t("pdfHint")}</p>
             </div>
           ) : (
             <div className="space-y-2">
               <div className="flex gap-2">
                 <input value={slidesInput} onChange={(e) => setSlidesInput(e.target.value)}
                   placeholder="https://docs.google.com/presentation/d/..."
-                  className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+                  className="input min-w-0 flex-1" />
                 <button type="button" onClick={applySlides}
-                  className="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800">
+                  className="btn btn-primary">
                   {t("apply")}
                 </button>
               </div>
-              <p className="text-xs text-gray-400">{t("slidesHint")}</p>
+              <p className="text-[13px] text-gray-500">{t("slidesHint")}</p>
             </div>
           )}
         </>
       )}
 
       {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
-    </section>
+    </Section>
   );
 }

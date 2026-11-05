@@ -52,7 +52,7 @@ export default function ApplicantCard({
   const isLongIntro = applicant.introduction.length > LONG_INTRO;
 
   return (
-    <article className="rounded-[18px] border border-gray-200 bg-gray-50 p-4">
+    <article className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
       <div className="mb-4 flex items-start gap-3">
         <Avatar src={applicant.applicantAvatarUrl} name={applicant.applicantName} size="md" />
         <div className="min-w-0 flex-1">
@@ -60,7 +60,7 @@ export default function ApplicantCard({
             <p className="truncate font-bold text-gray-950">{applicant.applicantName}</p>
             <Link
               href={`/profile/${applicant.applicantUuid}`}
-              className="shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-100"
+              className="btn btn-secondary btn-sm h-8 px-3 text-xs"
             >
               {t("viewProfile")}
             </Link>
@@ -128,12 +128,12 @@ export default function ApplicantCard({
             href={applicant.portfolioUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-center text-xs font-semibold text-gray-700 transition hover:bg-gray-100"
+            className="btn btn-secondary btn-sm whitespace-nowrap px-3"
           >
             {t("viewPortfolio")}
           </a>
         ) : (
-          <span className="whitespace-nowrap rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs text-gray-400">
+          <span className="flex h-10 items-center justify-center whitespace-nowrap rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-400">
             {t("noPortfolio")}
           </span>
         )}
@@ -144,7 +144,7 @@ export default function ApplicantCard({
               type="button"
               onClick={() => onAccept(applicant.applyUuid)}
               disabled={isPending || !canAccept}
-              className="rounded-lg bg-black px-3 py-2 text-xs font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn btn-primary btn-sm px-3"
             >
               {t("accept")}
             </button>
@@ -152,7 +152,7 @@ export default function ApplicantCard({
               type="button"
               onClick={() => onReject(applicant)}
               disabled={isPending}
-              className="rounded-lg bg-gray-200 px-3 py-2 text-xs font-semibold text-gray-700 transition hover:bg-gray-300 disabled:opacity-50"
+              className="btn btn-sm bg-gray-100 px-3 text-gray-700 hover:bg-gray-200"
             >
               {t("reject")}
             </button>

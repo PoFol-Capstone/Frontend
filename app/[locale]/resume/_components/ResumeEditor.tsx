@@ -56,31 +56,31 @@ export default function ResumeEditor({ initial, profile }: Props) {
       {/* 편집 도구 — 인쇄에서는 숨겨진다 */}
       <div className="flex flex-wrap items-center gap-3">
         <input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} aria-label={t("title")}
-          className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm font-semibold" />
+          className="input min-w-0 flex-1 font-semibold" />
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={showPhoto} onChange={(e) => setShowPhoto(e.target.checked)} className="h-4 w-4 accent-black" />
           {t("showPhoto")}
         </label>
         <button type="button" onClick={save} disabled={saving}
-          className="rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50">
+          className="btn btn-primary">
           {saving ? t("saving") : t("save")}
         </button>
         <button type="button" onClick={() => window.print()}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold hover:bg-gray-50">
-          <Printer size={14} /> {t("print")}
+          className="btn btn-secondary">
+          <Printer size={16} /> {t("print")}
         </button>
         <button type="button" onClick={remove} aria-label={t("delete")} className="text-gray-400 hover:text-red-500">
           <Trash2 size={18} />
         </button>
       </div>
-      <p className="text-xs text-gray-500">{t("legend")}</p>
+      <p className="text-[13px] text-gray-500">{t("legend")}</p>
       {message && (
         <p role={message.kind === "error" ? "alert" : "status"}
           className={`text-sm ${message.kind === "error" ? "text-red-500" : "text-gray-600"}`}>{message.text}</p>
       )}
 
       {/* 이력서 본문 (인쇄 대상) */}
-      <article id="resume-print" className="space-y-8 rounded-2xl border border-gray-200 p-8">
+      <article id="resume-print" className="card space-y-8 md:p-10">
         <header className="flex items-center gap-5">
           {showPhoto && <Avatar src={profile.avatarUrl} name={profile.name} size="lg" />}
           <div className="min-w-0 flex-1">
@@ -101,8 +101,8 @@ export default function ResumeEditor({ initial, profile }: Props) {
           <div className="mb-2 flex items-center justify-between border-b border-gray-200 pb-1">
             <h2 className="text-sm font-bold uppercase tracking-wide text-gray-500">{t("projects")}</h2>
             <button type="button" onClick={() => setContent((c) => ({ ...c, projects: [...c.projects, newProject()] }))}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-black print:hidden">
-              <Plus size={12} /> {t("addProject")}
+              className="inline-flex items-center gap-1 text-sm font-semibold text-gray-600 hover:text-black print:hidden">
+              <Plus size={14} /> {t("addProject")}
             </button>
           </div>
           <div className="space-y-6">
@@ -114,7 +114,7 @@ export default function ResumeEditor({ initial, profile }: Props) {
                     className="min-w-0 flex-1 bg-transparent text-base font-semibold outline-none" />
                   {project.repoFullName && (
                     <a href={`https://github.com/${project.repoFullName}`} target="_blank" rel="noopener noreferrer"
-                      className="text-xs text-gray-500 underline">{project.repoFullName}</a>
+                      className="text-[13px] text-gray-500 underline">{project.repoFullName}</a>
                   )}
                   <button type="button" aria-label={t("removeProject")} className="text-gray-300 hover:text-red-500 print:hidden"
                     onClick={() => setContent((c) => ({ ...c, projects: c.projects.filter((_, j) => j !== i) }))}>
@@ -142,7 +142,7 @@ export default function ResumeEditor({ initial, profile }: Props) {
           <input value={content.skills.join(", ")} aria-label={t("skills")}
             onChange={(e) => setContent((c) => ({ ...c, skills: e.target.value.split(",").map((s) => s.trimStart()) }))}
             onBlur={() => setContent((c) => ({ ...c, skills: c.skills.map((s) => s.trim()).filter(Boolean) }))}
-            placeholder={t("skillsPlaceholder")} className="w-full bg-transparent text-sm outline-none" />
+            placeholder={t("skillsPlaceholder")} className="w-full bg-transparent text-[15px] outline-none" />
         </section>
       </article>
     </main>
@@ -162,7 +162,7 @@ function SentenceField({ sentence, onChange, placeholder, className = "" }: {
         onChange={(e) => onChange(editSentence(sentence, e.target.value))}
         placeholder={placeholder}
         rows={1}
-        className={`min-w-0 flex-1 resize-none bg-transparent text-sm leading-6 outline-none [field-sizing:content] ${className}`}
+        className={`min-w-0 flex-1 resize-none bg-transparent text-[15px] leading-6 outline-none [field-sizing:content] ${className}`}
       />
       {sentence.text && <SourceBadge source={sentence.source} />}
     </div>
@@ -192,8 +192,8 @@ function SentenceList({ items, onChange, placeholder }: {
       ))}
       <li className="print:hidden">
         <button type="button" onClick={() => onChange([...items, { text: "", source: "SELF" }])}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-black">
-          <Plus size={12} /> {t("addLine")}
+          className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500 hover:text-black">
+          <Plus size={14} /> {t("addLine")}
         </button>
       </li>
     </ul>

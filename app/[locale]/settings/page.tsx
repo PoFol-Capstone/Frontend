@@ -31,7 +31,7 @@ export default async function SettingsPage() {
         <h1 className="text-2xl font-bold text-black">{t("title")}</h1>
         <p className="mt-3 text-sm text-gray-500">{t("subtitle")}</p>
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-8 space-y-6">
           <SchoolVerificationCard status={schoolStatus} />
           <SettingsClient />
         </div>

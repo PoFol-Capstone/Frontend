@@ -5,6 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { FaGithub } from "react-icons/fa";
 import { RefreshCw, Star, Activity, FolderGit2, AlertTriangle } from "lucide-react";
 import { Skeleton } from "@/components/Skeleton";
+import Section from "@/components/ui/Section";
 import {
   getAiUsage,
   getMyAnalysis,
@@ -135,7 +136,7 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
           type="button"
           onClick={handleAnalyze}
           disabled={isStarting || isAnalyzing}
-          className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:opacity-50"
+          className="btn btn-primary btn-sm"
         >
           <RefreshCw size={16} className={isAnalyzing ? "animate-spin" : ""} />
           {isAnalyzing ? t("analyzing") : analysis.status === "NONE" ? t("analyze") : t("reanalyze")}
@@ -251,12 +252,10 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
           <ProfileReadmePanel analysis={analysis} onChange={setAnalysis} usage={usage} onUsageChange={refreshUsage} />
 
           {/* 타인 공개 범위 */}
-          <section className="rounded-2xl border border-gray-200 p-5">
-            <h3 className="font-semibold">{t("visibility.heading")}</h3>
-            <p className="mt-1 text-sm text-gray-500">{t("visibility.desc")}</p>
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          <Section card title={t("visibility.heading")} description={t("visibility.desc")}>
+            <div className="grid gap-3 sm:grid-cols-2">
               {(["summary", "languages", "topRepos", "direction"] as const).map((key) => (
-                <label key={key} className="flex items-center gap-2 text-sm">
+                <label key={key} className="flex items-center gap-2.5 text-sm">
                   <input
                     type="checkbox"
                     checked={analysis.visibility[key]}
@@ -267,7 +266,7 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
                 </label>
               ))}
             </div>
-          </section>
+          </Section>
         </>
       )}
     </div>
@@ -301,7 +300,7 @@ function AnalysisSkeleton() {
 export function ConnectCard() {
   const t = useTranslations("profile.github");
   return (
-    <div className="rounded-2xl border border-gray-200 p-10 text-center">
+    <div className="card p-10 text-center">
       <FaGithub className="mx-auto mb-3" size={36} />
       <p className="font-semibold">{t("connectTitle")}</p>
       <p className="mt-1 text-sm text-gray-500">{t("connectDesc")}</p>
@@ -337,7 +336,7 @@ function ConnectButton({ label }: { label: string }) {
   return (
     <div className="mt-4">
       <button type="button" onClick={connect} disabled={busy}
-        className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50">
+        className="btn btn-primary">
         <FaGithub size={16} /> {label}
       </button>
       {error && <p role="alert" className="mt-2 text-sm text-red-500">{error}</p>}

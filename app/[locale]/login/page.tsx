@@ -62,14 +62,14 @@ export default function LoginPage() {
               placeholder={t("emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border px-4 py-3 text-sm outline-none placeholder:text-gray-400"
+              className="input"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white disabled:opacity-50"
+            className="btn btn-primary mt-2 w-full"
           >
             {loading ? t("submitting") : t("submit")}
           </button>
@@ -88,7 +88,7 @@ export default function LoginPage() {
           <div className="flex w-full flex-col gap-3">
             <button
               type="button"
-              className="rounded-lg border px-4 py-3 text-sm font-medium"
+              className="h-12 rounded-xl border border-gray-200 px-4 text-[15px] font-semibold"
             >
               {t("githubContinue")}
             </button>

@@ -136,14 +136,14 @@ export default function Header({
             <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:px-4 lg:px-10">
               <form
                 onSubmit={handleSearch}
-                className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2">
-                  <Search className="h-4 w-4 text-gray-400" />
+                className="relative w-full max-w-md">
+                  <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   <input
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                     placeholder={t("searchPlaceholder")}
-                    className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
+                    className="input h-10 pl-10"
                   />
               </form>
             </div>

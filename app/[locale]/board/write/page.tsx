@@ -295,7 +295,7 @@ export default function Page() {
 
       {/* ── Step 1: 유형 선택 ── */}
       {currentStep === 1 && (
-        <div className="space-y-6">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step1.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -361,7 +361,7 @@ export default function Page() {
               type="button"
               onClick={() => setCurrentStep(2)}
               disabled={!step1Valid}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="btn btn-primary px-8"
             >
               {t("nav.next")}
             </button>
@@ -371,7 +371,7 @@ export default function Page() {
 
       {/* ── Step 2: 내용 작성 ── */}
       {currentStep === 2 && (
-        <div className="space-y-5">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step2.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -380,7 +380,7 @@ export default function Page() {
           </div>
 
           {/* 컴팩트 GitHub 자동완성 바 */}
-          <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
             {github.isCheckingGithub ? (
               <p className="text-xs text-gray-400 py-1">{t("step2.checkingGithub")}</p>
             ) : !github.isGithubConnected ? (
@@ -392,7 +392,7 @@ export default function Page() {
                   type="button"
                   onClick={github.handleGithubConnect}
                   disabled={github.isConnecting}
-                  className="shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  className="btn btn-secondary btn-sm"
                 >
                   {github.isConnecting ? t("step2.connecting") : t("step2.connectGithub")}
                 </button>
@@ -403,7 +403,7 @@ export default function Page() {
                   value={github.selectedRepo}
                   onChange={(e) => handleRepoChange(e.target.value)}
                   disabled={github.isLoadingRepos}
-                  className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none"
+                  className="input min-w-0 flex-1"
                 >
                   <option value="">
                     {github.isLoadingRepos
@@ -427,7 +427,7 @@ export default function Page() {
                     project.isLoadingRepoData ||
                     project.isAIWriting
                   }
-                  className="shrink-0 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="btn btn-primary"
                 >
                   {project.isAIWriting
                     ? t("step2.aiWriting")
@@ -443,7 +443,7 @@ export default function Page() {
           </div>
 
           {/* 프로젝트 폼 */}
-          <section className="border border-gray-200 rounded-2xl p-6 space-y-5 bg-white">
+          <section className="card">
             <ProjectInfoSection
               projectName={project.projectName}
               onProjectNameChange={project.setProjectName}
@@ -464,7 +464,7 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setCurrentStep(1)}
-              className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-secondary px-8"
             >
               {t("nav.prev")}
             </button>
@@ -472,7 +472,7 @@ export default function Page() {
               type="button"
               onClick={() => setCurrentStep(3)}
               disabled={!step2Valid}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="btn btn-primary px-8"
             >
               {t("nav.next")}
             </button>
@@ -482,7 +482,7 @@ export default function Page() {
 
       {/* ── Step 3: 썸네일 ── */}
       {currentStep === 3 && (
-        <div className="space-y-5">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step3.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -490,7 +490,7 @@ export default function Page() {
             </p>
           </div>
 
-          <section className="border border-gray-200 rounded-2xl p-6 space-y-4 bg-white">
+          <section className="card space-y-6">
             <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
               {!project.thumbnailUrl && !project.isThumbnailLoading && (
                 <div className="flex flex-col items-center justify-center gap-3 text-gray-400">
@@ -569,7 +569,7 @@ export default function Page() {
                 type="button"
                 onClick={project.handleGenerateThumbnail}
                 disabled={!project.projectName || project.isThumbnailLoading}
-                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn btn-secondary"
               >
                 {project.isThumbnailLoading ? t("step3.generating") : t("step3.generateAI")}
               </button>
@@ -577,7 +577,7 @@ export default function Page() {
                 type="button"
                 onClick={() => project.thumbnailInputRef.current?.click()}
                 disabled={project.isThumbnailLoading}
-                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn btn-secondary"
               >
                 {t("step3.uploadDirect")}
               </button>
@@ -588,14 +588,14 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setCurrentStep(2)}
-              className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-secondary px-8"
             >
               {t("nav.prev")}
             </button>
             <button
               type="button"
               onClick={() => setCurrentStep(4)}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 transition-colors"
+              className="btn btn-primary px-8"
             >
               {t("nav.next")}
             </button>
@@ -605,7 +605,7 @@ export default function Page() {
 
       {/* ── Step 4: 추가 정보 ── */}
       {currentStep === 4 && (
-        <div className="space-y-5">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step4.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -637,7 +637,7 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setCurrentStep(3)}
-              className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-secondary px-8"
             >
               {t("nav.prev")}
             </button>
@@ -645,7 +645,7 @@ export default function Page() {
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting || !canSubmit || isDocumentUploading}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="btn btn-primary px-8"
             >
               {isSubmitting ? t("step4.submitting") : t("step4.submit")}
             </button>

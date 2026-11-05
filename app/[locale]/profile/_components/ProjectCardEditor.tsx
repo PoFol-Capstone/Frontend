@@ -16,8 +16,6 @@ import {
   type ProjectFeature,
 } from "@/types/project";
 
-const INPUT = "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-black";
-
 type Props = {
   project: Project;
   onSaved: (project: Project) => void;
@@ -56,11 +54,11 @@ export default function ProjectCardEditor({ project, onSaved }: Props) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-gray-50 p-4">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-gray-50 p-5">
         <p className="mr-auto text-sm text-gray-600">{t("hint")}</p>
         <button type="button" onClick={generate} disabled={aiBusy}
-          className="flex items-center gap-1.5 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-40">
+          className="btn btn-primary btn-sm">
           <Sparkles className="h-4 w-4" /> {aiBusy ? t("running") : t("run")}
         </button>
         {aiError && <p role="alert" className="w-full text-sm text-red-500">{aiError}</p>}
@@ -119,13 +117,13 @@ function SlotEditor({ uuid, slot, saved, source, onSaved, skipReason, techCompar
   };
 
   return (
-    <section className="rounded-2xl border border-gray-200 p-5">
+    <section className="card">
       <div className="mb-1 flex items-center gap-2">
         <span className="text-xs font-semibold text-gray-400">{CARD_SLOTS.indexOf(slot) + 1}</span>
-        <h3 className="font-semibold">{t(`${slot}.title`)}</h3>
+        <h3 className="text-lg font-bold tracking-tight text-gray-900">{t(`${slot}.title`)}</h3>
         {isSlotFilled(saved) && <SourceBadge source={source} />}
       </div>
-      <p className="mb-3 text-sm text-gray-500">{t(`${slot}.hint`)}</p>
+      <p className="mb-6 text-sm text-gray-500">{t(`${slot}.hint`)}</p>
 
       {showSkip && (
         <div role="status" className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
@@ -153,13 +151,13 @@ function SlotEditor({ uuid, slot, saved, source, onSaved, skipReason, techCompar
         <ProblemInput value={draft as ProblemSolving} onChange={setDraft} />
       ) : slot === "oneLiner" ? (
         <input value={draft as string} onChange={(e) => setDraft(e.target.value)} maxLength={200}
-          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className={INPUT} />
+          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className="input" />
       ) : (
         <textarea value={draft as string} onChange={(e) => setDraft(e.target.value)} maxLength={3000} rows={4}
-          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className={`${INPUT} resize-y`} />
+          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className="input resize-y" />
       )}
 
-      <div className="mt-3 flex items-center justify-end gap-3">
+      <div className="mt-4 flex items-center justify-end gap-3">
         {error && <p role="alert" className="mr-auto text-sm text-red-500">{error}</p>}
         {dirty && !busy && (
           <button type="button" onClick={() => setDraft(saved)} className="text-sm text-gray-500 hover:text-black">
@@ -167,7 +165,7 @@ function SlotEditor({ uuid, slot, saved, source, onSaved, skipReason, techCompar
           </button>
         )}
         <button type="button" onClick={save} disabled={!dirty || busy}
-          className="rounded-lg bg-black px-4 py-1.5 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-30">
+          className="btn btn-primary btn-sm">
           {busy ? t("saving") : t("save")}
         </button>
       </div>
@@ -183,18 +181,18 @@ function FeaturesInput({ value, onChange }: { value: ProjectFeature[]; onChange:
   return (
     <div className="space-y-3">
       {value.map((f, i) => (
-        <div key={i} className="rounded-xl bg-gray-50 p-3">
-          <div className="flex gap-2">
+        <div key={i} className="rounded-xl bg-gray-50 p-4">
+          <div className="flex items-center gap-2">
             <input value={f.name} onChange={(e) => update(i, { name: e.target.value })} maxLength={40}
-              aria-label={t("name")} placeholder={t("name")} className={`${INPUT} bg-white`} />
+              aria-label={t("name")} placeholder={t("name")} className="input min-w-0 flex-1" />
             <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))}
-              aria-label={t("remove")} className="text-gray-400 hover:text-black">
+              aria-label={t("remove")} className="shrink-0 p-1 text-gray-400 hover:text-black">
               <X className="h-4 w-4" />
             </button>
           </div>
           <textarea value={f.description} onChange={(e) => update(i, { description: e.target.value })} maxLength={500}
             rows={2} aria-label={t("description")} placeholder={t("description")}
-            className={`${INPUT} mt-2 resize-y bg-white`} />
+            className="input mt-3 resize-y" />
           {f.evidence.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">
               {f.evidence.map((path) => (
@@ -217,12 +215,12 @@ function FeaturesInput({ value, onChange }: { value: ProjectFeature[]; onChange:
 function ProblemInput({ value, onChange }: { value: ProblemSolving; onChange: (v: ProblemSolving) => void }) {
   const t = useTranslations("profile.projects.card.problemSolving");
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid gap-6 sm:grid-cols-2">
       {PROBLEM_FIELDS.map((field) => (
-        <label key={field} className="block text-sm">
-          <span className="mb-1 block font-medium text-gray-600">{t(field)}</span>
+        <label key={field} className="block">
+          <span className="mb-2 block text-sm font-semibold text-gray-900">{t(field)}</span>
           <textarea value={value[field]} onChange={(e) => onChange({ ...value, [field]: e.target.value })}
-            maxLength={3000} rows={3} placeholder={t(`${field}Placeholder`)} className={`${INPUT} resize-y`} />
+            maxLength={3000} rows={3} placeholder={t(`${field}Placeholder`)} className="input resize-y" />
         </label>
       ))}
     </div>

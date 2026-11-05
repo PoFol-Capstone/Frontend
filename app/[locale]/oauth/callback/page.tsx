@@ -25,7 +25,7 @@ export default async function OAuthCallbackPage() {
         <p className="mt-2 text-sm text-gray-500">{t("unsupportedDesc")}</p>
         <Link
           href="/login"
-          className="mt-6 inline-block rounded-lg bg-black px-4 py-2 text-sm font-medium text-white"
+          className="btn btn-primary mt-6"
         >
           {t("goToLogin")}
         </Link>

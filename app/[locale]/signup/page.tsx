@@ -40,12 +40,12 @@ export default function SignupPage() {
             placeholder={t("namePlaceholder")}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-lg border px-4 py-3 text-sm outline-none placeholder:text-gray-400"
+            className="input"
           />
 
           <button
             type="submit"
-            className="mt-2 rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white"
+            className="btn btn-primary mt-2 w-full"
           >
             {t("next")}
           </button>

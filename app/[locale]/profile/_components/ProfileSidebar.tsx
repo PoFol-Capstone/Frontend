@@ -37,7 +37,7 @@ export default function ProfileSidebar({
 
   return (
     <>
-      <aside className="h-fit border border-gray-300 px-8 py-7 text-center">
+      <aside className="card h-fit text-center">
         <div className="mb-4">
           <Avatar
             src={profile.avatarUrl}
@@ -140,7 +140,7 @@ export default function ProfileSidebar({
           <button
             type="button"
             onClick={() => setIsEditModalOpen(true)}
-            className="mt-6 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
+            className="btn btn-primary mt-6 w-full"
           >
             {t("editProfile")}
           </button>

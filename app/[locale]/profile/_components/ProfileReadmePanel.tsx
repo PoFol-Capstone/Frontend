@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Copy, ExternalLink, Sparkles } from "lucide-react";
 import { MarkdownPreview } from "@/components/MarkdownPreview";
+import Section from "@/components/ui/Section";
 import { saveProfileReadmeDraft } from "@/lib/githubAnalysis";
 import { blogWorkflowYaml } from "@/lib/coachContent";
 import type { AiUsage, GitHubAnalysis, ReadmeDecoration } from "@/types/githubAnalysis";
@@ -91,20 +92,14 @@ export default function ProfileReadmePanel({ analysis, onChange, usage, onUsageC
   };
 
   return (
-    <section className="space-y-4">
-      <div>
-        <h2 className="text-xl font-bold">{t("heading")}</h2>
-        <p className="mt-1 text-sm text-gray-500">
-          {hasProfileReadme ? t("exists") : t("missing", { login: login ?? "" })}
-        </p>
-      </div>
+    <Section title={t("heading")} description={hasProfileReadme ? t("exists") : t("missing", { login: login ?? "" })}>
 
-      <div className="rounded-2xl border border-gray-200 p-5 space-y-4">
+      <div className="card space-y-6">
         <div>
-          <p className="text-sm font-semibold">{t("decorations")}</p>
-          <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          <p className="mb-2 text-sm font-semibold text-gray-900">{t("decorations")}</p>
+          <div className="grid gap-3 sm:grid-cols-2">
             {DECORATIONS.map((d) => (
-              <label key={d} className="flex items-start gap-2 text-sm">
+              <label key={d} className="flex items-start gap-2.5 text-sm">
                 <input type="checkbox" checked={decorations.includes(d)} onChange={() => toggle(d)}
                   className="mt-0.5 h-4 w-4 accent-black" />
                 <span>
@@ -119,21 +114,21 @@ export default function ProfileReadmePanel({ analysis, onChange, usage, onUsageC
 
         {decorations.includes("solvedac") && (
           <input value={solvedacId} onChange={(e) => setSolvedacId(e.target.value)} placeholder={t("solvedacPlaceholder")}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+            className="input" />
         )}
         {decorations.includes("blog") && (
           <input value={blogRss} onChange={(e) => setBlogRss(e.target.value)} placeholder={t("blogPlaceholder")}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
+            className="input" />
         )}
 
         <div className="flex flex-wrap items-center gap-2">
           <select value={targetRole} onChange={(e) => setTargetRole(e.target.value)} aria-label={t("targetRole")}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm">
+            className="input w-auto">
             <option value="">{t("targetRoleNone")}</option>
             {TARGET_ROLES.map((role) => <option key={role} value={tRole(role)}>{tRole(role)}</option>)}
           </select>
           <button type="button" onClick={generate} disabled={isGenerating || remaining === 0}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50">
+            className="btn btn-primary">
             <Sparkles size={14} />
             {isGenerating ? t("generating") : draft ? t("regenerate") : t("generate")}
           </button>
@@ -195,6 +190,6 @@ export default function ProfileReadmePanel({ analysis, onChange, usage, onUsageC
           {message.text}
         </p>
       )}
-    </section>
+    </Section>
   );
 }

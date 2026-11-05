@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { CheckCircle2, ChevronDown, Copy, ExternalLink } from "lucide-react";
 import { setCheckIgnored } from "@/lib/githubAnalysis";
 import { checkTotals } from "@/lib/coachContent";
+import Section from "@/components/ui/Section";
 import type { AnalyzedRepo, CheckCode, GitHubAnalysis, RepoCheck } from "@/types/githubAnalysis";
 
 type Props = {
@@ -82,11 +83,7 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
   };
 
   return (
-    <section className="space-y-4">
-      <div>
-        <h2 className="text-xl font-bold">{t("heading")}</h2>
-        <p className="mt-1 text-sm text-gray-500">{t("desc")}</p>
-      </div>
+    <Section title={t("heading")} description={t("desc")}>
 
       {allClear && (
         <p className="flex items-center gap-2 rounded-xl bg-green-50 p-4 text-sm font-medium text-green-700">
@@ -147,7 +144,7 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
           );
         })}
       </ul>
-    </section>
+    </Section>
   );
 }
 

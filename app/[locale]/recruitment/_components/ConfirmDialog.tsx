@@ -26,11 +26,11 @@ export default function ConfirmDialog({
   return (
     <Modal title={title} onClose={onClose}>
       <p className="text-sm leading-6 text-gray-600">{description}</p>
-      <div className="mt-6 grid grid-cols-2 gap-2">
+      <div className="mt-6 grid grid-cols-2 gap-3">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+          className="btn btn-secondary"
         >
           {t("cancel")}
         </button>
@@ -38,7 +38,7 @@ export default function ConfirmDialog({
           type="button"
           onClick={onConfirm}
           disabled={isPending}
-          className="rounded-lg bg-black px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn btn-primary"
         >
           {isPending ? t("processing") : confirmLabel}
         </button>
