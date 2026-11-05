@@ -21,7 +21,10 @@
     "openProfileMenu": "프로필 메뉴 열기",
     "searchPlaceholder": "프로젝트 검색...",
     "login": "로그인",
-    "getStarted": "시작하기"
+    "getStarted": "시작하기",
+    "mainNav": "주 메뉴",
+    "myProjects": "내 프로젝트",
+    "explore": "탐방"
   },
   "localeSwitcher": {
     "label": "언어 선택"
@@ -31,7 +34,8 @@
     "recruitment": "모집 관리",
     "settings": "설정",
     "logout": "로그아웃",
-    "resume": "이력서"
+    "resume": "이력서",
+    "bookmark": "북마크"
   },
   "notification": {
     "title": "알림",
@@ -109,25 +113,25 @@
   },
   "home": {
     "hero": {
-      "title": "대학생 개발자를 위한 협업 포트폴리오 플랫폼",
-      "subtitle": "코드 리뷰, 팀원 모집, 프로젝트 관리를 한 곳에서",
+      "title": "AI로 만든 프로젝트를, 면접에서 말할 수 있게",
+      "subtitle": "프로젝트 정리 · 구현 이해 · 면접 연습을 한 곳에서",
       "getStarted": "시작하기",
       "login": "로그인"
     },
-    "codeReview": {
+    "organize": {
       "step": "01",
-      "title": "코드 리뷰",
-      "description": "팀원의 코드에 인라인 댓글을 남기고 피드백을 주고받으세요.<br></br>어떤 줄에서 어떤 의도로 작성했는지 맥락과 함께 리뷰하면<br></br>코드 품질과 팀 전체의 실력이 함께 올라갑니다."
+      "title": "프로젝트 정리",
+      "description": "GitHub 레포를 가져와 한 줄 소개부터 회고까지 7칸으로 정리하세요.<br></br>내 역할과 문제 해결 과정을 직접 적고,<br></br>AI 초안과 커밋 기록이 근거를 채워 줍니다."
+    },
+    "interview": {
+      "step": "02",
+      "title": "면접 연습",
+      "description": "내가 짠 코드와 그 코드에서 쓴 프레임워크를 기준으로 질문을 만듭니다.<br></br>근거가 된 파일과 커밋을 함께 보며 답해 보세요.<br></br>만든 것을 설명할 수 있어야 나의 자산이 됩니다."
     },
     "recruitment": {
-      "step": "02",
+      "step": "03",
       "title": "팀원 모집",
       "description": "기술 스택과 관심사를 기반으로 프로젝트에 맞는 동료를 찾으세요.<br></br>백엔드가 필요한지, 디자이너가 필요한지 공고를 올리면<br></br>비슷한 목표를 가진 대학생 개발자들이 지원합니다."
-    },
-    "portfolio": {
-      "step": "03",
-      "title": "포트폴리오",
-      "description": "완료된 프로젝트가 자동으로 나만의 포트폴리오로 정리됩니다.<br></br>어떤 기술을 썼고, 어떤 역할을 맡았는지 한눈에 보여주는<br></br>개발 이력을 쉽게 만들고 공유할 수 있습니다."
     },
     "cta": {
       "title": "지금 바로 시작하세요",
@@ -461,8 +465,107 @@
     },
     "tabs": {
       "label": "프로필 탭",
-      "posts": "게시물",
-      "github": "GitHub"
+      "projects": "프로젝트",
+      "github": "GitHub",
+      "posts": "게시물"
+    },
+    "projects": {
+      "listLabel": "내 프로젝트 목록",
+      "import": "레포 가져오기",
+      "emptyTitle": "아직 정리한 프로젝트가 없어요",
+      "emptyDesc": "GitHub 레포를 가져와 면접에서 설명할 수 있게 정리해 보세요.",
+      "loadFailed": "프로젝트 목록을 불러오지 못했어요. 잠시 후 다시 시도해주세요.",
+      "detailFailed": "프로젝트를 불러오지 못했어요. 잠시 후 다시 시도해주세요.",
+      "progress": "{filled}/{total}칸",
+      "viewPost": "게시글 보기",
+      "delete": "프로젝트 삭제",
+      "deleteConfirm": "{repo} 프로젝트를 삭제할까요? 정리 카드도 함께 삭제됩니다.",
+      "deleteFailed": "삭제하지 못했어요. 잠시 후 다시 시도해주세요.",
+      "detailTabsLabel": "프로젝트 상세 탭",
+      "comingSoon": "준비 중",
+      "tabs": {
+        "card": "정리 카드",
+        "explain": "구현 설명",
+        "interview": "면접 연습",
+        "techReco": "기술 추천"
+      },
+      "stage": {
+        "REGISTERED": "등록",
+        "DRAFT": "정리 중",
+        "ORGANIZED": "정리 완료",
+        "INTERVIEW_READY": "면접 준비 완료"
+      },
+      "importModal": {
+        "title": "레포 가져오기",
+        "searchPlaceholder": "레포 검색 또는 owner/repo 입력",
+        "manualHint": "팀원 · 조직 소유의 공개 레포는 owner/repo 형식으로 입력하세요.",
+        "manualAdd": "{repo} 가져오기",
+        "registered": "등록됨",
+        "empty": "레포가 없어요.",
+        "loadFailed": "GitHub 레포 목록을 불러오지 못했어요. GitHub 연동을 확인해주세요.",
+        "duplicate": "이미 등록한 레포예요.",
+        "notFound": "레포를 찾을 수 없어요. 이름과 공개 여부를 확인해주세요.",
+        "failed": "레포를 가져오지 못했어요. 잠시 후 다시 시도해주세요."
+      },
+      "card": {
+        "save": "저장",
+        "saving": "저장 중…",
+        "revert": "되돌리기",
+        "saveFailed": "저장하지 못했어요. 잠시 후 다시 시도해주세요.",
+        "oneLiner": {
+          "title": "한 줄 소개",
+          "hint": "무엇을, 누구를 위해 만들었는지 한 문장으로.",
+          "placeholder": "예) 대학생이 GitHub 레포를 면접용 포트폴리오로 정리하는 서비스"
+        },
+        "myRole": {
+          "title": "내 역할 · 기여",
+          "hint": "팀에서 맡은 부분과 직접 만든 기능을 적어 주세요.",
+          "placeholder": "예) 백엔드 담당 — 지원 · 모집 API, 동시성 처리"
+        },
+        "features": {
+          "title": "핵심 기능",
+          "hint": "사용자 관점의 기능 3~5개.",
+          "name": "기능 이름",
+          "description": "설명",
+          "add": "기능 추가",
+          "remove": "기능 삭제"
+        },
+        "techReasons": {
+          "title": "기술 선택 이유",
+          "hint": "왜 이 기술을 골랐나요? 다른 선택지와 비교하면 무엇이 나았나요?",
+          "placeholder": "예) 트랜잭션이 많은 도메인이라 Spring + JPA를 골랐다…"
+        },
+        "problemSolving": {
+          "title": "문제 해결",
+          "hint": "가장 기억에 남는 문제 하나를 문제 → 원인 → 해결 → 결과 순서로.",
+          "problem": "문제",
+          "cause": "원인",
+          "solution": "해결",
+          "result": "결과",
+          "problemPlaceholder": "무엇이 잘못됐나요?",
+          "causePlaceholder": "원인을 어떻게 찾았나요?",
+          "solutionPlaceholder": "어떻게 고쳤나요?",
+          "resultPlaceholder": "무엇이 나아졌나요?"
+        },
+        "results": {
+          "title": "결과 · 지표",
+          "hint": "배포 링크, 사용자 수, 성능 개선 수치 등 확인할 수 있는 결과.",
+          "placeholder": "예) 응답 시간 800ms → 120ms, 사용자 40명"
+        },
+        "retrospective": {
+          "title": "회고 · 다음 개선",
+          "hint": "아쉬웠던 점과 다시 한다면 바꿀 것.",
+          "placeholder": "예) 테스트를 늦게 붙여 리팩터링이 어려웠다…"
+        },
+        "ai": {
+          "hint": "레포의 README · 파일 구조 · 커밋 기록을 읽고 빈 칸을 채워요. 이미 쓴 칸은 그대로 둬요.",
+          "run": "AI로 초안 쓰기",
+          "running": "레포 분석 중…",
+          "failed": "초안을 만들지 못했어요. 잠시 후 다시 시도해주세요.",
+          "skipped": "레포에서 근거를 찾지 못해 비워 뒀어요. 직접 작성해 주세요.",
+          "compareTitle": "이유를 정리하기 전에 비교해 보세요"
+        }
+      }
     },
     "github": {
       "pollTimeout": "분석이 오래 걸리고 있어요. 잠시 후 새로고침해 주세요.",

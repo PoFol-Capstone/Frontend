@@ -36,16 +36,16 @@ export function toSafeInternalPath(raw: unknown, origin: string): string | null 
   return url.pathname + url.search + url.hash;
 }
 
-/** 현재 언어의 기본 게시판 경로 (localePrefix: "as-needed" — 기본 언어는 접두사 없음) */
-export function defaultBoardPath(locale: string): string {
-  return locale === routing.defaultLocale ? "/board" : `/${locale}/board`;
+/** 현재 언어의 로그인 후 기본 경로 — 내 프로젝트 (localePrefix: "as-needed" — 기본 언어는 접두사 없음) */
+export function defaultHomePath(locale: string): string {
+  return locale === routing.defaultLocale ? "/profile" : `/${locale}/profile`;
 }
 
-/** 로그인 직후 실제로 이동할 주소. 잘못된 callbackUrl은 현재 언어의 게시판으로 바꾼다. */
+/** 로그인 직후 실제로 이동할 주소. 잘못된 callbackUrl은 현재 언어의 내 프로젝트로 바꾼다. */
 export function resolvePostLoginPath(
   callbackUrl: unknown,
   origin: string,
   locale: string,
 ): string {
-  return toSafeInternalPath(callbackUrl, origin) ?? defaultBoardPath(locale);
+  return toSafeInternalPath(callbackUrl, origin) ?? defaultHomePath(locale);
 }

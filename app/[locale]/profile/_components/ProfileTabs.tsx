@@ -1,18 +1,20 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 
-export type ProfileTab = "posts" | "github";
+export type ProfileTab = "projects" | "github" | "posts";
 
+/** 기본은 프로젝트 탭 — 로그인 후 첫 화면이 내 프로젝트다 */
 export function parseProfileTab(value: string | undefined): ProfileTab {
-  return value === "github" ? "github" : "posts";
+  return value === "github" || value === "posts" ? value : "projects";
 }
 
-/** 내 프로필의 게시물 / GitHub 탭 (?tab=github) — 링크라 새로고침·공유해도 같은 탭이 열린다 */
+/** 내 프로필의 프로젝트 / GitHub / 게시물 탭 (?tab=) — 링크라 새로고침·공유해도 같은 탭이 열린다 */
 export default async function ProfileTabs({ active }: { active: ProfileTab }) {
   const t = await getTranslations("profile.tabs");
   const tabs: { id: ProfileTab; href: string }[] = [
-    { id: "posts", href: "/profile" },
+    { id: "projects", href: "/profile" },
     { id: "github", href: "/profile?tab=github" },
+    { id: "posts", href: "/profile?tab=posts" },
   ];
   return (
     <nav aria-label={t("label")} className="flex gap-6 border-b border-gray-200">

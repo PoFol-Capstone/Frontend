@@ -298,7 +298,7 @@ function AnalysisSkeleton() {
   );
 }
 
-function ConnectCard() {
+export function ConnectCard() {
   const t = useTranslations("profile.github");
   return (
     <div className="rounded-2xl border border-gray-200 p-10 text-center">

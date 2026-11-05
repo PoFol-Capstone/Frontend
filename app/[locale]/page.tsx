@@ -6,7 +6,7 @@ import { Link, redirect } from "@/i18n/navigation";
 import Reveal from "./_components/Reveal";
 
 /**
- * 로그인 상태면 /board로 보내는 랜딩 페이지.
+ * 로그인 상태면 내 프로젝트(/profile)로 보내는 랜딩 페이지.
  * 쿠키를 읽어야 하므로(런타임 API) Suspense 뒤에서 처리한다.
  */
 export default function HomePage() {
@@ -33,7 +33,7 @@ const FEATURE_ACCENTS = [
 
 async function HomeContent() {
   const session = await getSession();
-  if (session) redirect({ href: "/board", locale: await getLocale() });
+  if (session) redirect({ href: "/profile", locale: await getLocale() });
 
   const t = await getTranslations("home");
 
@@ -87,9 +87,9 @@ async function HomeContent() {
         <div className="mx-auto flex max-w-2xl flex-col gap-6 px-6">
           {[
             {
-              step: t("codeReview.step"),
-              title: t("codeReview.title"),
-              description: t.rich("codeReview.description", {
+              step: t("organize.step"),
+              title: t("organize.title"),
+              description: t.rich("organize.description", {
                 br: () => <br />,
               }),
               icon: (
@@ -97,6 +97,20 @@ async function HomeContent() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                />
+              ),
+            },
+            {
+              step: t("interview.step"),
+              title: t("interview.title"),
+              description: t.rich("interview.description", {
+                br: () => <br />,
+              }),
+              icon: (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                 />
               ),
             },
@@ -111,20 +125,6 @@ async function HomeContent() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   d="M17 20h5v-2a4 4 0 00-5-3.874M9 20H4v-2a4 4 0 015-3.874M15 7a4 4 0 11-8 0 4 4 0 018 0zm6 4a3 3 0 11-6 0 3 3 0 016 0zM3 11a3 3 0 116 0 3 3 0 01-6 0z"
-                />
-              ),
-            },
-            {
-              step: t("portfolio.step"),
-              title: t("portfolio.title"),
-              description: t.rich("portfolio.description", {
-                br: () => <br />,
-              }),
-              icon: (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                 />
               ),
             },

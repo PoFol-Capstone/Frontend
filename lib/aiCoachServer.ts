@@ -36,12 +36,22 @@ export async function consumeAiUsage(feature: AiFeature): Promise<NextResponse |
   }
 }
 
-/** JSON 응답을 강제한 단일 프롬프트 호출 */
-export async function completeJson(prompt: string, temperature = 0.5): Promise<Record<string, unknown>> {
+/**
+ * JSON 응답을 강제한 프롬프트 호출.
+ * system을 주면 지시는 system에, 레포 내용 같은 데이터는 prompt(user)에만 실린다 — README 속 "지시를 무시하라" 차단
+ */
+export async function completeJson(
+  prompt: string,
+  temperature = 0.5,
+  system?: string,
+): Promise<Record<string, unknown>> {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   const completion = await openai.chat.completions.create({
     model: AI_MODEL,
-    messages: [{ role: "user", content: prompt }],
+    messages: [
+      ...(system ? [{ role: "system" as const, content: system }] : []),
+      { role: "user" as const, content: prompt },
+    ],
     response_format: { type: "json_object" },
     temperature,
   });

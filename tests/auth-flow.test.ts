@@ -60,10 +60,10 @@ describe("로그인 후 이동 주소 검증 (P1-2)", () => {
     });
   }
 
-  it("잘못된 값이면 현재 언어의 기본 게시판으로 보낸다", () => {
-    assert.equal(resolvePostLoginPath("https://evil.test", ORIGIN, "ko"), "/board");
-    assert.equal(resolvePostLoginPath("javascript:alert(1)", ORIGIN, "en"), "/en/board");
-    assert.equal(resolvePostLoginPath(null, ORIGIN, "en"), "/en/board");
+  it("잘못된 값이면 현재 언어의 내 프로젝트(/profile)로 보낸다", () => {
+    assert.equal(resolvePostLoginPath("https://evil.test", ORIGIN, "ko"), "/profile");
+    assert.equal(resolvePostLoginPath("javascript:alert(1)", ORIGIN, "en"), "/en/profile");
+    assert.equal(resolvePostLoginPath(null, ORIGIN, "en"), "/en/profile");
     assert.equal(resolvePostLoginPath("/en/profile?page=2#x", ORIGIN, "en"), "/en/profile?page=2#x");
   });
 });

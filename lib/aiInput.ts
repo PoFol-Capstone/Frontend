@@ -243,3 +243,12 @@ export function parseResumeInput(body: unknown): Parsed<{
     },
   };
 }
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function parseProjectCardInput(body: unknown): Parsed<{ projectUuid: string }> {
+  if (!isRecord(body) || typeof body.projectUuid !== "string" || !UUID.test(body.projectUuid)) {
+    return { ok: false, error: "projectUuid가 필요합니다." };
+  }
+  return { ok: true, value: { projectUuid: body.projectUuid } };
+}

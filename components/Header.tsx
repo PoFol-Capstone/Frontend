@@ -95,8 +95,8 @@ export default function Header({
       <div className="mx-auto flex min-h-9 flex-wrap items-center justify-between gap-x-3 gap-y-3">
         <div className="flex min-w-0 shrink-0 items-end">
           <Link
-            href={isLoggedIn ? "/board" : "/"}
-            onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
+            href={isLoggedIn ? "/profile" : "/"}
+            onClick={(e) => handleLinkClick(e, isLoggedIn ? "/profile" : "/")}
             className="inline-flex shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
           >
             <BrandLogo />
@@ -109,6 +109,25 @@ export default function Header({
             >
               | &nbsp;{shortSchoolName(school, locale)}
             </Link>
+          )}
+          {isLoggedIn && (
+            // 메인은 내 프로젝트, 피드는 다른 학생의 프로젝트를 둘러보는 보조 메뉴 (팀원 모집 · 이력서 · 북마크는 프로필 메뉴 안)
+            <nav aria-label={t("mainNav")} className="ml-4 flex items-center gap-3 text-sm font-medium sm:ml-6 sm:gap-5">
+              {[
+                { href: "/profile", label: t("myProjects"), active: pathname === "/profile" },
+                { href: "/board", label: t("explore"), active: pathname.startsWith("/board") },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => handleLinkClick(e, item.href)}
+                  aria-current={item.active ? "page" : undefined}
+                  className={item.active ? "text-black" : "text-gray-400 hover:text-gray-700"}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           )}
         </div>
 

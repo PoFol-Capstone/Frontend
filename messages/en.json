@@ -21,7 +21,10 @@
     "openProfileMenu": "Open profile menu",
     "searchPlaceholder": "Search Project...",
     "login": "Log in",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "mainNav": "Main menu",
+    "myProjects": "My projects",
+    "explore": "Explore"
   },
   "localeSwitcher": {
     "label": "Select language"
@@ -31,7 +34,8 @@
     "recruitment": "Recruitment",
     "settings": "Settings",
     "logout": "Log out",
-    "resume": "Resume"
+    "resume": "Resume",
+    "bookmark": "Bookmarks"
   },
   "notification": {
     "title": "Notifications",
@@ -109,25 +113,25 @@
   },
   "home": {
     "hero": {
-      "title": "A collaborative portfolio platform for student developers",
-      "subtitle": "Code review, team recruiting, and project management in one place",
+      "title": "Turn your AI-built projects into something you can explain in interviews",
+      "subtitle": "Organize projects, understand the code, and practice interviews in one place",
       "getStarted": "Get Started",
       "login": "Log in"
     },
-    "codeReview": {
+    "organize": {
       "step": "01",
-      "title": "Code Review",
-      "description": "Leave inline comments on your teammates' code and exchange feedback.<br></br>Reviewing with context on which line and what intent code was written for<br></br>lifts both code quality and the whole team's skill together."
+      "title": "Organize projects",
+      "description": "Import a GitHub repo and organize it in seven slots, from a one-liner to a retrospective.<br></br>Write your role and how you solved problems,<br></br>and let AI drafts and commit history back it up."
+    },
+    "interview": {
+      "step": "02",
+      "title": "Interview practice",
+      "description": "Questions are built from the code you wrote and the frameworks it uses.<br></br>Answer with the files and commits behind each question.<br></br>What you can explain becomes your asset."
     },
     "recruitment": {
-      "step": "02",
+      "step": "03",
       "title": "Team Recruiting",
       "description": "Find teammates that fit your project based on tech stack and interests.<br></br>Post whether you need a backend developer or a designer,<br></br>and student developers with similar goals will apply."
-    },
-    "portfolio": {
-      "step": "03",
-      "title": "Portfolio",
-      "description": "Completed projects are automatically organized into your own portfolio.<br></br>Easily build and share a development history that shows<br></br>what tech you used and what role you played at a glance."
     },
     "cta": {
       "title": "Get started right now",
@@ -461,8 +465,107 @@
     },
     "tabs": {
       "label": "Profile tabs",
-      "posts": "Posts",
-      "github": "GitHub"
+      "projects": "Projects",
+      "github": "GitHub",
+      "posts": "Posts"
+    },
+    "projects": {
+      "listLabel": "My projects",
+      "import": "Import repo",
+      "emptyTitle": "No projects yet",
+      "emptyDesc": "Import a GitHub repo and organize it so you can explain it in interviews.",
+      "loadFailed": "Could not load your projects. Please try again later.",
+      "detailFailed": "Could not load this project. Please try again later.",
+      "progress": "{filled}/{total} slots",
+      "viewPost": "View post",
+      "delete": "Delete project",
+      "deleteConfirm": "Delete {repo}? Its project card will be deleted too.",
+      "deleteFailed": "Could not delete. Please try again later.",
+      "detailTabsLabel": "Project detail tabs",
+      "comingSoon": "Coming soon",
+      "tabs": {
+        "card": "Project card",
+        "explain": "How it works",
+        "interview": "Interview practice",
+        "techReco": "Tech tips"
+      },
+      "stage": {
+        "REGISTERED": "Registered",
+        "DRAFT": "In progress",
+        "ORGANIZED": "Organized",
+        "INTERVIEW_READY": "Interview ready"
+      },
+      "importModal": {
+        "title": "Import repo",
+        "searchPlaceholder": "Search repos or enter owner/repo",
+        "manualHint": "For public repos owned by a teammate or organization, enter owner/repo.",
+        "manualAdd": "Import {repo}",
+        "registered": "Added",
+        "empty": "No repos.",
+        "loadFailed": "Could not load your GitHub repos. Check your GitHub connection.",
+        "duplicate": "This repo is already added.",
+        "notFound": "Repo not found. Check the name and that it is public.",
+        "failed": "Could not import the repo. Please try again later."
+      },
+      "card": {
+        "save": "Save",
+        "saving": "Saving…",
+        "revert": "Revert",
+        "saveFailed": "Could not save. Please try again later.",
+        "oneLiner": {
+          "title": "One-liner",
+          "hint": "What you built and for whom, in one sentence.",
+          "placeholder": "e.g. A service that turns students’ GitHub repos into interview-ready portfolios"
+        },
+        "myRole": {
+          "title": "My role",
+          "hint": "What you owned on the team and the features you built yourself.",
+          "placeholder": "e.g. Backend — application and recruiting APIs, concurrency handling"
+        },
+        "features": {
+          "title": "Key features",
+          "hint": "Three to five features from the user’s point of view.",
+          "name": "Feature name",
+          "description": "Description",
+          "add": "Add feature",
+          "remove": "Remove feature"
+        },
+        "techReasons": {
+          "title": "Why this stack",
+          "hint": "Why did you choose these technologies? What made them better than the alternatives?",
+          "placeholder": "e.g. The domain is transaction-heavy, so we chose Spring + JPA…"
+        },
+        "problemSolving": {
+          "title": "Problem solving",
+          "hint": "Your most memorable problem: problem → cause → solution → result.",
+          "problem": "Problem",
+          "cause": "Cause",
+          "solution": "Solution",
+          "result": "Result",
+          "problemPlaceholder": "What went wrong?",
+          "causePlaceholder": "How did you find the cause?",
+          "solutionPlaceholder": "How did you fix it?",
+          "resultPlaceholder": "What got better?"
+        },
+        "results": {
+          "title": "Results",
+          "hint": "Verifiable results: deploy link, users, performance numbers.",
+          "placeholder": "e.g. Response time 800ms → 120ms, 40 users"
+        },
+        "retrospective": {
+          "title": "Retrospective",
+          "hint": "What fell short and what you would change next time.",
+          "placeholder": "e.g. We added tests too late, which made refactoring hard…"
+        },
+        "ai": {
+          "hint": "Reads the README, file tree and commit history to fill empty slots. Slots you already wrote stay as they are.",
+          "run": "Draft with AI",
+          "running": "Analyzing repo…",
+          "failed": "Couldn't create a draft. Please try again shortly.",
+          "skipped": "No evidence found in the repo, so this was left empty. Please write it yourself.",
+          "compareTitle": "Compare these before writing your reasons"
+        }
+      }
     },
     "github": {
       "pollTimeout": "Analysis is taking a while. Please refresh in a moment.",

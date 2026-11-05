@@ -5,9 +5,10 @@ import { useTranslations } from "next-intl";
 import { Plus, Printer, Trash2, X } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { Avatar } from "@/components/Avatar";
+import { SourceBadge } from "@/components/SourceBadge";
 import { deleteResume, updateResume } from "@/lib/resume";
 import { editSentence, newProject } from "@/lib/coachContent";
-import type { Resume, ResumeContent, ResumeProject, Sentence, SentenceSource } from "@/types/resume";
+import type { Resume, ResumeContent, ResumeProject, Sentence } from "@/types/resume";
 import type { Profile } from "@/types/user";
 
 // 인쇄(PDF 저장) 시 이 화면의 이력서 본문만 남긴다 — 별도 PDF 라이브러리 없이 브라우저 인쇄를 쓴다
@@ -17,12 +18,6 @@ const PRINT_CSS = `@media print {
   #resume-print { position: absolute; inset: 0 auto auto 0; width: 100%; padding: 0; border: 0; }
   @page { margin: 16mm; }
 }`;
-
-const SOURCE_STYLE: Record<SentenceSource, string> = {
-  VERIFIED: "bg-green-50 text-green-700",
-  SELF: "bg-gray-100 text-gray-600",
-  AI: "bg-violet-50 text-violet-700",
-};
 
 type Props = { initial: Resume; profile: Profile };
 
@@ -151,15 +146,6 @@ export default function ResumeEditor({ initial, profile }: Props) {
         </section>
       </article>
     </main>
-  );
-}
-
-function SourceBadge({ source }: { source: SentenceSource }) {
-  const t = useTranslations("resume.editor.source");
-  return (
-    <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${SOURCE_STYLE[source]} ${source === "VERIFIED" ? "" : "print:hidden"}`}>
-      {t(source)}
-    </span>
   );
 }
 

@@ -13,6 +13,7 @@ export default function ProfileMenu() {
     { label: t("profile"), href: "/profile" },
     { label: t("recruitment"), href: "/recruitment" },
     { label: t("resume"), href: "/resume" },
+    { label: t("bookmark"), href: "/bookmark" },
     { label: t("settings"), href: "/settings" },
   ];
 

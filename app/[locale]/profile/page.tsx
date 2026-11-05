@@ -10,10 +10,12 @@ import ProfileSidebar from "./_components/ProfileSidebar";
 import PostCarousel, { PROFILE_POSTS_PAGE_SIZE } from "./_components/PostCarousel";
 import ProfileTabs, { parseProfileTab } from "./_components/ProfileTabs";
 import GitHubTab from "./_components/GitHubTab";
+import ProjectsTab from "./_components/ProjectsTab";
 import { getGithubConnected, getMyAnalysis } from "@/lib/githubAnalysis";
+import { getMyProjects } from "@/lib/projects";
 
 type Props = {
-  searchParams: Promise<{ page?: string; tab?: string }>;
+  searchParams: Promise<{ page?: string; tab?: string; project?: string }>;
 };
 
 export default function ProfilePage({ searchParams }: Props) {
@@ -34,19 +36,22 @@ async function ProfileContent({ searchParams }: Props) {
   const page = parsePageParam(params.page);
   const tab = parseProfileTab(params.tab);
 
-  // 세 요청을 병렬로 시작하되, 결과 처리는 각자 따로 (getUser 실패가 나머지를 막지 않도록)
+  // 요청을 병렬로 시작하되, 결과 처리는 각자 따로 (getUser 실패가 나머지를 막지 않도록)
   const profilePromise = getUser(uuid);
   // 팔로워 목록은 모달에서만 쓰므로 실패해도 페이지는 보여주되, 빈 목록이 아니라 실패로 표시한다
   const followersPromise = getFollowers(uuid).catch((err) => {
     console.error("[profile] getFollowers 실패:", err);
     return null;
   });
-  const postsPromise = getUserPosts(uuid, { page, size: PROFILE_POSTS_PAGE_SIZE });
-  // GitHub 탭일 때만 분석 결과·연동 여부를 읽는다 (실패하면 탭 안에서 안내한다)
+  // 탭마다 필요한 것만 읽는다 (GitHub · 프로젝트 탭의 실패는 탭 안에서 안내한다)
+  const postsPromise =
+    tab === "posts" ? getUserPosts(uuid, { page, size: PROFILE_POSTS_PAGE_SIZE }) : Promise.resolve(null);
   const githubPromise =
     tab === "github"
       ? Promise.all([getGithubConnected(), getMyAnalysis()])
       : Promise.resolve(null);
+  const projectsPromise =
+    tab === "projects" ? Promise.all([getGithubConnected(), getMyProjects()]) : Promise.resolve(null);
   // 아래에서 프로필 실패로 먼저 반환해도 unhandled rejection이 되지 않게 한다
   postsPromise.catch(() => {});
 
@@ -67,21 +72,13 @@ async function ProfileContent({ searchParams }: Props) {
   }
 
   // 게시물 조회 실패는 "게시물 없음"으로 바꾸지 않고 error.tsx(재시도)로 보낸다
-  const [postsResult, followers, github] = await Promise.all([
+  const [postsResult, followers, github, projects] = await Promise.all([
     postsPromise,
     followersPromise,
     githubPromise,
+    projectsPromise,
   ]);
   const t = await getTranslations("profile");
-
-  const sitePosts = postsResult.content.map((p) => ({
-    id: p.uuid,
-    title: p.title,
-    thumbnailUrl: p.thumbnailUrl,
-    content: p.content,
-    skills: p.skills,
-    tags: p.tags,
-  }));
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-10 py-8">
@@ -95,19 +92,35 @@ async function ProfileContent({ searchParams }: Props) {
 
         <section className="space-y-8">
           <ProfileTabs active={tab} />
-          {github ? (
+          {github && (
             <GitHubTab
               connected={github[0]}
               initialAnalysis={github[1].ok ? github[1].data : null}
             />
-          ) : (
+          )}
+          {projects && (
+            <ProjectsTab
+              connected={projects[0]}
+              initialProjects={projects[1].ok ? projects[1].data : null}
+              initialProjectUuid={params.project ?? null}
+            />
+          )}
+          {postsResult && (
             <section>
               <h2 className="mb-4 text-3xl font-bold">{t("postsHeading")}</h2>
               <PostCarousel
-                posts={sitePosts}
+                posts={postsResult.content.map((p) => ({
+                  id: p.uuid,
+                  title: p.title,
+                  thumbnailUrl: p.thumbnailUrl,
+                  content: p.content,
+                  skills: p.skills,
+                  tags: p.tags,
+                }))}
                 page={postsResult.number}
                 totalPages={postsResult.totalPages}
                 pathname="/profile"
+                query={{ tab: "posts" }}
               />
             </section>
           )}
