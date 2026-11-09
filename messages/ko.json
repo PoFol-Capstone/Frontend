@@ -563,6 +563,7 @@
       "cooldown": "분석은 10분에 한 번만 다시 할 수 있어요.",
       "startFailed": "분석을 시작하지 못했어요.",
       "loadFailed": "GitHub 분석 정보를 불러오지 못했어요.",
+      "progress": "지난 분석({when})보다 {count}개 해결했어요",
       "lastAnalyzed": "마지막 분석: {when}",
       "neverAnalyzed": "아직 분석하지 않았어요",
       "cacheHint": "GitHub에서 고친 내용은 다시 분석해야 반영돼요.",

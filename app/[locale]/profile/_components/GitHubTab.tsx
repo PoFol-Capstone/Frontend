@@ -131,6 +131,15 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
               })
             : t("neverAnalyzed")}
           <span className="ml-2 text-xs text-gray-400">{t("cacheHint")}</span>
+          {/* 고치고 다시 분석하러 올 이유 — 줄어든 게 없으면 굳이 0을 보여주지 않는다 */}
+          {analysis.progress && analysis.progress.resolvedCount > 0 && (
+            <p className="mt-1 font-medium text-gray-900">
+              {t("progress", {
+                when: format.dateTime(new Date(analysis.progress.previousAnalyzedAt), { dateStyle: "medium" }),
+                count: analysis.progress.resolvedCount,
+              })}
+            </p>
+          )}
         </div>
         <button
           type="button"

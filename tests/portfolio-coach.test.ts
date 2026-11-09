@@ -60,6 +60,7 @@ const analysis = (overrides: Partial<GitHubAnalysis> = {}): GitHubAnalysis => ({
   direction: null,
   profileReadmeDraft: null,
   visibility: { summary: false, languages: false, topRepos: false, direction: false },
+  progress: null,
   ...overrides,
 });
 

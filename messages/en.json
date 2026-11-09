@@ -563,6 +563,7 @@
       "cooldown": "You can re-run the analysis once every 10 minutes.",
       "startFailed": "Couldn't start the analysis.",
       "loadFailed": "Couldn't load your GitHub analysis.",
+      "progress": "{count} fixed since your last analysis ({when})",
       "lastAnalyzed": "Last analyzed: {when}",
       "neverAnalyzed": "Not analyzed yet",
       "cacheHint": "Re-run the analysis to pick up changes made on GitHub.",

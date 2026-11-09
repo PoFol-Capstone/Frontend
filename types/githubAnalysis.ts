@@ -83,6 +83,8 @@ export type GitHubAnalysis = {
   direction: string | null;
   profileReadmeDraft: string | null;
   visibility: GitHubVisibility;
+  /** 직전 분석과 비교한 진척 — 분석이 2번 이상일 때만 */
+  progress: { previousAnalyzedAt: string; resolvedCount: number } | null;
 };
 
 export type PublicFeaturedRepo = {
