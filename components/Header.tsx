@@ -103,6 +103,11 @@ export default function Header({ session }: { session: string | null }) {
                   label: t("myProjects"),
                   active: pathname === "/profile",
                 },
+                {
+                  href: "/trends",
+                  label: t("trends"),
+                  active: pathname === "/trends",
+                },
               ].map((item) => (
                 <Link
                   key={item.href}

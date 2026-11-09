@@ -23,7 +23,8 @@
     "login": "로그인",
     "getStarted": "시작하기",
     "mainNav": "주 메뉴",
-    "myProjects": "내 프로젝트"
+    "myProjects": "내 프로젝트",
+    "trends": "채용 트렌드"
   },
   "localeSwitcher": {
     "label": "언어 선택"
@@ -954,5 +955,24 @@
         "AI": "🤖 AI 작성"
       }
     }
+  },
+  "trends": {
+    "title": "채용 트렌드",
+    "description": "GitHub에서 언어별로 얼마나 쓰이는지 매달 모읍니다. 국내와 해외의 차이를 내 스택과 비교해 보세요.",
+    "empty": "아직 수집된 데이터가 없어요. 매달 2일에 갱신됩니다.",
+    "meta": "{period} 기준 · {date} 수집",
+    "compare": "변화는 {period} 대비 비중",
+    "changeLabel": "지난달 대비 비중 변화",
+    "global": {
+      "title": "전 세계 — 새로 만들어진 레포",
+      "hint": "지난달 새로 만들어진 공개 레포 수 (포크 제외), 아래 12개 언어 안에서의 비중",
+      "unit": "개"
+    },
+    "korea": {
+      "title": "국내 — 개발자 주 언어",
+      "hint": "GitHub 프로필 위치에 'Korea'가 있는 사용자의 주 언어 (누적). 위치를 '서울' 등으로만 적은 사용자는 빠져 있어 대략적인 값입니다.",
+      "unit": "명"
+    },
+    "incomplete": "일부 검색은 GitHub가 끝까지 세지 못해 수치가 실제보다 작을 수 있어요."
   }
 }

@@ -11,6 +11,8 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 // 있어야 동작하므로, next-intl의 정적 렌더링 셋업(모든 layout/page에서
 // setRequestLocale 호출)을 먼저 정리한 뒤에 다시 시도해야 한다.
 const nextConfig: NextConfig = {
+  // 트렌드 페이지가 런타임에 fs로 읽는 JSON을 서버리스 번들에 포함
+  outputFileTracingIncludes: { "/[locale]/trends": ["./data/trends/**/*"] },
   images: {
     remotePatterns: [
       {

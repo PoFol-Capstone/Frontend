@@ -23,7 +23,8 @@
     "login": "Log in",
     "getStarted": "Get Started",
     "mainNav": "Main menu",
-    "myProjects": "My projects"
+    "myProjects": "My projects",
+    "trends": "Trends"
   },
   "localeSwitcher": {
     "label": "Select language"
@@ -954,5 +955,24 @@
         "AI": "🤖 AI"
       }
     }
+  },
+  "trends": {
+    "title": "Tech trends",
+    "description": "Monthly language usage on GitHub. Compare global and Korean trends with your stack.",
+    "empty": "No data collected yet. Updated on the 2nd of each month.",
+    "meta": "As of {period} · collected {date}",
+    "compare": "changes vs {period} share",
+    "changeLabel": "Share change vs last month",
+    "global": {
+      "title": "Global — new repositories",
+      "hint": "Public repositories created last month (forks excluded), share among the 12 languages below",
+      "unit": ""
+    },
+    "korea": {
+      "title": "Korea — developers' main language",
+      "hint": "Users with 'Korea' in their GitHub location (cumulative). Approximate: users who only wrote a city are missing.",
+      "unit": ""
+    },
+    "incomplete": "GitHub could not finish counting some searches, so numbers may be lower than actual."
   }
 }
