@@ -30,11 +30,9 @@
     "label": "언어 선택"
   },
   "profileMenu": {
-    "profile": "프로필",
     "recruitment": "모집 관리",
     "settings": "설정",
     "logout": "로그아웃",
-    "resume": "이력서",
     "bookmark": "북마크"
   },
   "notification": {

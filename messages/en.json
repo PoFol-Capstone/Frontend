@@ -30,11 +30,9 @@
     "label": "Select language"
   },
   "profileMenu": {
-    "profile": "Profile",
     "recruitment": "Recruitment",
     "settings": "Settings",
     "logout": "Log out",
-    "resume": "Resume",
     "bookmark": "Bookmarks"
   },
   "notification": {

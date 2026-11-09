@@ -1,29 +1,19 @@
 "use client";
 
-import NotificationDrawer from "@/components/NotificationDrawer";
 import BrandLogo from "@/components/BrandLogo";
-import ProfileMenu from "@/components/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useNavigation } from "@/components/NavigationProvider";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { useEffect, useRef, useState } from "react";
+import NotificationDrawer from "@/components/NotificationDrawer";
+import ProfileMenu from "@/components/ProfileMenu";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useLocale, useTranslations } from "next-intl";
-import { shortSchoolName } from "@/lib/schoolName";
-import type { SchoolNames } from "@/types/school";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
-import { Bell, Search, CirclePlus, User } from "lucide-react";
+import { Bell, CirclePlus, Search, User } from "lucide-react";
 
-export default function Header({
-  session,
-  school,
-}: {
-  session: string | null;
-  /** 학교 인증을 마친 유저의 학교명. 미인증이면 null */
-  school: SchoolNames | null;
-}) {
+export default function Header({ session }: { session: string | null }) {
   const t = useTranslations("header");
-  const locale = useLocale();
   const isLoggedIn = !!session;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -101,28 +91,34 @@ export default function Header({
           >
             <BrandLogo />
           </Link>
-          {school && (
-            <Link
-              href="/board?category=School"
-              onClick={(e) => handleLinkClick(e, "/board?category=School")}
-              className="ml-3 max-w-24 truncate text-sm font-medium text-gray-400 hover:text-gray-600 sm:ml-4 sm:max-w-40 sm:text-base"
-            >
-              | &nbsp;{shortSchoolName(school, locale)}
-            </Link>
-          )}
           {isLoggedIn && (
             // 메인은 내 프로젝트, 피드는 다른 학생의 프로젝트를 둘러보는 보조 메뉴 (팀원 모집 · 이력서 · 북마크는 프로필 메뉴 안)
-            <nav aria-label={t("mainNav")} className="ml-4 flex items-center gap-3 text-sm font-medium sm:ml-6 sm:gap-5">
+            <nav
+              aria-label={t("mainNav")}
+              className="ml-4 flex items-center gap-3 text-sm font-medium sm:ml-6 sm:gap-5"
+            >
               {[
-                { href: "/profile", label: t("myProjects"), active: pathname === "/profile" },
-                { href: "/board", label: t("explore"), active: pathname.startsWith("/board") },
+                {
+                  href: "/profile",
+                  label: t("myProjects"),
+                  active: pathname === "/profile",
+                },
+                {
+                  href: "/board",
+                  label: t("explore"),
+                  active: pathname.startsWith("/board"),
+                },
               ].map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleLinkClick(e, item.href)}
                   aria-current={item.active ? "page" : undefined}
-                  className={item.active ? "text-black" : "text-gray-400 hover:text-gray-700"}
+                  className={
+                    item.active
+                      ? "text-black"
+                      : "text-gray-400 hover:text-gray-700"
+                  }
                 >
                   {item.label}
                 </Link>
@@ -136,15 +132,16 @@ export default function Header({
             <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:px-4 lg:px-10">
               <form
                 onSubmit={handleSearch}
-                className="relative w-full max-w-md">
-                  <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    placeholder={t("searchPlaceholder")}
-                    className="input h-10 pl-10"
-                  />
+                className="relative w-full max-w-md"
+              >
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder={t("searchPlaceholder")}
+                  className="input h-10 pl-10"
+                />
               </form>
             </div>
 

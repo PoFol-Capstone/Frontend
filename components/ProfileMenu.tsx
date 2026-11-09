@@ -10,9 +10,8 @@ export default function ProfileMenu() {
   const { handleLinkClick, startNavigation } = useNavigation();
 
   const MENU_ITEMS = [
-    { label: t("profile"), href: "/profile" },
+    // 북마크 · 모집 관리는 프로필 탭으로 옮길 때까지 여기 둔다 (pofol-plan-v3.md 3-2)
     { label: t("recruitment"), href: "/recruitment" },
-    { label: t("resume"), href: "/resume" },
     { label: t("bookmark"), href: "/bookmark" },
     { label: t("settings"), href: "/settings" },
   ];
