@@ -77,6 +77,23 @@ export function handOffToSignup(storage: StorageLike) {
   removeAll(storage, [FLOW_KEY, EMAIL_KEY, ...LEGACY_KEYS]);
 }
 
+// 마지막으로 로그인한 이메일 — localStorage에 둬서 로그아웃 뒤에도 "이 계정으로 계속하기"에 쓴다
+const LAST_EMAIL_KEY = "lastLoginEmail";
+
+export function saveLastLoginEmail(email: string) {
+  try {
+    localStorage.setItem(LAST_EMAIL_KEY, email);
+  } catch {}
+}
+
+export function readLastLoginEmail(): string | null {
+  try {
+    return localStorage.getItem(LAST_EMAIL_KEY);
+  } catch {
+    return null;
+  }
+}
+
 /** 로그인·회원가입 성공 후 모든 흐름 상태를 지우고, 저장돼 있던 callbackUrl을 돌려준다 */
 export function finishAuthFlow(storage: StorageLike): string | null {
   const callbackUrl = storage.getItem(CALLBACK_KEY);

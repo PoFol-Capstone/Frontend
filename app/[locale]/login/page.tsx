@@ -3,10 +3,10 @@
 import { Link, useRouter } from "@/i18n/navigation";
 import BrandLogo from "@/components/BrandLogo";
 import { sendOtp } from "@/lib/auth";
-import { beginLoginFlow } from "@/lib/authFlow";
+import { beginLoginFlow, readLastLoginEmail } from "@/lib/authFlow";
 import { toSafeInternalPath } from "@/lib/safeRedirect";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const t = useTranslations("auth.login");
@@ -14,6 +14,10 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setEmail((current) => current || readLastLoginEmail() || "");
+  }, []);
 
   const handleLogin = async () => {
     if (!email.trim()) {

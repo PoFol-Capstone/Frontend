@@ -73,7 +73,11 @@
       "title": "Enter your name",
       "namePlaceholder": "Enter your name.",
       "nameRequired": "Please enter your name.",
-      "next": "Next"
+      "next": "Next",
+      "continueAs": "Continue as {email}",
+      "continuing": "Sending code...",
+      "continueFailed": "Couldn't send the code. Please try again shortly.",
+      "orNewAccount": "or create a new account"
     },
     "signupType": {
       "title": "Create a new account!",

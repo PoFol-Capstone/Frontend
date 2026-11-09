@@ -6,6 +6,7 @@ import {
   finishAuthFlow,
   handOffToSignup,
   readPendingAuth,
+  saveLastLoginEmail,
   type PendingAuth,
 } from "@/lib/authFlow";
 import { resolvePostLoginPath } from "@/lib/safeRedirect";
@@ -56,6 +57,7 @@ export default function SignupVerifyPage() {
 
       switch (result.status) {
         case "signedIn": {
+          saveLastLoginEmail(pending.email);
           // 기존 계정으로 가입 화면을 거쳐 로그인한 경우까지 흐름 상태를 전부 정리한다
           const callbackUrl = finishAuthFlow(sessionStorage);
           // 이동 직전에 같은 origin의 내부 경로인지 다시 확인한다

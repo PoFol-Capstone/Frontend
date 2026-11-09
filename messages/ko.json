@@ -73,7 +73,11 @@
       "title": "이름을 입력하세요",
       "namePlaceholder": "이름을 입력하세요.",
       "nameRequired": "이름을 입력해주세요.",
-      "next": "다음"
+      "next": "다음",
+      "continueAs": "{email}(으)로 계속하기",
+      "continuing": "인증 코드 보내는 중...",
+      "continueFailed": "인증 코드를 보내지 못했어요. 잠시 후 다시 시도해주세요.",
+      "orNewAccount": "또는 새 계정 만들기"
     },
     "signupType": {
       "title": "새 계정을 만들어보세요!",
