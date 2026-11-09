@@ -1,0 +1,107 @@
+{
+  "period": "2026-10",
+  "collectedAt": "2026-11-09T16:51:21.425Z",
+  "source": "GitHub Search API",
+  "sourceUrl": "https://docs.github.com/en/rest/search/search",
+  "globalNewRepos": [
+    {
+      "language": "JavaScript",
+      "count": 1066176
+    },
+    {
+      "language": "TypeScript",
+      "count": 853034
+    },
+    {
+      "language": "Python",
+      "count": 1460749
+    },
+    {
+      "language": "Java",
+      "count": 296457
+    },
+    {
+      "language": "Kotlin",
+      "count": 96494
+    },
+    {
+      "language": "Go",
+      "count": 66702
+    },
+    {
+      "language": "Rust",
+      "count": 82900
+    },
+    {
+      "language": "C++",
+      "count": 146809
+    },
+    {
+      "language": "C#",
+      "count": 142121
+    },
+    {
+      "language": "Swift",
+      "count": 46253
+    },
+    {
+      "language": "Dart",
+      "count": 59359
+    },
+    {
+      "language": "PHP",
+      "count": 89789
+    }
+  ],
+  "koreaUsers": [
+    {
+      "language": "JavaScript",
+      "count": 10162
+    },
+    {
+      "language": "TypeScript",
+      "count": 3527
+    },
+    {
+      "language": "Python",
+      "count": 13748
+    },
+    {
+      "language": "Java",
+      "count": 12251
+    },
+    {
+      "language": "Kotlin",
+      "count": 1190
+    },
+    {
+      "language": "Go",
+      "count": 660
+    },
+    {
+      "language": "Rust",
+      "count": 247
+    },
+    {
+      "language": "C++",
+      "count": 4868
+    },
+    {
+      "language": "C#",
+      "count": 2317
+    },
+    {
+      "language": "Swift",
+      "count": 1108
+    },
+    {
+      "language": "Dart",
+      "count": 534
+    },
+    {
+      "language": "PHP",
+      "count": 912
+    }
+  ],
+  "incomplete": []
+}
