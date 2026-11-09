@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useNow, useTranslations } from "next-intl";
 import { FaGithub } from "react-icons/fa";
 import { RefreshCw, Star, Activity, FolderGit2, AlertTriangle } from "lucide-react";
 import { Skeleton } from "@/components/Skeleton";
@@ -37,6 +37,7 @@ type Props = {
 export default function GitHubTab({ initialAnalysis, connected }: Props) {
   const t = useTranslations("profile.github");
   const format = useFormatter();
+  const now = useNow();
   const [analysis, setAnalysis] = useState<GitHubAnalysis | null>(initialAnalysis);
   const [usage, setUsage] = useState<AiUsage | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -191,7 +192,7 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
               <Stat icon={<Star size={18} />} label={t("totalStars")} value={summary.totalStars} />
               <Stat icon={<Activity size={18} />} label={t("activeRepos")} value={summary.activeRepos90d} />
               <Stat icon={<RefreshCw size={18} />} label={t("lastPush")}
-                value={summary.lastPushedAt ? format.relativeTime(new Date(summary.lastPushedAt)) : "-"} />
+                value={summary.lastPushedAt ? format.relativeTime(new Date(summary.lastPushedAt), now) : "-"} />
             </div>
 
             {summary.languages.length > 0 && (
@@ -239,7 +240,7 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
                         {repo.ownership !== "OWNER" && (
                           <span>{t("teamRepo", { count: repo.myCommitCount ?? 0 })}</span>
                         )}
-                        {repo.pushedAt && <span>{format.relativeTime(new Date(repo.pushedAt))}</span>}
+                        {repo.pushedAt && <span>{format.relativeTime(new Date(repo.pushedAt), now)}</span>}
                       </div>
                     </li>
                   );
