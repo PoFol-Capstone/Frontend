@@ -1,11 +1,13 @@
 # [구현 계획] 프로젝트 자산화 — 프론트엔드
 
+> **11/06 서비스 전환 이후 주의:** S2 이후 일정은 전환 전에 짠 것이다. 우선순위는 [`2026-11-06-pivot-summary.md`](2026-11-06-pivot-summary.md) 11장을 따른다.
+
 - 작성일: 2026.11.03
 - 상태: **진행 중** (S0 대기 · S1 구현 완료)
 - 브랜치: S0은 `feature/portfolio-coach`, S1부터 `feature/project-asset` (main에서 분기)
-- 기획: `docs/plan-2026-10-27-project-asset.md` (2차) · `docs/plan-2026-10-25-portfolio-coach.md` (1차)
-- 1차 구현: `docs/impl-2026-10-25-portfolio-coach.md`
-- 짝 문서: 백엔드 `api/docs/impl-2026-11-03-project-asset.md`
+- 기획: `docs/2026-10-27-project-asset-plan.md` (2차) · `docs/archive/2026-10-25-portfolio-coach-plan.md` (1차)
+- 1차 구현: `docs/archive/2026-10-25-portfolio-coach-impl.md`
+- 짝 문서: 백엔드 `api/docs/2026-11-03-project-asset-impl.md`
 
 > **기준 문서 나누기:** 테이블 · API 계약 · 근거 검증 · 질문 선택 규칙은 **백엔드 문서**가 기준이고, 화면 · AI 라우트 · 프롬프트는 **이 문서와 기획 6장**이 기준이다.
 > 기획에 있는 내용(배경, 프롬프트 전문, 응답 스키마)은 옮겨 적지 않고 "기획 N장"으로 가리킨다.

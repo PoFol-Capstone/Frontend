@@ -2,7 +2,7 @@
 
 - 작성일: 2026.10.25
 - 상태: 기획 (구현 전)
-- 짝 문서: 백엔드 `api/docs/plan-2026-10-25-portfolio-coach.md` (데이터 모델·API 명세는 그쪽 기준)
+- 짝 문서: 백엔드 `api/docs/archive/2026-10-25-portfolio-coach-plan.md` (데이터 모델·API 명세는 그쪽 기준)
 
 ## 1. 왜 하는가
 
@@ -152,7 +152,7 @@ Keynote·구글 슬라이드 모두 PDF 내보내기가 한 번에 되므로 A�
 ### 3.6 프로필 사진 업로드
 
 - `user_profile.avatar_url` 컬럼과 응답 필드는 이미 있고, 수정 API·업로드 UI가 없다
-  (`docs/fix-2026-07-22-board-detail-ssr-crash.md`에 후속 작업으로 남아 있음).
+  (`docs/archive/2026-07-22-fix-board-ssr-crash.md`에 후속 작업으로 남아 있음).
 - `ProfileEditModal.tsx`에 사진 선택 + 원형 크롭 미리보기 추가
 - 업로드는 썸네일 라우트 패턴을 재사용한 `app/api/upload/avatar/route.ts` (2MB, png/jpg/webp)
 - 이력서 PDF에서는 사진 표시를 켜고 끌 수 있게 한다 (블라인드 채용 대응)

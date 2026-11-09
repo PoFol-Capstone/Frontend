@@ -1,4 +1,4 @@
-// 백엔드 ProjectResponse와 1:1 대응 (api/docs/plan-2026-10-27-project-asset.md 3 · 5장)
+// 백엔드 ProjectResponse와 1:1 대응 (api/docs/2026-10-27-project-asset-plan.md 3 · 5장)
 import type { SentenceSource } from "./resume";
 
 export type ProjectStage = "REGISTERED" | "DRAFT" | "ORGANIZED" | "INTERVIEW_READY";

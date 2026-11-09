@@ -17,7 +17,7 @@ import {
 import { parseProfileReadmeInput, parseResumeInput } from "@/lib/aiInput";
 import type { AnalyzedRepo, GitHubAnalysis } from "@/types/githubAnalysis";
 
-// 포트폴리오 코치 (pofol/docs/plan-2026-10-25-portfolio-coach.md) — 순수 함수와 AI·레포 라우트 계약
+// 포트폴리오 코치 (pofol/docs/archive/2026-10-25-portfolio-coach-plan.md) — 순수 함수와 AI·레포 라우트 계약
 
 const repo = (overrides: Partial<AnalyzedRepo> = {}): AnalyzedRepo => ({
   fullName: "me/app",

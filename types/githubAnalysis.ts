@@ -1,4 +1,4 @@
-// 백엔드 GitHubAnalysisResponse·PublicGitHubResponse와 1:1 대응 (api/docs/plan-2026-10-25-portfolio-coach.md 5장)
+// 백엔드 GitHubAnalysisResponse·PublicGitHubResponse와 1:1 대응 (api/docs/archive/2026-10-25-portfolio-coach-plan.md 5장)
 
 export type AnalysisStatus = "NONE" | "ANALYZING" | "DONE" | "FAILED";
 

@@ -1,4 +1,4 @@
-# 썸네일 생성 Provider 추상화 (SVG ↔ OpenAI)
+# [기능] 썸네일 생성 Provider 추상화 (SVG ↔ OpenAI)
 
 `/api/ai/thumbnail`이 SVG 생성과 AI 이미지 생성 중 하나를 환경변수로 골라 쓸 수 있도록
 provider 인터페이스를 도입했다.

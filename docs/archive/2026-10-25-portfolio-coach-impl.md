@@ -2,7 +2,7 @@
 
 - 작성일: 2026.10.25
 - 브랜치: `feature/portfolio-coach` (main 기준)
-- 기획: `docs/plan-2026-10-25-portfolio-coach.md` / 백엔드 짝 문서: `api/docs/impl-2026-10-25-portfolio-coach.md`
+- 기획: `docs/archive/2026-10-25-portfolio-coach-plan.md` / 백엔드 짝 문서: `api/docs/archive/2026-10-25-portfolio-coach-impl.md`
 - 백엔드 같은 이름의 브랜치가 먼저 배포돼야 동작한다 (새 API·`/api/github/token` 제거).
 
 ## 1. 구현 계획과 진행 상태

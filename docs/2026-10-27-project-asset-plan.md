@@ -1,9 +1,11 @@
 # [기획 · 구현 준비] 프로젝트 자산화 — 프론트엔드
 
+> **11/06 서비스 전환 이후 주의:** S2 이후 일정은 전환 전에 짠 것이다. 우선순위는 [`2026-11-06-pivot-summary.md`](2026-11-06-pivot-summary.md) 11장을 따른다.
+
 - 작성일: 2026.10.27
 - 상태: **구현 준비 완료 (코드 작업 전)**
-- 짝 문서: 백엔드 `api/docs/plan-2026-10-27-project-asset.md` (테이블 · API · 레포 컨텍스트 · 질문 선택 로직은 그쪽 기준)
-- 이전 문서: `docs/plan-2026-10-25-portfolio-coach.md`(기획), `docs/impl-2026-10-25-portfolio-coach.md`(1차 구현). 이 문서는 그 위에 얹는 2차다
+- 짝 문서: 백엔드 `api/docs/2026-10-27-project-asset-plan.md` (테이블 · API · 레포 컨텍스트 · 질문 선택 로직은 그쪽 기준)
+- 이전 문서: `docs/archive/2026-10-25-portfolio-coach-plan.md`(기획), `docs/archive/2026-10-25-portfolio-coach-impl.md`(1차 구현). 이 문서는 그 위에 얹는 2차다
 
 ---
 
@@ -48,7 +50,7 @@
 
 ### 2.3 통합 QA 체크리스트 (1차 기능)
 
-`docs/impl-2026-10-25-portfolio-coach.md` 6장 "남은 일"을 실제 브라우저로 확인한다.
+`docs/archive/2026-10-25-portfolio-coach-impl.md` 6장 "남은 일"을 실제 브라우저로 확인한다.
 
 - [ ] GitHub 미연동 → 연동 → GitHub 탭 분석 시작 → 결과 · 체크리스트 표시
 - [ ] 체크리스트 무시 토글, 다시 분석 (10분 제한 안내)

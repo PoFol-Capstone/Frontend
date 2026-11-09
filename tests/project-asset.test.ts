@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { cleanFeatures, hasTestFiles, isSlotFilled, sameValue, summarizeCommits, toAiDraft } from "@/lib/projectCard";
 import { CARD_SLOTS } from "@/types/project";
 
-// 프로젝트 자산화 (pofol/docs/plan-2026-10-27-project-asset.md) — 정리 카드 순수 함수
+// 프로젝트 자산화 (pofol/docs/2026-10-27-project-asset-plan.md) — 정리 카드 순수 함수
 describe("정리 카드", () => {
   it("칸 순서는 백엔드 ProjectCard.SLOTS와 같다", () => {
     assert.deepEqual(

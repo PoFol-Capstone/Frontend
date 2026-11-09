@@ -1,6 +1,6 @@
-# 2026-07-22 수정 내역 종합
+# [수정] 게시글 상세 SSR 크래시 · 좋아요/북마크 서버 상태화
 
-`code-review-2026-07-16.md`에서 지적된 항목들을 실제로 고친 기록 + 그 과정에서 파생된 리팩터링 모음.
+`2026-07-16-code-review.md`에서 지적된 항목들을 실제로 고친 기록 + 그 과정에서 파생된 리팩터링 모음.
 
 ## 1. 게시글 상세 페이지 SSR 크래시 (🔴 2번 항목)
 
@@ -79,4 +79,4 @@
 ## 남은 작업 (스코프 밖)
 - `authorAvatarUrl`(`PostResponse`), `avatarUrl`(댓글 `Author`)을 백엔드에 추가해 `Avatar`의 `src={null}` 자리들을 실제 이미지로 채우기.
 - `Like`/`Bookmark` 테이블에 `(post_id, userId)` 유니크 제약이 DB 레벨에 없어(app 레벨 check-then-insert만 존재), 동시 요청 시 중복 레코드가 생길 수 있는 레이스 컨디션 여지가 남아있음.
-- `code-review-2026-07-16.md`의 나머지 항목(업로드/AI 라우트 인증, Server Function 인가 검증 등)은 이번 세션에서 다루지 않음.
+- `2026-07-16-code-review.md`의 나머지 항목(업로드/AI 라우트 인증, Server Function 인가 검증 등)은 이번 세션에서 다루지 않음.
