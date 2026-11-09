@@ -4,7 +4,8 @@ import { updateApply } from "@/lib/apply";
 import type { ResponseApplication } from "@/types/post";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
+import Field from "@/components/ui/Field";
 
 type Props = {
   postUuid: string;
@@ -47,53 +48,51 @@ export default function EditApplyModal({ postUuid, application, onClose }: Props
 
   return (
     <Modal title={t("editModalTitle")} onClose={onClose}>
-      <div className="mb-5 rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
-        {t("editHint")}
-      </div>
+      <div className="space-y-6">
+        <div className="rounded-xl bg-gray-50 p-4 text-sm text-gray-600">
+          {t("editHint")}
+        </div>
 
-      <label className="mb-4 block">
-        <span className="mb-2 block text-sm font-medium">{t("introduction")}</span>
-        <textarea
-          value={introduction}
-          onChange={(e) => setIntroduction(e.target.value)}
-          className="h-28 w-full resize-none rounded-xl border border-gray-200 p-3 text-sm outline-none focus:border-black"
-        />
-      </label>
+        <Field label={t("introduction")}>
+          <textarea
+            value={introduction}
+            onChange={(e) => setIntroduction(e.target.value)}
+            className="input resize-none"
+          />
+        </Field>
 
-      <label className="mb-5 block">
-        <span className="mb-2 block text-sm font-medium">
-          {t("portfolio")}
-        </span>
-        <input
-          value={portfolioUrl}
-          onChange={(e) => setPortfolioUrl(e.target.value)}
-          className="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm outline-none focus:border-black"
-        />
-      </label>
+        <Field label={t("portfolio")}>
+          <input
+            value={portfolioUrl}
+            onChange={(e) => setPortfolioUrl(e.target.value)}
+            className="input"
+          />
+        </Field>
 
-      {error && (
-        <p role="alert" className="mb-4 text-sm text-red-500">
-          {error}
-        </p>
-      )}
+        {error && (
+          <p role="alert" className="text-sm text-red-500">
+            {error}
+          </p>
+        )}
 
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={isSaving}
-          className="flex-1 rounded-xl border border-gray-200 py-3 text-sm disabled:opacity-50"
-        >
-          {t("cancel")}
-        </button>
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={isSaving}
-          className="flex-1 rounded-xl bg-black py-3 text-sm font-semibold text-white disabled:opacity-50"
-        >
-          {isSaving ? t("saving") : t("save")}
-        </button>
+        <div className="flex gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isSaving}
+            className="btn btn-secondary flex-1"
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={isSaving}
+            className="btn btn-primary flex-1"
+          >
+            {isSaving ? t("saving") : t("save")}
+          </button>
+        </div>
       </div>
     </Modal>
   );

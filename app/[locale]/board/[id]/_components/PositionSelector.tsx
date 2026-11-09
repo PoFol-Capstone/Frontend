@@ -15,8 +15,8 @@ export default function PositionSelector({
   const t = useTranslations("board.apply");
 
   return (
-    <div className="mb-4">
-      <p className="mb-2 text-sm font-medium">{t("selectPosition")}</p>
+    <div>
+      <p className="mb-2 text-sm font-semibold text-gray-900">{t("selectPosition")}</p>
       <div className="flex flex-wrap gap-2">
         {positions.map((pos) => {
           const isSelected = selectedPosition === pos.positionType;

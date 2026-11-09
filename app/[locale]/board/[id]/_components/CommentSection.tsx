@@ -225,14 +225,14 @@ function CommentItem({
                   if (e.key === "Enter") handleEditSubmit();
                   if (e.key === "Escape") setIsEditing(false);
                 }}
-                className="flex-1 border-b border-gray-300 py-1 text-sm outline-none focus:border-black"
+                className="input h-10 min-w-0 flex-1 rounded-lg"
                 autoFocus
               />
               <button
                 type="button"
                 onClick={handleEditSubmit}
                 disabled={isPending}
-                className="rounded-full bg-black px-3 py-1 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
+                className="btn btn-primary btn-sm"
               >
                 {t("save")}
               </button>
@@ -284,7 +284,7 @@ function CommentItem({
                   if (e.key === "Enter") handleReplySubmit();
                 }}
                 placeholder={t("replyPlaceholder")}
-                className="flex-1 border-b border-gray-200 py-1.5 text-sm outline-none focus:border-black"
+                className="input h-10 min-w-0 flex-1 rounded-lg"
                 autoFocus
               />
               {replyInput.trim() && (
@@ -292,7 +292,7 @@ function CommentItem({
                   type="button"
                   onClick={handleReplySubmit}
                   disabled={isPending}
-                  className="flex items-center gap-1 rounded-full bg-black px-3 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
+                  className="btn btn-primary btn-sm"
                 >
                   <Send className="h-3 w-3" />
                   {t("submit")}
@@ -392,14 +392,14 @@ export default function CommentSection({
               if (e.key === "Enter") handleAddComment();
             }}
             placeholder={t("placeholder")}
-            className="flex-1 border-b border-gray-200 py-2 text-sm outline-none focus:border-black"
+            className="input min-w-0 flex-1"
           />
           {commentInput.trim() && (
             <button
               type="button"
               onClick={handleAddComment}
               disabled={isSubmitting}
-              className="flex items-center gap-1 rounded-full bg-black px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-50"
+              className="btn btn-primary"
             >
               <Send className="h-3 w-3" />
               {t("submit")}

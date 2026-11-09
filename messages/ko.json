@@ -21,16 +21,18 @@
     "openProfileMenu": "프로필 메뉴 열기",
     "searchPlaceholder": "프로젝트 검색...",
     "login": "로그인",
-    "getStarted": "시작하기"
+    "getStarted": "시작하기",
+    "mainNav": "주 메뉴",
+    "myProjects": "내 프로젝트",
+    "trends": "채용 트렌드"
   },
   "localeSwitcher": {
     "label": "언어 선택"
   },
   "profileMenu": {
-    "profile": "프로필",
-    "recruitment": "모집 관리",
     "settings": "설정",
-    "logout": "로그아웃"
+    "logout": "로그아웃",
+    "bookmark": "북마크"
   },
   "notification": {
     "title": "알림",
@@ -72,7 +74,11 @@
       "title": "이름을 입력하세요",
       "namePlaceholder": "이름을 입력하세요.",
       "nameRequired": "이름을 입력해주세요.",
-      "next": "다음"
+      "next": "다음",
+      "continueAs": "{email}(으)로 계속하기",
+      "continuing": "인증 코드 보내는 중...",
+      "continueFailed": "인증 코드를 보내지 못했어요. 잠시 후 다시 시도해주세요.",
+      "orNewAccount": "또는 새 계정 만들기"
     },
     "signupType": {
       "title": "새 계정을 만들어보세요!",
@@ -108,25 +114,20 @@
   },
   "home": {
     "hero": {
-      "title": "대학생 개발자를 위한 협업 포트폴리오 플랫폼",
-      "subtitle": "코드 리뷰, 팀원 모집, 프로젝트 관리를 한 곳에서",
+      "title": "AI로 만든 프로젝트를, 면접에서 말할 수 있게",
+      "subtitle": "프로젝트 정리 · 구현 이해 · 면접 연습을 한 곳에서",
       "getStarted": "시작하기",
       "login": "로그인"
     },
-    "codeReview": {
+    "organize": {
       "step": "01",
-      "title": "코드 리뷰",
-      "description": "팀원의 코드에 인라인 댓글을 남기고 피드백을 주고받으세요.<br></br>어떤 줄에서 어떤 의도로 작성했는지 맥락과 함께 리뷰하면<br></br>코드 품질과 팀 전체의 실력이 함께 올라갑니다."
+      "title": "프로젝트 정리",
+      "description": "GitHub 레포를 가져와 한 줄 소개부터 회고까지 7칸으로 정리하세요.<br></br>내 역할과 문제 해결 과정을 직접 적고,<br></br>AI 초안과 커밋 기록이 근거를 채워 줍니다."
     },
-    "recruitment": {
+    "interview": {
       "step": "02",
-      "title": "팀원 모집",
-      "description": "기술 스택과 관심사를 기반으로 프로젝트에 맞는 동료를 찾으세요.<br></br>백엔드가 필요한지, 디자이너가 필요한지 공고를 올리면<br></br>비슷한 목표를 가진 대학생 개발자들이 지원합니다."
-    },
-    "portfolio": {
-      "step": "03",
-      "title": "포트폴리오",
-      "description": "완료된 프로젝트가 자동으로 나만의 포트폴리오로 정리됩니다.<br></br>어떤 기술을 썼고, 어떤 역할을 맡았는지 한눈에 보여주는<br></br>개발 이력을 쉽게 만들고 공유할 수 있습니다."
+      "title": "면접 연습",
+      "description": "내가 짠 코드와 그 코드에서 쓴 프레임워크를 기준으로 질문을 만듭니다.<br></br>근거가 된 파일과 커밋을 함께 보며 답해 보세요.<br></br>만든 것을 설명할 수 있어야 나의 자산이 됩니다."
     },
     "cta": {
       "title": "지금 바로 시작하세요",
@@ -139,7 +140,6 @@
     "schoolVerificationRequired": "학교 인증을 하면 같은 학교 사람들의 게시물만 모아볼 수 있어요.",
     "categories": {
       "all": "전체",
-      "recruiting": "모집중",
       "school": "학교",
       "bookmarks": "북마크",
       "label": "게시글 분류"
@@ -208,7 +208,8 @@
       "canceling": "취소 중...",
       "submitFailed": "지원에 실패했습니다. 잠시 후 다시 시도해주세요.",
       "saveFailed": "저장에 실패했습니다. 잠시 후 다시 시도해주세요.",
-      "cancelFailed": "지원 취소에 실패했습니다. 잠시 후 다시 시도해주세요."
+      "cancelFailed": "지원 취소에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      "recruitmentClosed": "모집이 마감되었습니다"
     },
     "comment": {
       "count": "댓글 {count}개",
@@ -374,6 +375,27 @@
       "unauthorized": "로그인이 필요해요. 다시 로그인해주세요.",
       "failed": "썸네일을 처리하지 못했어요. 기존 썸네일은 그대로 유지돼요.",
       "network": "네트워크 오류로 썸네일을 처리하지 못했어요. 기존 썸네일은 그대로 유지돼요."
+    },
+    "document": {
+      "heading": "발표자료",
+      "desc": "PDF를 올리거나 구글 슬라이드 링크를 붙여 넣으세요. 게시글에서 바로 넘겨 볼 수 있어요.",
+      "pdfTab": "PDF",
+      "slidesTab": "구글 슬라이드",
+      "pdfPick": "PDF 선택 (최대 {max}MB)",
+      "pdfHint": "PowerPoint·Keynote·구글 슬라이드 모두 'PDF로 내보내기'로 만들 수 있어요.",
+      "uploading": "업로드 중... {percent}%",
+      "pdfOnly": "PDF 파일만 올릴 수 있어요.",
+      "tooLarge": "PDF는 {max}MB 이하만 올릴 수 있어요.",
+      "uploadFailed": "PDF를 올리지 못했어요.",
+      "apply": "적용",
+      "invalidSlides": "구글 슬라이드 링크 형식이 아니에요. (docs.google.com/presentation/d/...)",
+      "slidesHint": "비공개 슬라이드는 보이지 않아요. '공유 → 링크가 있는 모든 사용자' 또는 '파일 → 공유 → 웹에 게시'로 공개해 주세요.",
+      "pdfAttached": "PDF 첨부됨",
+      "slidesAttached": "구글 슬라이드 연결됨",
+      "remove": "발표자료 삭제",
+      "viewerHeading": "발표자료",
+      "fullscreen": "전체화면",
+      "openNewTab": "새 탭에서 열기"
     }
   },
   "profile": {
@@ -421,22 +443,339 @@
       "yearsLabel": "{years}년차",
       "monthsLabel": "{months}개월차",
       "nameRequired": "이름을 입력해주세요.",
-      "saveFailed": "저장에 실패했습니다. 잠시 후 다시 시도해주세요."
+      "saveFailed": "저장에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      "avatarChange": "사진 변경",
+      "avatarUploading": "업로드 중...",
+      "avatarReset": "기본 이미지로",
+      "avatarHint": "png·jpg·webp, {max}MB 이하",
+      "avatarInvalidType": "png·jpg·webp 이미지만 올릴 수 있어요.",
+      "avatarTooLarge": "사진은 {max}MB 이하만 올릴 수 있어요.",
+      "avatarUploadFailed": "사진을 올리지 못했어요."
     },
     "editPageStub": "프로필 편집",
     "error": {
       "title": "프로필을 불러오지 못했습니다.",
       "desc": "잠시 후 다시 시도해 주세요.",
       "retry": "다시 시도"
+    },
+    "tabs": {
+      "label": "프로필 탭",
+      "projects": "프로젝트",
+      "github": "GitHub",
+      "posts": "게시물"
+    },
+    "projects": {
+      "listLabel": "내 프로젝트 목록",
+      "import": "레포 가져오기",
+      "emptyTitle": "아직 정리한 프로젝트가 없어요",
+      "emptyDesc": "GitHub 레포를 가져와 면접에서 설명할 수 있게 정리해 보세요.",
+      "loadFailed": "프로젝트 목록을 불러오지 못했어요. 잠시 후 다시 시도해주세요.",
+      "detailFailed": "프로젝트를 불러오지 못했어요. 잠시 후 다시 시도해주세요.",
+      "progress": "{filled}/{total}칸",
+      "viewPost": "게시글 보기",
+      "delete": "프로젝트 삭제",
+      "deleteConfirm": "{repo} 프로젝트를 삭제할까요? 정리 카드도 함께 삭제됩니다.",
+      "deleteFailed": "삭제하지 못했어요. 잠시 후 다시 시도해주세요.",
+      "detailTabsLabel": "프로젝트 상세 탭",
+      "comingSoon": "준비 중",
+      "tabs": {
+        "card": "정리 카드",
+        "explain": "구현 설명",
+        "interview": "면접 연습",
+        "techReco": "기술 추천"
+      },
+      "stage": {
+        "REGISTERED": "등록",
+        "DRAFT": "정리 중",
+        "ORGANIZED": "정리 완료",
+        "INTERVIEW_READY": "면접 준비 완료"
+      },
+      "importModal": {
+        "title": "레포 가져오기",
+        "searchPlaceholder": "레포 검색 또는 owner/repo 입력",
+        "manualHint": "팀원 · 조직 소유의 공개 레포는 owner/repo 형식으로 입력하세요.",
+        "manualAdd": "{repo} 가져오기",
+        "registered": "등록됨",
+        "empty": "레포가 없어요.",
+        "loadFailed": "GitHub 레포 목록을 불러오지 못했어요. GitHub 연동을 확인해주세요.",
+        "duplicate": "이미 등록한 레포예요.",
+        "notFound": "레포를 찾을 수 없어요. 이름과 공개 여부를 확인해주세요.",
+        "failed": "레포를 가져오지 못했어요. 잠시 후 다시 시도해주세요."
+      },
+      "card": {
+        "save": "저장",
+        "saving": "저장 중…",
+        "revert": "되돌리기",
+        "saveFailed": "저장하지 못했어요. 잠시 후 다시 시도해주세요.",
+        "oneLiner": {
+          "title": "한 줄 소개",
+          "hint": "무엇을, 누구를 위해 만들었는지 한 문장으로.",
+          "placeholder": "예) 대학생이 GitHub 레포를 면접용 포트폴리오로 정리하는 서비스"
+        },
+        "myRole": {
+          "title": "내 역할 · 기여",
+          "hint": "팀에서 맡은 부분과 직접 만든 기능을 적어 주세요.",
+          "placeholder": "예) 백엔드 담당 — 지원 · 모집 API, 동시성 처리"
+        },
+        "features": {
+          "title": "핵심 기능",
+          "hint": "사용자 관점의 기능 3~5개.",
+          "name": "기능 이름",
+          "description": "설명",
+          "add": "기능 추가",
+          "remove": "기능 삭제"
+        },
+        "techReasons": {
+          "title": "기술 선택 이유",
+          "hint": "왜 이 기술을 골랐나요? 다른 선택지와 비교하면 무엇이 나았나요?",
+          "placeholder": "예) 트랜잭션이 많은 도메인이라 Spring + JPA를 골랐다…"
+        },
+        "problemSolving": {
+          "title": "문제 해결",
+          "hint": "가장 기억에 남는 문제 하나를 문제 → 원인 → 해결 → 결과 순서로.",
+          "problem": "문제",
+          "cause": "원인",
+          "solution": "해결",
+          "result": "결과",
+          "problemPlaceholder": "무엇이 잘못됐나요?",
+          "causePlaceholder": "원인을 어떻게 찾았나요?",
+          "solutionPlaceholder": "어떻게 고쳤나요?",
+          "resultPlaceholder": "무엇이 나아졌나요?"
+        },
+        "results": {
+          "title": "결과 · 지표",
+          "hint": "배포 링크, 사용자 수, 성능 개선 수치 등 확인할 수 있는 결과.",
+          "placeholder": "예) 응답 시간 800ms → 120ms, 사용자 40명"
+        },
+        "retrospective": {
+          "title": "회고 · 다음 개선",
+          "hint": "아쉬웠던 점과 다시 한다면 바꿀 것.",
+          "placeholder": "예) 테스트를 늦게 붙여 리팩터링이 어려웠다…"
+        },
+        "ai": {
+          "hint": "레포의 README · 파일 구조 · 커밋 기록을 읽고 빈 칸을 채워요. 이미 쓴 칸은 그대로 둬요.",
+          "run": "AI로 초안 쓰기",
+          "running": "레포 분석 중…",
+          "failed": "초안을 만들지 못했어요. 잠시 후 다시 시도해주세요.",
+          "skipped": "레포에서 근거를 찾지 못해 비워 뒀어요. 직접 작성해 주세요.",
+          "compareTitle": "이유를 정리하기 전에 비교해 보세요"
+        }
+      }
+    },
+    "github": {
+      "pollTimeout": "분석이 오래 걸리고 있어요. 잠시 후 새로고침해 주세요.",
+      "alreadyAnalyzing": "이미 분석 중이에요.",
+      "cooldown": "분석은 10분에 한 번만 다시 할 수 있어요.",
+      "startFailed": "분석을 시작하지 못했어요.",
+      "loadFailed": "GitHub 분석 정보를 불러오지 못했어요.",
+      "progress": "지난 분석({when})보다 {count}개 해결했어요",
+      "lastAnalyzed": "마지막 분석: {when}",
+      "neverAnalyzed": "아직 분석하지 않았어요",
+      "cacheHint": "GitHub에서 고친 내용은 다시 분석해야 반영돼요.",
+      "analyzing": "분석 중...",
+      "analyze": "내 GitHub 분석하기",
+      "reanalyze": "다시 분석",
+      "reconnect": "GitHub 다시 연동하기",
+      "emptyTitle": "내 GitHub를 포트폴리오로 바꿔 보세요",
+      "emptyDesc": "공개 레포만 읽어서 요약·점검·대표 프로젝트를 정리해 드려요. 코드는 저장하지 않아요.",
+      "noProfileReadmeBanner": "GitHub 프로필 소개가 없습니다",
+      "noProfileReadmeHint": "아래 '프로필 README'에서 초안을 만들어 복사할 수 있어요.",
+      "dashboardHeading": "GitHub 요약",
+      "ownedRepos": "직접 만든 레포",
+      "forkedRepos": "포크 {count}개",
+      "totalStars": "받은 스타",
+      "activeRepos": "최근 90일 활동 레포",
+      "lastPush": "마지막 push",
+      "languages": "언어 비중",
+      "otherLanguage": "기타",
+      "repoList": "레포 목록",
+      "warnings": "정리할 것 {count}",
+      "teamRepo": "팀 레포 · 내 커밋 {count}개",
+      "noDescription": "설명 없음",
+      "showLess": "접기",
+      "showAll": "전체 {count}개 보기",
+      "visibility": {
+        "heading": "다른 사람에게 보여줄 항목",
+        "desc": "기본은 모두 비공개예요. 고정한 대표 프로젝트는 항상 프로필에 보여요.",
+        "summary": "레포 수·스타·활동 요약",
+        "languages": "언어 비중",
+        "topRepos": "추천 대표 프로젝트",
+        "direction": "방향성 분석"
+      },
+      "connectTitle": "GitHub를 연동해 주세요",
+      "connectDesc": "연동하면 공개 레포를 분석해 정리할 것과 대표 프로젝트를 알려드려요.",
+      "connect": "GitHub 연동하기",
+      "connectFailed": "GitHub 연결 요청에 실패했어요.",
+      "publicHeading": "GitHub",
+      "demo": "데모",
+      "publicSummary": "직접 만든 레포 {owned}개 · 스타 {stars}개 · 최근 90일 활동 레포 {active}개",
+      "roles": {
+        "backend": "백엔드",
+        "frontend": "프론트엔드",
+        "fullstack": "풀스택",
+        "mobile": "모바일",
+        "data": "데이터·AI",
+        "devops": "DevOps·인프라",
+        "game": "게임"
+      },
+      "checklist": {
+        "heading": "정리할 것",
+        "desc": "점수 대신 할 일 목록이에요. GitHub에서 고친 뒤 다시 분석하면 사라져요.",
+        "allClear": "정리할 것이 없어요. 잘 관리하고 계시네요!",
+        "chip": "{label} {count}개",
+        "teamSuggest": "팀 레포 — 팀에 제안해 보세요",
+        "partial": "일부 확인 못 함",
+        "remaining": "{count}개 남음",
+        "done": "완료",
+        "ignore": "이 항목 무시",
+        "unignore": "다시 보기",
+        "copied": "복사했어요",
+        "copyReadmeTemplate": "README 템플릿 복사",
+        "openRepoAbout": "GitHub에서 About 편집하기",
+        "testGuide": "{language} 테스트 시작 가이드",
+        "ciGuide": "GitHub Actions 시작 가이드",
+        "envGuide": "커밋된 비밀 정보 지우는 방법",
+        "openSettings": "레포 설정 열기 (비공개·보관)",
+        "profileReadmeAction": "아래 '프로필 README'에서 초안을 만들 수 있어요.",
+        "codes": {
+          "NO_README": {
+            "label": "README 없음",
+            "guide": "README에 소개·실행 방법·기술 스택을 적으면 처음 보는 사람이 프로젝트를 이해할 수 있어요."
+          },
+          "NO_DESCRIPTION": {
+            "label": "설명·토픽 비어 있음",
+            "guide": "레포 About에 한 줄 설명과 토픽을 넣으면 목록과 검색에서 눈에 띄어요."
+          },
+          "NO_HOMEPAGE": {
+            "label": "배포 링크 없음",
+            "guide": "배포했다면 About의 Website에 주소를 등록하세요. 바로 써볼 수 있는 링크는 큰 장점이에요."
+          },
+          "NO_TESTS": {
+            "label": "테스트 없음",
+            "guide": "test·tests·__tests__·src/test 폴더가 없어요. 핵심 기능 하나라도 테스트를 추가해 보세요."
+          },
+          "TOO_FEW_COMMITS": {
+            "label": "커밋이 너무 적음",
+            "guide": "커밋이 2개 이하예요. 연습용이라면 비공개나 보관(archive)을 권장해요."
+          },
+          "WEAK_COMMIT_MESSAGES": {
+            "label": "커밋 메시지 품질",
+            "guide": "최근 커밋 대부분이 \"update\", \"수정\"처럼 내용이 없어요. 무엇을 왜 바꿨는지 적어 보세요."
+          },
+          "ENV_FILE_COMMITTED": {
+            "label": ".env 파일이 올라가 있음",
+            "guide": "루트에 .env 파일이 있어요. 비밀키가 들어 있다면 키를 바로 재발급하고, 파일을 지운 뒤 .gitignore에 추가하세요. 예시는 .env.example로 두면 돼요."
+          },
+          "NO_CI": {
+            "label": "CI 없음",
+            "guide": "GitHub Actions 같은 자동 빌드·테스트 설정이 없어요. 푸시할 때 테스트가 돌게 해 두면 자동화 경험을 보여줄 수 있어요."
+          },
+          "README_NO_RUN_GUIDE": {
+            "label": "README에 실행 방법 없음",
+            "guide": "설치·실행 방법이 안 보여요. 처음 보는 사람이 그대로 따라 할 수 있게 명령어를 적어 주세요."
+          },
+          "FORK_HEAVY": {
+            "label": "포크 위주",
+            "guide": "직접 만든 레포 비율이 30% 미만이에요. 작은 개인 프로젝트를 시작해 보세요."
+          },
+          "NO_PROFILE_README": {
+            "label": "GitHub 프로필 소개 없음",
+            "guide": "아이디와 같은 이름의 레포에 README를 두면 GitHub 프로필 첫 화면에 보여요."
+          }
+        }
+      },
+      "top": {
+        "heading": "대표 프로젝트",
+        "desc": "README·배포·커밋 이력·협업 여부로 고른 상위 3개예요. 고정하면 프로필에 보여요.",
+        "empty": "아직 추천할 프로젝트가 없어요.",
+        "pin": "대표 프로젝트로 고정",
+        "unpin": "고정 해제",
+        "featuredLimit": "대표 프로젝트는 {max}개까지 고정할 수 있어요.",
+        "reasons": {
+          "RICH_README": "README 충실",
+          "DEPLOYED": "배포됨",
+          "ACTIVE_HISTORY": "꾸준한 커밋",
+          "LONG_RUNNING": "2주 이상 개발",
+          "TEAM_PROJECT": "팀 협업",
+          "STARRED": "스타 받음",
+          "RECENT": "최근 활동"
+        },
+        "directionHeading": "방향성 분석 (AI)",
+        "directionEmpty": "레포 요약을 바탕으로 어떤 성향의 개발자인지 정리해 드려요.",
+        "fits": "{role} 직무와 맞는 점",
+        "gaps": "보완할 점",
+        "targetRole": "희망 직무",
+        "targetRoleNone": "희망 직무 선택 (선택)",
+        "generate": "방향성 분석",
+        "regenerate": "다시 분석",
+        "generating": "분석 중...",
+        "remaining": "이번 달 {count}회 남음",
+        "limitReached": "이번 달 사용 횟수를 모두 썼어요.",
+        "aiFailed": "AI 분석에 실패했어요."
+      },
+      "readme": {
+        "heading": "프로필 README",
+        "exists": "프로필 README가 있어요. 새 초안을 만들어 비교해 볼 수 있어요.",
+        "missing": "{login}/{login} 레포에 README를 두면 GitHub 프로필 첫 화면에 보여요.",
+        "decorations": "꾸미기 (체크한 것만 넣어요)",
+        "decoration": {
+          "badges": {
+            "label": "기술 스택 뱃지",
+            "hint": "shields.io — 프로필의 보유 기술로 만들어요"
+          },
+          "stats": {
+            "label": "통계 카드",
+            "hint": "github-readme-stats — 공용 서버는 느리거나 막힐 수 있어 자체 배포를 권장해요"
+          },
+          "streak": {
+            "label": "연속 기여",
+            "hint": "github-readme-streak-stats"
+          },
+          "header": {
+            "label": "헤더 배너",
+            "hint": "capsule-render"
+          },
+          "solvedac": {
+            "label": "알고리즘 티어",
+            "hint": "solved.ac 뱃지 — 백준 아이디가 필요해요"
+          },
+          "blog": {
+            "label": "블로그 최신 글",
+            "hint": "blog-post-workflow (GitHub Actions) — velog·티스토리 RSS"
+          }
+        },
+        "lessIsMore": "장식이 많으면 오히려 읽기 어려워요. 꼭 필요한 것만 고르세요.",
+        "solvedacPlaceholder": "백준 아이디",
+        "blogPlaceholder": "블로그 RSS 주소 (https://...)",
+        "targetRole": "희망 직무",
+        "targetRoleNone": "희망 직무 선택 (선택)",
+        "generate": "초안 만들기",
+        "regenerate": "다시 만들기",
+        "generating": "만드는 중...",
+        "remaining": "이번 달 {count}회 남음",
+        "failed": "초안을 만들지 못했어요.",
+        "preview": "미리보기",
+        "edit": "편집",
+        "save": "저장",
+        "saved": "저장했어요.",
+        "copy": "복사",
+        "copied": "복사했어요. GitHub에 붙여 넣으세요.",
+        "copyFailed": "복사하지 못했어요. 편집 탭에서 직접 선택해 복사해 주세요.",
+        "openEditor": "GitHub에서 편집",
+        "createRepo": "{login} 레포 만들기",
+        "workflowHeading": "블로그 글 자동 갱신 워크플로",
+        "workflowHint": ".github/workflows/blog-post.yml 로 저장하세요."
+      }
     }
   },
   "recruitment": {
-    "breadcrumb": "Recruitment",
+    "breadcrumb": "모집 관리",
     "pageTitle": "팀원 모집 관리",
     "pageSubtitle": "내가 올린 모집글과 지원자 현황을 한 곳에서 확인하고 관리해요.",
     "status": {
       "closed": "마감",
-      "recruiting": "모집중"
+      "recruiting": "모집중",
+      "full": "정원 마감"
     },
     "applicantCard": {
       "viewProfile": "프로필 보기",
@@ -448,7 +787,11 @@
       "accepted": "수락됨",
       "rejected": "거절됨",
       "pending": "대기 중",
-      "positionFull": "이 포지션은 정원이 찼어요. 거절만 할 수 있어요."
+      "positionFull": "이 포지션은 정원이 찼어요. 거절만 할 수 있어요.",
+      "appliedAt": "{date} 지원",
+      "skills": "보유 기술",
+      "showMore": "더보기",
+      "showLess": "접기"
     },
     "applicantSection": {
       "title": "지원자 현황",
@@ -456,17 +799,47 @@
       "selectPostHint": "게시글을 선택해주세요.",
       "selectPostFromLeft": "왼쪽에서 게시글을 선택해주세요.",
       "noApplicants": "아직 지원자가 없어요.",
-      "actionFailed": "처리에 실패했습니다. 잠시 후 다시 시도해주세요."
+      "actionFailed": "처리에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      "positionSummary": "포지션별 충원 현황",
+      "noFilteredApplicants": "{status} 상태의 지원자가 없어요."
     },
     "postCard": {
       "applicantCount": "지원자",
-      "edit": "수정하기"
+      "edit": "수정하기",
+      "close": "모집 마감",
+      "reopen": "모집 재개"
     },
     "postListSection": {
       "title": "내 모집글",
       "subtitle": "현재 등록한 팀원 모집 게시글이에요.",
       "count": "{count}개",
-      "empty": "등록한 모집글이 없어요."
+      "empty": "등록한 모집글이 없어요.",
+      "write": "모집글 작성하기"
+    },
+    "positions": {
+      "FRONTEND": "프론트엔드",
+      "BACKEND": "백엔드",
+      "DESIGNER": "디자이너"
+    },
+    "filter": {
+      "label": "지원 상태 필터",
+      "ALL": "전체",
+      "PENDING": "대기",
+      "ACCEPTED": "수락",
+      "REJECTED": "거절"
+    },
+    "confirm": {
+      "cancel": "취소",
+      "processing": "처리 중...",
+      "rejectTitle": "지원자를 거절할까요?",
+      "rejectDescription": "{name}님의 지원을 거절합니다. 거절 후에는 되돌릴 수 없고, 지원자에게 알림이 전송돼요.",
+      "closeTitle": "모집을 마감할까요?",
+      "closeDescription": "\"{title}\" 모집을 마감하면 새 지원을 받지 않아요. 이미 받은 지원서는 계속 처리할 수 있고, 언제든 다시 모집을 재개할 수 있어요."
+    },
+    "errors": {
+      "acceptFailed": "지원자 수락에 실패했습니다.",
+      "rejectFailed": "지원자 거절에 실패했습니다.",
+      "toggleFailed": "모집 상태 변경에 실패했습니다."
     }
   },
   "settings": {
@@ -523,5 +896,83 @@
     "redirecting": "로그인 화면으로 이동하고 있어요...",
     "clearFailed": "로그인 정보를 정리하지 못했어요. 다시 시도해주세요.",
     "retry": "다시 시도"
+  },
+  "resume": {
+    "heading": "AI 이력서",
+    "desc": "설문과 GitHub 분석, Pofol 게시글로 초안을 만들고 직접 다듬어요. 문장마다 근거를 표시해요.",
+    "listHeading": "내 이력서",
+    "listEmpty": "아직 만든 이력서가 없어요.",
+    "loadFailed": "이력서 목록을 불러오지 못했어요.",
+    "survey": {
+      "heading": "새 이력서 (1분 설문)",
+      "desc": "GitHub 분석을 먼저 해 두면 프로젝트 정보가 더 정확해져요.",
+      "title": "이력서 이름",
+      "titlePlaceholder": "예: 백엔드 지원용",
+      "defaultTitle": "{role} 지원용",
+      "targetRole": "희망 직무 *",
+      "targetRolePlaceholder": "예: 백엔드 개발자",
+      "targetRoleRequired": "희망 직무를 입력해 주세요.",
+      "interests": "관심 분야",
+      "interestsPlaceholder": "예: 대용량 트래픽, 결제",
+      "teamRole": "팀에서 주로 맡는 역할",
+      "teamRolePlaceholder": "예: API 설계와 배포 담당",
+      "strengths": "강점 키워드 3개",
+      "strengthN": "강점 {n}",
+      "goal": "한 줄 목표",
+      "goalPlaceholder": "예: 장애에 강한 서비스를 만드는 개발자",
+      "generate": "AI 초안 만들기",
+      "generating": "초안 만드는 중...",
+      "blank": "빈 이력서로 시작",
+      "aiFailed": "초안을 만들지 못했어요.",
+      "aiNotice": "AI 초안은 월 사용 횟수가 정해져 있어요. 사실과 다른 내용은 꼭 고쳐 주세요."
+    },
+    "editor": {
+      "title": "이력서 이름",
+      "showPhoto": "사진 표시",
+      "save": "저장",
+      "saving": "저장 중...",
+      "saved": "저장했어요.",
+      "print": "PDF로 저장",
+      "delete": "이력서 삭제",
+      "deleteConfirm": "이 이력서를 삭제할까요?",
+      "legend": "✅ 검증됨: GitHub 데이터로 확인된 사실 · ✏️ 본인 작성 · 🤖 AI 작성 — 문장을 고치면 본인 작성으로 바뀌어요. PDF에는 검증 배지만 남아요.",
+      "headlinePlaceholder": "어떤 개발자인지 한 줄로",
+      "summary": "소개",
+      "summaryPlaceholder": "자기소개 문장",
+      "projects": "프로젝트",
+      "addProject": "프로젝트 추가",
+      "removeProject": "프로젝트 삭제",
+      "projectName": "프로젝트 이름",
+      "rolePlaceholder": "맡은 역할",
+      "highlightPlaceholder": "역할·성과",
+      "skills": "기술 스택",
+      "skillsPlaceholder": "쉼표로 구분 (예: Java, Spring, PostgreSQL)",
+      "addLine": "문장 추가",
+      "removeLine": "문장 삭제",
+      "source": {
+        "VERIFIED": "✅ 검증됨",
+        "SELF": "✏️ 본인 작성",
+        "AI": "🤖 AI 작성"
+      }
+    }
+  },
+  "trends": {
+    "title": "채용 트렌드",
+    "description": "GitHub에서 언어별로 얼마나 쓰이는지 매달 모읍니다. 국내와 해외의 차이를 내 스택과 비교해 보세요.",
+    "empty": "아직 수집된 데이터가 없어요. 매달 2일에 갱신됩니다.",
+    "meta": "{period} 기준 · {date} 수집",
+    "compare": "변화는 {period} 대비 비중",
+    "changeLabel": "지난달 대비 비중 변화",
+    "global": {
+      "title": "전 세계 — 새로 만들어진 레포",
+      "hint": "지난달 새로 만들어진 공개 레포 수 (포크 제외), 아래 12개 언어 안에서의 비중",
+      "unit": "개"
+    },
+    "korea": {
+      "title": "국내 — 개발자 주 언어",
+      "hint": "GitHub 프로필 위치에 'Korea'가 있는 사용자의 주 언어 (누적). 위치를 '서울' 등으로만 적은 사용자는 빠져 있어 대략적인 값입니다.",
+      "unit": "명"
+    },
+    "incomplete": "일부 검색은 GitHub가 끝까지 세지 못해 수치가 실제보다 작을 수 있어요."
   }
 }

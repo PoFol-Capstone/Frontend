@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import Field from "@/components/ui/Field";
 import { MAX_ROLE_COUNT, RECRUIT_ROLES } from "@/lib/recruitPositions";
 
 type Props = {
@@ -52,7 +53,7 @@ export default function TeamRecruitSection({
   };
 
   return (
-    <section className="border border-gray-200 rounded-2xl p-6 space-y-4 bg-white">
+    <section className="card space-y-6">
       {!hideToggle && (
         <div>
           <div className="flex items-center gap-2.5">
@@ -63,7 +64,7 @@ export default function TeamRecruitSection({
               onChange={(e) => onEnabledChange?.(e.target.checked)}
               className="w-5 h-5 rounded accent-black cursor-pointer"
             />
-            <label htmlFor="teamRecruit" className="text-base font-semibold cursor-pointer">
+            <label htmlFor="teamRecruit" className="text-lg font-bold tracking-tight text-gray-900 cursor-pointer">
               {t("title")}
             </label>
           </div>
@@ -74,21 +75,20 @@ export default function TeamRecruitSection({
       )}
 
       {(enabled || hideToggle) && (
-        <div className={`space-y-4 ${!hideToggle ? "border-t border-gray-200 pt-4" : ""}`}>
-          <div className="space-y-1.5">
-            <label className="text-sm font-medium">{t("description")}</label>
+        <div className={`space-y-6 ${!hideToggle ? "border-t border-gray-200 pt-6" : ""}`}>
+          <Field label={t("description")}>
             <textarea
               ref={recruitRef}
               value={description}
               onChange={(e) => onDescriptionChange(e.target.value)}
               placeholder={t("descriptionPlaceholder")}
               rows={1}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none overflow-hidden placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className="input resize-none overflow-hidden"
             />
-          </div>
+          </Field>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium">{t("roles")}</label>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-gray-900">{t("roles")}</label>
             <div className="flex flex-wrap gap-3">
               {RECRUIT_ROLES.map((role) => {
                 const isSelected = role in roleCounts;
@@ -137,7 +137,7 @@ export default function TeamRecruitSection({
               })}
             </div>
             {positionsError && (
-              <p role="alert" className="text-sm text-red-500">
+              <p role="alert" className="mt-2 text-[13px] text-red-500">
                 {positionsError}
               </p>
             )}

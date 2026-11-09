@@ -1,6 +1,6 @@
-# 2026-09-01 수정 내역 — 코드 리뷰 잔여 항목
+# [수정] 코드 리뷰 잔여 항목 처리
 
-`docs/code-review-2026-07-16.md`에서 지적된 항목 중 `docs/fix-2026-07-22-board-detail-ssr-crash.md`에서
+`docs/archive/2026-07-16-code-review.md`에서 지적된 항목 중 `docs/archive/2026-07-22-fix-board-ssr-crash.md`에서
 다루지 않고 남아 있던 것들을 처리한 기록. 그 과정에서 리뷰가 잡아내지 못한 버그도 몇 건 발견해서 함께 고쳤다.
 
 ## 이미 해결되어 있던 항목

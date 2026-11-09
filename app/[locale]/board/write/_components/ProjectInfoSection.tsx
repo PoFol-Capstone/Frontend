@@ -2,6 +2,7 @@
 import type { Skill } from "@/types/skill";
 import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import Field from "@/components/ui/Field";
 import SkillPicker from "./SkillPicker";
 
 type Props = {
@@ -58,27 +59,23 @@ export default function ProjectInfoSection({
   }, [isLoadingRepoData, isAIWriting]);
 
   return (
-    <div className="space-y-5">
-      <div className="space-y-6">
-        <label className="mb-2.5 block text-base font-semibold text-gray-900">
-          {t("name")}
-        </label>
+    <div className="space-y-6">
+      <Field label={t("name")}>
         {isLoadingRepoData ? (
-          <div className="h-13 w-full animate-pulse rounded-xl bg-gray-200" />
+          <div className="h-12 w-full animate-pulse rounded-xl bg-gray-200" />
         ) : (
           <input
             type="text"
             value={projectName}
             onChange={(e) => onProjectNameChange(e.target.value)}
-            className="w-full resize-none overflow-hidden rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-black"
+            className="input"
           />
         )}
-      </div>
+      </Field>
 
-      <div className="space-y-1.5">
-        <label className="text-sm font-semibold">{t("description")}</label>
+      <Field label={t("description")}>
         {isLoadingRepoData || isAIWriting ? (
-          <div className="animate-pulse space-y-2 rounded-lg border border-gray-200 px-3 py-3">
+          <div className="min-h-28 animate-pulse space-y-2 rounded-xl border border-gray-200 px-4 py-3">
             <div className="h-3.5 w-full rounded bg-gray-200" />
             <div className="h-3.5 w-5/6 rounded bg-gray-200" />
             <div className="h-3.5 w-4/5 rounded bg-gray-200" />
@@ -89,15 +86,14 @@ export default function ProjectInfoSection({
             value={projectDescription}
             onChange={(e) => onProjectDescriptionChange(e.target.value)}
             rows={1}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="input resize-none overflow-hidden"
           />
         )}
-      </div>
+      </Field>
 
-      <div className="space-y-1.5">
-        <label className="text-sm font-semibold">{t("mainFeatures")}</label>
+      <Field label={t("mainFeatures")}>
         {isLoadingRepoData || isAIWriting ? (
-          <div className="animate-pulse space-y-2 rounded-lg border border-gray-200 px-3 py-3">
+          <div className="min-h-28 animate-pulse space-y-2 rounded-xl border border-gray-200 px-4 py-3">
             <div className="h-3.5 w-full rounded bg-gray-200" />
             <div className="h-3.5 w-11/12 rounded bg-gray-200" />
             <div className="h-3.5 w-3/4 rounded bg-gray-200" />
@@ -109,30 +105,28 @@ export default function ProjectInfoSection({
             value={mainFeatures}
             onChange={(e) => onMainFeaturesChange(e.target.value)}
             rows={1}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm resize-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="input resize-none overflow-hidden"
           />
         )}
-      </div>
+      </Field>
 
-      <div className="space-y-1.5">
-        <label className="text-sm font-semibold">{t("deployUrl")}</label>
+      <Field label={t("deployUrl")}>
         {isLoadingRepoData ? (
-          <div className="animate-pulse h-10 w-full rounded-lg bg-gray-200" />
+          <div className="h-12 w-full animate-pulse rounded-xl bg-gray-200" />
         ) : (
           <input
             type="url"
             value={deployUrl}
             onChange={(e) => onDeployUrlChange(e.target.value)}
             placeholder="https://..."
-            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
+            className="input"
           />
         )}
-      </div>
+      </Field>
 
-      <div className="space-y-1.5">
-        <label className="text-sm font-semibold">{t("techStack")}</label>
+      <Field label={t("techStack")}>
         {isLoadingRepoData ? (
-          <div className="animate-pulse flex flex-wrap gap-2 min-h-10.5 rounded-lg border border-gray-200 px-3 py-2">
+          <div className="flex min-h-12 animate-pulse flex-wrap gap-2 rounded-xl border border-gray-200 px-4 py-2">
             <div className="h-7 w-20 rounded-full bg-gray-200" />
             <div className="h-7 w-16 rounded-full bg-gray-200" />
             <div className="h-7 w-24 rounded-full bg-gray-200" />
@@ -140,7 +134,7 @@ export default function ProjectInfoSection({
         ) : (
           <SkillPicker selected={selectedSkills} onChange={onSkillsChange} />
         )}
-      </div>
+      </Field>
     </div>
   );
 }

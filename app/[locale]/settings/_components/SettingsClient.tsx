@@ -14,7 +14,7 @@ export default function SettingsClient() {
 
   return (
     <>
-      <section className="rounded-xl border border-gray-300 bg-white px-5 py-4">
+      <section className="card">
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold text-black">
@@ -27,7 +27,7 @@ export default function SettingsClient() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-gray-300 bg-white px-5 py-4">
+      <section className="card">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold text-black">
             {t("notifications.title")}

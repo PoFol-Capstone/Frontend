@@ -1,6 +1,6 @@
 import { buildPageHref } from "@/lib/pagination";
 
-export const CATEGORIES = ["All", "Recruiting", "School", "Bookmarks"] as const;
+export const CATEGORIES = ["All", "School", "Bookmarks"] as const;
 
 export type Category = (typeof CATEGORIES)[number];
 

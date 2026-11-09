@@ -4,7 +4,7 @@ import { cancelApply } from "@/lib/apply";
 import type { ResponseApplication } from "@/types/post";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
 
 type Props = {
   postUuid: string;
@@ -42,71 +42,73 @@ export default function ViewApplyModal({
 
   return (
     <Modal title={t("viewModalTitle")} onClose={onClose}>
-      <div className="mb-5 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
-        <p className="font-semibold">{t("sectionCompleteTitle")}</p>
-        <p className="mt-1">
-          {isPending
-            ? t("editableUntilDeadline")
-            : t("notEditable")}
-        </p>
-      </div>
-
-      <div className="mb-4">
-        <p className="mb-2 text-sm font-medium">{t("appliedPosition")}</p>
-        <span className="rounded-full border border-black px-3 py-1 text-xs">
-          {application.positionType}
-        </span>
-      </div>
-
-      <div className="mb-4">
-        <p className="mb-2 text-sm font-medium">{t("introduction")}</p>
-        <div className="min-h-24 rounded-xl border border-gray-200 p-3 text-sm text-gray-700">
-          {application.introduction || t("noContent")}
+      <div className="space-y-6">
+        <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
+          <p className="font-semibold">{t("sectionCompleteTitle")}</p>
+          <p className="mt-1">
+            {isPending
+              ? t("editableUntilDeadline")
+              : t("notEditable")}
+          </p>
         </div>
-      </div>
 
-      <div className="mb-5">
-        <p className="mb-2 text-sm font-medium">{t("portfolio")}</p>
-        <div className="rounded-xl border border-gray-200 px-3 py-3 text-sm text-gray-500">
-          {application.portfolioUrl || t("noContent")}
+        <div>
+          <p className="mb-2 text-sm font-semibold text-gray-900">{t("appliedPosition")}</p>
+          <span className="rounded-full border border-black px-3 py-1 text-xs">
+            {application.positionType}
+          </span>
         </div>
-      </div>
 
-      {error && (
-        <p role="alert" className="mb-4 text-sm text-red-500">
-          {error}
-        </p>
-      )}
+        <div>
+          <p className="mb-2 text-sm font-semibold text-gray-900">{t("introduction")}</p>
+          <div className="min-h-28 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-[15px] leading-relaxed text-gray-700">
+            {application.introduction || t("noContent")}
+          </div>
+        </div>
 
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={onClose}
-          disabled={isCanceling}
-          className="flex-1 rounded-xl border border-gray-200 py-3 text-sm disabled:opacity-50"
-        >
-          {t("close")}
-        </button>
-        {isPending && (
-          <>
-            <button
-              type="button"
-              onClick={handleCancel}
-              disabled={isCanceling}
-              className="flex-1 rounded-xl border border-red-200 py-3 text-sm text-red-500 disabled:opacity-50"
-            >
-              {isCanceling ? t("canceling") : t("cancelApplication")}
-            </button>
-            <button
-              type="button"
-              onClick={onEdit}
-              disabled={isCanceling}
-              className="flex-1 rounded-xl bg-black py-3 text-sm font-semibold text-white disabled:opacity-50"
-            >
-              {t("edit")}
-            </button>
-          </>
+        <div>
+          <p className="mb-2 text-sm font-semibold text-gray-900">{t("portfolio")}</p>
+          <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-[15px] text-gray-500">
+            {application.portfolioUrl || t("noContent")}
+          </div>
+        </div>
+
+        {error && (
+          <p role="alert" className="text-sm text-red-500">
+            {error}
+          </p>
         )}
+
+        <div className="flex gap-2 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={isCanceling}
+            className="btn btn-secondary flex-1"
+          >
+            {t("close")}
+          </button>
+          {isPending && (
+            <>
+              <button
+                type="button"
+                onClick={handleCancel}
+                disabled={isCanceling}
+                className="btn flex-1 border border-red-200 text-red-500 hover:bg-red-50"
+              >
+                {isCanceling ? t("canceling") : t("cancelApplication")}
+              </button>
+              <button
+                type="button"
+                onClick={onEdit}
+                disabled={isCanceling}
+                className="btn btn-primary flex-1"
+              >
+                {t("edit")}
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </Modal>
   );

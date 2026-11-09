@@ -97,7 +97,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
       }}
     >
       <div
-        className="flex flex-wrap gap-2 min-h-10.5 w-full border border-gray-300 rounded-lg px-3 py-2 cursor-text focus-within:border-black"
+        className="flex flex-wrap items-center gap-2 min-h-12 w-full rounded-xl border border-gray-200 bg-white px-4 py-2 cursor-text focus-within:border-gray-900 focus-within:ring-4 focus-within:ring-gray-900/5 transition"
         onClick={() => {
           inputRef.current?.focus();
           setIsOpen(true);
@@ -128,7 +128,7 @@ export default function SkillPicker({ selected, onChange }: SkillPickerProps) {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => setIsOpen(true)}
           placeholder={selected.length === 0 ? t("placeholder") : ""}
-          className="flex-1 min-w-30 text-sm outline-none bg-transparent placeholder:text-gray-400"
+          className="flex-1 min-w-30 text-[15px] outline-none bg-transparent placeholder:text-gray-400"
         />
       </div>
 

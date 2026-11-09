@@ -8,6 +8,8 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import ProfileSidebar from "../_components/ProfileSidebar";
 import PostCarousel, { PROFILE_POSTS_PAGE_SIZE } from "../_components/PostCarousel";
+import PublicGitHubSection from "../_components/PublicGitHubSection";
+import { getPublicGitHub } from "@/lib/githubAnalysis";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -49,7 +51,7 @@ async function UserProfileContent({ params, searchParams }: Props) {
 
   const isOwner = sessionUuid === profile.uuid;
 
-  const [followers, postsResult] = await Promise.all([
+  const [followers, postsResult, publicGitHub] = await Promise.all([
     // 팔로워 목록은 모달에서만 쓰므로 실패해도 페이지는 보여주되, 빈 목록이 아니라 실패로 표시한다
     getFollowers(profile.uuid).catch((err) => {
       console.error("[profile/id] getFollowers 실패:", err);
@@ -57,6 +59,8 @@ async function UserProfileContent({ params, searchParams }: Props) {
     }),
     // 게시물 조회 실패는 "게시물 없음"으로 바꾸지 않고 error.tsx(재시도)로 보낸다
     getUserPosts(id, { page, size: PROFILE_POSTS_PAGE_SIZE }),
+    // 공개 설정한 GitHub 요약 — 실패하면 섹션만 숨긴다
+    getPublicGitHub(profile.uuid),
   ]);
 
   const t = await getTranslations("profile");
@@ -90,6 +94,7 @@ async function UserProfileContent({ params, searchParams }: Props) {
               pathname={`/profile/${id}`}
             />
           </section>
+          {publicGitHub && <PublicGitHubSection data={publicGitHub} />}
         </section>
       </div>
     </main>

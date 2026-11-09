@@ -3,10 +3,10 @@
 import { Link, useRouter } from "@/i18n/navigation";
 import BrandLogo from "@/components/BrandLogo";
 import { sendOtp } from "@/lib/auth";
-import { beginLoginFlow } from "@/lib/authFlow";
+import { beginLoginFlow, readLastLoginEmail } from "@/lib/authFlow";
 import { toSafeInternalPath } from "@/lib/safeRedirect";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   const t = useTranslations("auth.login");
@@ -14,6 +14,10 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setEmail((current) => current || readLastLoginEmail() || "");
+  }, []);
 
   const handleLogin = async () => {
     if (!email.trim()) {
@@ -62,14 +66,14 @@ export default function LoginPage() {
               placeholder={t("emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="rounded-lg border px-4 py-3 text-sm outline-none placeholder:text-gray-400"
+              className="input"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white disabled:opacity-50"
+            className="btn btn-primary mt-2 w-full"
           >
             {loading ? t("submitting") : t("submit")}
           </button>
@@ -88,7 +92,7 @@ export default function LoginPage() {
           <div className="flex w-full flex-col gap-3">
             <button
               type="button"
-              className="rounded-lg border px-4 py-3 text-sm font-medium"
+              className="h-12 rounded-xl border border-gray-200 px-4 text-[15px] font-semibold"
             >
               {t("githubContinue")}
             </button>

@@ -17,6 +17,8 @@ type Props = {
   postUuid: string;
   postType: PostType;
   recruitPositions: RecruitPositionResponse[];
+  /** 작성자가 모집을 마감했으면 false — 새 지원만 막고, 이미 낸 지원서는 계속 볼 수 있다 */
+  isRecruiting?: boolean;
   isAuthor?: boolean;
 };
 
@@ -24,6 +26,7 @@ export default function ApplicationSection({
   postUuid,
   postType,
   recruitPositions,
+  isRecruiting = true,
   isAuthor = false,
 }: Props) {
   const t = useTranslations("board.apply");
@@ -59,13 +62,23 @@ export default function ApplicationSection({
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={openApplicationModal}
-            className="w-full rounded-xl bg-black py-3 text-sm font-semibold text-white hover:bg-gray-800"
-          >
-            {application ? t("viewApplication") : t("applyNow")}
-          </button>
+          {!application && !isRecruiting ? (
+            <button
+              type="button"
+              disabled
+              className="btn w-full bg-gray-200 text-gray-500 disabled:opacity-100"
+            >
+              {t("recruitmentClosed")}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={openApplicationModal}
+              className="btn btn-primary w-full"
+            >
+              {application ? t("viewApplication") : t("applyNow")}
+            </button>
+          )}
         </div>
       )}
 

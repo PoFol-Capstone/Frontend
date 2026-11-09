@@ -14,9 +14,11 @@ type Props = {
   totalPages: number;
   /** 페이지 링크의 기준 경로 (예: "/profile", "/profile/{uuid}") */
   pathname: string;
+  /** 페이지 이동 시 유지할 쿼리 (내 프로필의 ?tab=posts) */
+  query?: Record<string, string | undefined>;
 };
 
-export default function PostCarousel({ posts, page, totalPages, pathname }: Props) {
+export default function PostCarousel({ posts, page, totalPages, pathname, query }: Props) {
   return (
     <div>
       {posts.length === 0 ? (
@@ -28,7 +30,7 @@ export default function PostCarousel({ posts, page, totalPages, pathname }: Prop
           ))}
         </div>
       )}
-      <Pagination page={page} totalPages={totalPages} pathname={pathname} />
+      <Pagination page={page} totalPages={totalPages} pathname={pathname} query={query} />
     </div>
   );
 }

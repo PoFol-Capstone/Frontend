@@ -61,13 +61,13 @@ export default function SignupEmailPage() {
             placeholder={t("emailPlaceholder")}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-lg border px-4 py-3 text-sm outline-none placeholder:text-gray-400"
+            className="input"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 rounded-lg bg-black px-4 py-3 text-center text-sm font-medium text-white disabled:opacity-50"
+            className="btn btn-primary mt-2 w-full"
           >
             {loading ? t("sending") : t("submit")}
           </button>

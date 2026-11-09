@@ -12,7 +12,7 @@ export default function SignupPage() {
         <div className="mt-2 flex w-full flex-col gap-4">
           <Link
             href="/signup/email"
-            className="rounded-lg border px-4 py-3 text-center text-sm font-medium hover:bg-gray-50"
+            className="btn btn-secondary w-full"
           >
             {t("emailStart")}
           </Link>
@@ -20,7 +20,7 @@ export default function SignupPage() {
           {/* TODO: 임시로 GitHub 로그인 숨김 처리 */}
           <button
             type="button"
-            className="mt-2 hidden rounded-lg bg-black px-4 py-3 text-sm font-medium text-white hover:opacity-90"
+            className="mt-2 hidden h-12 rounded-xl bg-black px-4 text-[15px] font-semibold text-white hover:opacity-90"
           >
             {t("githubLogin")}
           </button>

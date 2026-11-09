@@ -1,29 +1,19 @@
 "use client";
 
-import NotificationDrawer from "@/components/NotificationDrawer";
 import BrandLogo from "@/components/BrandLogo";
-import ProfileMenu from "@/components/ProfileMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import { useNavigation } from "@/components/NavigationProvider";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { useEffect, useRef, useState } from "react";
+import NotificationDrawer from "@/components/NotificationDrawer";
+import ProfileMenu from "@/components/ProfileMenu";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useLocale, useTranslations } from "next-intl";
-import { shortSchoolName } from "@/lib/schoolName";
-import type { SchoolNames } from "@/types/school";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
-import { Bell, Search, CirclePlus, User } from "lucide-react";
+import { Bell, Search, User } from "lucide-react";
 
-export default function Header({
-  session,
-  school,
-}: {
-  session: string | null;
-  /** 학교 인증을 마친 유저의 학교명. 미인증이면 null */
-  school: SchoolNames | null;
-}) {
+export default function Header({ session }: { session: string | null }) {
   const t = useTranslations("header");
-  const locale = useLocale();
   const isLoggedIn = !!session;
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -95,20 +85,45 @@ export default function Header({
       <div className="mx-auto flex min-h-9 flex-wrap items-center justify-between gap-x-3 gap-y-3">
         <div className="flex min-w-0 shrink-0 items-end">
           <Link
-            href={isLoggedIn ? "/board" : "/"}
-            onClick={(e) => handleLinkClick(e, isLoggedIn ? "/board" : "/")}
+            href={isLoggedIn ? "/profile" : "/"}
+            onClick={(e) => handleLinkClick(e, isLoggedIn ? "/profile" : "/")}
             className="inline-flex shrink-0 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
           >
             <BrandLogo />
           </Link>
-          {school && (
-            <Link
-              href="/board?category=School"
-              onClick={(e) => handleLinkClick(e, "/board?category=School")}
-              className="ml-3 max-w-24 truncate text-sm font-medium text-gray-400 hover:text-gray-600 sm:ml-4 sm:max-w-40 sm:text-base"
+          {isLoggedIn && (
+            // 게시판(탐방)은 메인 메뉴에서 뺐다 — 페이지 · 데이터는 유지 (docs/2026-11-06-pivot-summary.md 5장)
+            <nav
+              aria-label={t("mainNav")}
+              className="ml-4 flex items-center gap-3 text-sm font-medium sm:ml-6 sm:gap-5"
             >
-              | &nbsp;{shortSchoolName(school, locale)}
-            </Link>
+              {[
+                {
+                  href: "/profile",
+                  label: t("myProjects"),
+                  active: pathname === "/profile",
+                },
+                {
+                  href: "/trends",
+                  label: t("trends"),
+                  active: pathname === "/trends",
+                },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={(e) => handleLinkClick(e, item.href)}
+                  aria-current={item.active ? "page" : undefined}
+                  className={
+                    item.active
+                      ? "text-black"
+                      : "text-gray-400 hover:text-gray-700"
+                  }
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
           )}
         </div>
 
@@ -117,28 +132,20 @@ export default function Header({
             <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:px-4 lg:px-10">
               <form
                 onSubmit={handleSearch}
-                className="flex w-full max-w-md items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2">
-                  <Search className="h-4 w-4 text-gray-400" />
-                  <input
-                    type="text"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                    placeholder={t("searchPlaceholder")}
-                    className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400"
-                  />
+                className="relative w-full max-w-md"
+              >
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  placeholder={t("searchPlaceholder")}
+                  className="input h-10 pl-10"
+                />
               </form>
             </div>
 
             <div className="flex shrink-0 items-center gap-3 sm:gap-4">
-              <Link
-                href="/board/write"
-                onClick={(e) => handleLinkClick(e, "/board/write")}
-                className="flex items-center justify-center text-gray-600 transition hover:text-black"
-                aria-label={t("createPost")}
-              >
-                <CirclePlus className="h-5 w-5" />
-              </Link>
-
               <button
                 type="button"
                 onClick={handleOpenNotifications}

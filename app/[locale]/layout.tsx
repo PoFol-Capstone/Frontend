@@ -34,6 +34,14 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        {/* 동적 서브셋: 페이지에 쓰인 글자 묶음만 받는다 (전체 woff2는 2MB) */}
+        <link
+          rel="stylesheet"
+          crossOrigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
+      </head>
       <body>
         <NextIntlClientProvider>
           <NavigationProvider>

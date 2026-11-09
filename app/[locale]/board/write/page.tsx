@@ -7,22 +7,22 @@ import {
   toRecruitPositionRequests,
 } from "@/lib/recruitPositions";
 import { THUMBNAIL_ACCEPT } from "@/lib/uploadLimits";
-import type { PostLink } from "@/types/post";
+import type { PostDocument, PostLink } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
 import { useRouter } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Monitor, Users, ImageIcon } from "lucide-react";
+import { Monitor, ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { Skill } from "@/types/skill";
 import ProjectInfoSection from "./_components/ProjectInfoSection";
 import TagsSection from "./_components/TagsSection";
-import TeamRecruitSection from "./_components/TeamRecruitSection";
 import UploadLinksSection, {
   type UploadSectionId,
 } from "./_components/UploadLinksSection";
 import { useGithubRepos } from "./_hooks/useGithubRepos";
 import { useProjectForm } from "./_hooks/useProjectForm";
+import DocumentSection from "./_components/DocumentSection";
 
 type PostTypeSelection = "project" | "recruit" | null;
 
@@ -44,6 +44,7 @@ type Draft = {
   deployUrl: string;
   thumbnailUrl: string;
   selectedSkills: Skill[];
+  document: PostDocument | null;
 };
 
 export default function Page() {
@@ -72,6 +73,8 @@ export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDraftRestored, setIsDraftRestored] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [postDocument, setPostDocument] = useState<PostDocument | null>(null);
+  const [isDocumentUploading, setIsDocumentUploading] = useState(false);
 
   // 마운트 시 1회: 이전에 저장된 임시 작성본이 있으면 복원한다(GitHub 연동
   // 리다이렉트로 페이지가 완전히 새로 로드된 경우 등).
@@ -80,11 +83,11 @@ export default function Page() {
       const raw = sessionStorage.getItem(DRAFT_KEY);
       if (raw) {
         const draft = JSON.parse(raw) as Partial<Draft>;
-        if (draft.postTypeSelection) setPostTypeSelection(draft.postTypeSelection);
-        if (draft.currentStep) setCurrentStep(draft.currentStep);
+        // 팀원 모집 숨김 — 예전 모집글 임시본은 유형 선택부터 다시 하게 한다
+        if (draft.postTypeSelection === "project") setPostTypeSelection("project");
+        if (draft.currentStep && draft.postTypeSelection === "project") setCurrentStep(draft.currentStep);
         if (draft.tags) setTags(draft.tags);
         if (draft.uploadLinks) setUploadLinks(draft.uploadLinks);
-        if (draft.teamRecruitEnabled) setTeamRecruitEnabled(draft.teamRecruitEnabled);
         if (draft.recruitDescription) setRecruitDescription(draft.recruitDescription);
         if (draft.roleCounts) setRoleCounts(draft.roleCounts);
         if (draft.projectName) project.setProjectName(draft.projectName);
@@ -93,6 +96,7 @@ export default function Page() {
         if (draft.deployUrl) project.setDeployUrl(draft.deployUrl);
         if (draft.thumbnailUrl) project.setThumbnailUrl(draft.thumbnailUrl);
         if (draft.selectedSkills) project.handleSkillsChange(draft.selectedSkills);
+        if (draft.document) setPostDocument(draft.document);
       }
     } catch {
       // sessionStorage 접근 실패 시 조용히 무시하고 빈 폼으로 진행
@@ -119,6 +123,7 @@ export default function Page() {
       deployUrl: project.deployUrl,
       thumbnailUrl: project.thumbnailUrl,
       selectedSkills: project.selectedSkills,
+      document: postDocument,
     };
     try {
       sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
@@ -140,6 +145,7 @@ export default function Page() {
     project.deployUrl,
     project.thumbnailUrl,
     project.selectedSkills,
+    postDocument,
   ]);
 
   const isRecruit = postTypeSelection === "recruit";
@@ -233,6 +239,7 @@ export default function Page() {
         isPublished: true,
         skillIds: project.selectedSkills.map((s) => s.id),
         tagNames: tags,
+        document: postDocument,
       });
       try {
         sessionStorage.removeItem(DRAFT_KEY);
@@ -287,7 +294,7 @@ export default function Page() {
 
       {/* ── Step 1: 유형 선택 ── */}
       {currentStep === 1 && (
-        <div className="space-y-6">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step1.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -314,46 +321,15 @@ export default function Page() {
               </p>
             </button>
 
-            <button
-              type="button"
-              onClick={() => handleTypeSelect("recruit")}
-              className={`rounded-2xl border-2 p-6 text-left transition-all ${
-                postTypeSelection === "recruit"
-                  ? "border-black bg-black text-white"
-                  : "border-gray-200 bg-white hover:border-gray-400"
-              }`}
-            >
-              <Users size={28} className="mb-3" />
-              <p className="font-bold text-base">{t("step1.recruitTitle")}</p>
-              <p
-                className={`mt-1 text-sm leading-5 ${postTypeSelection === "recruit" ? "text-gray-300" : "text-gray-500"}`}
-              >
-                {t("step1.recruitDesc")}
-              </p>
-            </button>
           </div>
 
-          {postTypeSelection === "recruit" && (
-            <TeamRecruitSection
-              enabled={true}
-              onEnabledChange={setTeamRecruitEnabled}
-              description={recruitDescription}
-              onDescriptionChange={setRecruitDescription}
-              roleCounts={roleCounts}
-              onRoleCountsChange={setRoleCounts}
-              hideToggle
-              positionsError={
-                recruitPositionsValid ? null : t("teamRecruit.positionsRequired")
-              }
-            />
-          )}
 
           <div className="flex justify-end pt-2">
             <button
               type="button"
               onClick={() => setCurrentStep(2)}
               disabled={!step1Valid}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="btn btn-primary px-8"
             >
               {t("nav.next")}
             </button>
@@ -363,7 +339,7 @@ export default function Page() {
 
       {/* ── Step 2: 내용 작성 ── */}
       {currentStep === 2 && (
-        <div className="space-y-5">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step2.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -372,7 +348,7 @@ export default function Page() {
           </div>
 
           {/* 컴팩트 GitHub 자동완성 바 */}
-          <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-4">
             {github.isCheckingGithub ? (
               <p className="text-xs text-gray-400 py-1">{t("step2.checkingGithub")}</p>
             ) : !github.isGithubConnected ? (
@@ -384,7 +360,7 @@ export default function Page() {
                   type="button"
                   onClick={github.handleGithubConnect}
                   disabled={github.isConnecting}
-                  className="shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  className="btn btn-secondary btn-sm"
                 >
                   {github.isConnecting ? t("step2.connecting") : t("step2.connectGithub")}
                 </button>
@@ -395,7 +371,7 @@ export default function Page() {
                   value={github.selectedRepo}
                   onChange={(e) => handleRepoChange(e.target.value)}
                   disabled={github.isLoadingRepos}
-                  className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none"
+                  className="input min-w-0 flex-1"
                 >
                   <option value="">
                     {github.isLoadingRepos
@@ -419,7 +395,7 @@ export default function Page() {
                     project.isLoadingRepoData ||
                     project.isAIWriting
                   }
-                  className="shrink-0 rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="btn btn-primary"
                 >
                   {project.isAIWriting
                     ? t("step2.aiWriting")
@@ -435,7 +411,7 @@ export default function Page() {
           </div>
 
           {/* 프로젝트 폼 */}
-          <section className="border border-gray-200 rounded-2xl p-6 space-y-5 bg-white">
+          <section className="card">
             <ProjectInfoSection
               projectName={project.projectName}
               onProjectNameChange={project.setProjectName}
@@ -456,7 +432,7 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setCurrentStep(1)}
-              className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-secondary px-8"
             >
               {t("nav.prev")}
             </button>
@@ -464,7 +440,7 @@ export default function Page() {
               type="button"
               onClick={() => setCurrentStep(3)}
               disabled={!step2Valid}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="btn btn-primary px-8"
             >
               {t("nav.next")}
             </button>
@@ -474,7 +450,7 @@ export default function Page() {
 
       {/* ── Step 3: 썸네일 ── */}
       {currentStep === 3 && (
-        <div className="space-y-5">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step3.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -482,7 +458,7 @@ export default function Page() {
             </p>
           </div>
 
-          <section className="border border-gray-200 rounded-2xl p-6 space-y-4 bg-white">
+          <section className="card space-y-6">
             <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-200 bg-gray-50">
               {!project.thumbnailUrl && !project.isThumbnailLoading && (
                 <div className="flex flex-col items-center justify-center gap-3 text-gray-400">
@@ -561,7 +537,7 @@ export default function Page() {
                 type="button"
                 onClick={project.handleGenerateThumbnail}
                 disabled={!project.projectName || project.isThumbnailLoading}
-                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn btn-secondary"
               >
                 {project.isThumbnailLoading ? t("step3.generating") : t("step3.generateAI")}
               </button>
@@ -569,7 +545,7 @@ export default function Page() {
                 type="button"
                 onClick={() => project.thumbnailInputRef.current?.click()}
                 disabled={project.isThumbnailLoading}
-                className="rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                className="btn btn-secondary"
               >
                 {t("step3.uploadDirect")}
               </button>
@@ -580,14 +556,14 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setCurrentStep(2)}
-              className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-secondary px-8"
             >
               {t("nav.prev")}
             </button>
             <button
               type="button"
               onClick={() => setCurrentStep(4)}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 transition-colors"
+              className="btn btn-primary px-8"
             >
               {t("nav.next")}
             </button>
@@ -597,7 +573,7 @@ export default function Page() {
 
       {/* ── Step 4: 추가 정보 ── */}
       {currentStep === 4 && (
-        <div className="space-y-5">
+        <div className="space-y-10">
           <div>
             <h2 className="text-xl font-bold">{t("step4.heading")}</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -615,6 +591,12 @@ export default function Page() {
             githubUrl={githubUrl}
           />
 
+          <DocumentSection
+            value={postDocument}
+            onChange={setPostDocument}
+            onUploadingChange={setIsDocumentUploading}
+          />
+
           {submitError && (
             <p role="alert" className="text-sm text-red-500">{submitError}</p>
           )}
@@ -623,15 +605,15 @@ export default function Page() {
             <button
               type="button"
               onClick={() => setCurrentStep(3)}
-              className="rounded-xl border border-gray-300 px-8 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+              className="btn btn-secondary px-8"
             >
               {t("nav.prev")}
             </button>
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isSubmitting || !canSubmit}
-              className="rounded-xl bg-black px-8 py-3 text-sm font-semibold text-white hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              disabled={isSubmitting || !canSubmit || isDocumentUploading}
+              className="btn btn-primary px-8"
             >
               {isSubmitting ? t("step4.submitting") : t("step4.submit")}
             </button>

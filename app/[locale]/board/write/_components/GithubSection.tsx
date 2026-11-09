@@ -1,6 +1,7 @@
 "use client";
 import type { Repo } from "../_hooks/useGithubRepos";
 import { useTranslations } from "next-intl";
+import Field from "@/components/ui/Field";
 
 type Props = {
   repos: Repo[];
@@ -36,17 +37,16 @@ export default function GithubSection({
   const t = useTranslations("board.write.github");
 
   return (
-    <section className="relative rounded-2xl border border-gray-200 p-4">
+    <section className="card relative">
       <div className={!isGithubConnected ? "pointer-events-none opacity-35" : ""}>
-        <h2 className="text-base font-semibold">{t("title")}</h2>
+        <h2 className="text-lg font-bold tracking-tight text-gray-900">{t("title")}</h2>
 
-        <label className="mt-3 block">
-          <span className="mb-1 block text-sm font-semibold">{t("selectRepo")}</span>
+        <Field label={t("selectRepo")} className="mt-6">
           <select
             value={selectedRepo}
             onChange={(e) => onRepoChange(e.target.value)}
             disabled={isLoadingRepos}
-            className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none"
+            className="input"
           >
             {isLoadingRepos ? (
               <option>{t("loading")}</option>
@@ -65,12 +65,12 @@ export default function GithubSection({
               </>
             )}
           </select>
-        </label>
+        </Field>
 
         {selectedRepo && (
-          <div className="mt-3">
-            <span className="mb-1 block text-sm font-semibold">{t("githubLink")}</span>
-            <div className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 select-all">
+          <div className="mt-6">
+            <span className="mb-2 block text-sm font-semibold text-gray-900">{t("githubLink")}</span>
+            <div className="input flex items-center bg-gray-50 text-gray-500 select-all">
               https://github.com/{selectedRepo}
             </div>
           </div>
@@ -80,7 +80,7 @@ export default function GithubSection({
           type="button"
           onClick={onAILoad}
           disabled={isLoadingRepoData || isAIWriting}
-          className="mt-3 w-full rounded-xl bg-black py-3 text-sm font-semibold text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn btn-primary mt-6 w-full"
         >
           {isAIWriting ? t("aiWriting") : isLoadingRepoData ? t("loading") : t("aiWrite")}
         </button>
@@ -123,7 +123,7 @@ export default function GithubSection({
               type="button"
               onClick={onGithubConnect}
               disabled={isConnecting}
-              className="mt-4 rounded-full border border-gray-300 px-4 py-2 text-sm text-blue-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-secondary btn-sm mt-4"
             >
               {isConnecting ? t("connecting") : t("connectAccount")}
             </button>

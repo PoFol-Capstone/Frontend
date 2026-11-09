@@ -9,13 +9,13 @@ import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { deletePostAction } from "../../actions";
-import ApplicationSection from "../ApplicationSection";
 import CommentSection from "../CommentSection";
 import RelatedPosts from "../RelatedPosts";
 import AuthorBar from "./AuthorBar";
 import DeleteModal from "./DeleteModal";
 import PostContent from "./PostContent";
 import PostHero from "./PostHero";
+import DocumentViewer from "../DocumentViewer";
 
 type Props = {
   post: ResponsePosts;
@@ -117,6 +117,8 @@ export default function PostDetail({
             )}
           </div>
 
+          {post.document && <DocumentViewer document={post.document} />}
+
           <PostContent
             content={post.content}
             recruitNote={post.recruitNote}
@@ -124,13 +126,6 @@ export default function PostDetail({
             links={post.links ?? []}
             postType={post.postType}
             recruitPositionInfos={post.recruitPositionInfos}
-          />
-
-          <ApplicationSection
-            postUuid={post.uuid}
-            postType={post.postType}
-            recruitPositions={post.recruitPositionInfos}
-            isAuthor={isAuthor}
           />
 
           <AuthorBar

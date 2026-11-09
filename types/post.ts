@@ -19,6 +19,13 @@ export type PostLink = {
   url: string;
 };
 
+/** 게시글 발표자료 (게시글당 최대 1건). 슬라이드 url은 /embed 형식 */
+export type PostDocument = {
+  type: "PDF" | "GOOGLE_SLIDES";
+  url: string;
+  fileSize: number | null;
+};
+
 export type ApplicationStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
 export type RecruitmentRole = {
@@ -62,6 +69,8 @@ export type RequestPosts = {
   isPublished: boolean;
   skillIds: number[];
   tagNames: string[];
+  /** 생성: null/생략 = 없음. 수정(PATCH): 생략 = 유지, null = 삭제 */
+  document?: PostDocument | null;
 };
 
 /**
@@ -89,9 +98,13 @@ export type ResponsePosts = {
   /** 조회자가 이 글의 작성자를 팔로우 중인지 (비로그인/본인 글이면 false) */
   isAuthorFollowed: boolean;
   isPublished: boolean;
+  /** 작성자가 모집을 마감했으면 false (포지션 정원이 찬 것과는 별개 — isFull 참고) */
+  isRecruiting: boolean;
   skills: Skill[];
   tags: string[];
   createdAt: string;
+  /** 상세·작성·수정 응답에만 채워진다 (목록은 null) */
+  document: PostDocument | null;
 };
 
 export type PostListParams = {
@@ -160,9 +173,11 @@ export type ApplicantResponse = {
   applyUuid: string;
   applicantUuid: string;
   applicantName: string;
+  applicantAvatarUrl: string | null;
   applicantSkills: string[];
   positionType: string;
   introduction: string;
   portfolioUrl?: string;
   status: ApplicationStatus;
+  appliedAt: string;
 };

@@ -1,0 +1,65 @@
+# 매달 지난달 트렌드 지표를 모아 PR을 열고 디스코드로 알린다.
+# 확인 → PR 머지 = 반영 (Vercel이 배포). 이상하면 PR을 닫는다.
+#
+# 준비 (한 번만):
+#  1. 저장소 Settings → Secrets → Actions에 DISCORD_WEBHOOK_URL 등록 (없으면 알림만 건너뜀)
+#  2. Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests" 켜기
+#  3. 이 파일이 기본 브랜치(main)에 있어야 schedule이 돈다
+name: Collect trends
+
+on:
+  schedule:
+    - cron: "0 0 2 * *" # 매달 2일 09:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+
+      - name: Collect
+        run: node --import ./tests/setup/register.mjs scripts/collect-trends.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SUMMARY_FILE: ${{ runner.temp }}/summary.md
+
+      - name: Open PR
+        id: pr
+        run: |
+          period=$(ls data/trends/github | sort | tail -1 | sed 's/\.json$//')
+          branch="trends/$period"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$branch"
+          git add data/trends
+          git commit -m "data: 트렌드 수집 $period"
+          git push -f origin "$branch"
+          url=$(gh pr list --head "$branch" --state open --json url -q '.[0].url')
+          [ -n "$url" ] || url=$(gh pr create --head "$branch" --title "data: 트렌드 수집 $period" --body-file "$RUNNER_TEMP/summary.md")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Notify Discord
+        if: env.DISCORD_WEBHOOK_URL != ''
+        run: |
+          # 디스코드 메시지는 2000자 제한
+          content=$(printf '%s\n\n👉 확인 · 머지: %s' "$(head -c 1700 "$RUNNER_TEMP/summary.md")" "${{ steps.pr.outputs.url }}")
+          jq -n --arg c "$content" '{content: $c}' | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
+
+      - name: Notify failure
+        if: failure() && env.DISCORD_WEBHOOK_URL != ''
+        run: |
+          jq -n --arg c "⚠️ 트렌드 수집 실패: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" '{content: $c}' \
+            | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"

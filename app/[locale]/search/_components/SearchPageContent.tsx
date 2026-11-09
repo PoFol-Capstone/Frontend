@@ -143,7 +143,7 @@ export default function SearchPageContent({ viewerUuid }: Props) {
               <button
                 type="button"
                 onClick={retry}
-                className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+                className="btn btn-secondary btn-sm"
               >
                 {tCommon("retry")}
               </button>
@@ -163,7 +163,7 @@ export default function SearchPageContent({ viewerUuid }: Props) {
               {visibleUsers.map((user) => (
                 <div
                   key={user.uuid}
-                  className="flex items-center justify-between rounded-2xl border border-gray-200 px-4 py-3 transition hover:border-gray-300 hover:bg-gray-50"
+                  className="flex items-center justify-between rounded-2xl border border-gray-200 px-5 py-4 transition hover:border-gray-300 hover:bg-gray-50"
                 >
                   <div className="flex items-center gap-3">
                     <Avatar src={user.avatarUrl} name={user.name} size="md" />
@@ -177,7 +177,7 @@ export default function SearchPageContent({ viewerUuid }: Props) {
                         </div>
                       </div>
                       {user.position && (
-                        <p className="text-xs text-gray-500">
+                        <p className="text-[13px] text-gray-500">
                           {user.position}
                         </p>
                       )}
@@ -192,7 +192,7 @@ export default function SearchPageContent({ viewerUuid }: Props) {
                   <div className="flex items-center gap-2">
                     <Link
                       href={`/profile/${user.uuid}`}
-                      className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+                      className="btn btn-secondary btn-sm"
                     >
                       {t("viewProfile")}
                     </Link>
@@ -201,11 +201,7 @@ export default function SearchPageContent({ viewerUuid }: Props) {
                       <button
                         type="button"
                         onClick={() => handleFollowToggle(user)}
-                        className={`rounded-full px-4 py-1.5 text-sm transition ${
-                          user.isFollowing
-                            ? "border border-gray-300 bg-white text-black hover:bg-gray-100"
-                            : "bg-black text-white hover:bg-gray-800"
-                        }`}
+                        className={`btn btn-sm ${user.isFollowing ? "btn-secondary" : "btn-primary"}`}
                       >
                         {user.isFollowing ? t("following") : t("follow")}
                       </button>
@@ -221,7 +217,7 @@ export default function SearchPageContent({ viewerUuid }: Props) {
                 <button
                   type="button"
                   onClick={() => setShowAllUsers((prev) => !prev)}
-                  className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+                  className="btn btn-secondary btn-sm"
                 >
                   {showAllUsers ? t("collapse") : t("showMoreUsers")}
                 </button>
@@ -248,7 +244,7 @@ export default function SearchPageContent({ viewerUuid }: Props) {
               <button
                 type="button"
                 onClick={retry}
-                className="rounded-full border border-gray-300 px-4 py-1.5 text-sm transition hover:bg-gray-100"
+                className="btn btn-secondary btn-sm"
               >
                 {tCommon("retry")}
               </button>
