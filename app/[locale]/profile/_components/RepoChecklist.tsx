@@ -126,6 +126,8 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
                 <span className="font-medium">
                   {repo.name}
                   {repo.partial && <span className="ml-2 text-xs text-gray-400">{t("partial")}</span>}
+                  {/* 팀 레포는 내가 고칠 권한이 없을 수 있다 */}
+                  {repo.ownership !== "OWNER" && <span className="ml-2 text-xs text-gray-400">{t("teamSuggest")}</span>}
                 </span>
                 <span className="flex items-center gap-2 text-sm text-gray-500">
                   {remaining > 0 ? t("remaining", { count: remaining }) : t("done")}

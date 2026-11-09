@@ -227,6 +227,9 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
                       <div className="mt-2 flex flex-wrap gap-3 text-xs text-gray-500">
                         {repo.language && <span>{repo.language}</span>}
                         <span>★ {repo.stars}</span>
+                        {repo.ownership !== "OWNER" && (
+                          <span>{t("teamRepo", { count: repo.myCommitCount ?? 0 })}</span>
+                        )}
                         {repo.pushedAt && <span>{format.relativeTime(new Date(repo.pushedAt))}</span>}
                       </div>
                     </li>

@@ -35,6 +35,8 @@ const repo = (overrides: Partial<AnalyzedRepo> = {}): AnalyzedRepo => ({
   readmeExcerpt: "# app",
   checks: [],
   partial: false,
+  ownership: "OWNER",
+  myCommitCount: null,
   ...overrides,
 });
 
@@ -139,6 +141,10 @@ describe("AI 결과 해석·조립 (3.3·3.4·3.7)", () => {
     assert.ok(facts[0].text.includes("40"));
     assert.deepEqual(verifiedFacts(undefined), []);
     assert.deepEqual(verifiedFacts(repo({ commitCount: null, contributorCount: 1, createdAt: null })), []);
+    // 팀 레포는 레포 전체 커밋이 아니라 내 커밋만 근거로 쓴다
+    const team = verifiedFacts(repo({ ownership: "ORG", myCommitCount: 7, commitCount: 300 }));
+    assert.equal(team[0].text, "내 커밋 7개");
+    assert.ok(!team.some((f) => f.text.includes("300")));
 
     const sentence = { text: "AI 문장", source: "AI" as const };
     assert.equal(editSentence(sentence, "AI 문장"), sentence);

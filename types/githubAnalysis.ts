@@ -53,7 +53,13 @@ export type AnalyzedRepo = {
   checks: RepoCheck[];
   /** 일부 GitHub 호출이 실패해 판단하지 못한 항목이 있음 */
   partial: boolean;
+  /** 내 레포 / Organization 레포 / 협업자로 초대된 레포 — 팀 레포는 내가 커밋한 것만 온다 */
+  ownership: RepoOwnership;
+  /** 팀 레포에서 내 커밋 수 (내 레포는 null — commitCount가 곧 내 커밋) */
+  myCommitCount: number | null;
 };
+
+export type RepoOwnership = "OWNER" | "ORG" | "COLLABORATOR";
 
 export type TopRepo = { fullName: string; reasons: TopRepoReason[] };
 

@@ -56,6 +56,9 @@ export function compactAnalysis(analysis: GitHubAnalysis) {
       topics: r.topics,
       stars: r.stars,
       commits: r.commitCount,
+      // 팀 레포의 commits는 팀 전체 — AI가 내 것으로 쓰지 않게 소유 구분과 내 커밋을 따로 준다
+      ownership: r.ownership,
+      myCommits: r.myCommitCount,
       contributors: r.contributorCount,
       deployed: !!r.homepage,
       firstCommitToLastPush: periodLabel(r.createdAt, r.pushedAt),
@@ -200,7 +203,9 @@ export function assembleReadme(
 export function verifiedFacts(repo: AnalyzedRepo | undefined): Sentence[] {
   if (!repo) return [];
   const facts: Sentence[] = [];
-  if (repo.commitCount != null && repo.commitCount > 0) {
+  if (repo.ownership !== "OWNER") {
+    if (repo.myCommitCount) facts.push({ text: `내 커밋 ${repo.myCommitCount}개`, source: "VERIFIED" });
+  } else if (repo.commitCount != null && repo.commitCount > 0) {
     facts.push({ text: `커밋 약 ${repo.commitCount}개`, source: "VERIFIED" });
   }
   const period = periodLabel(repo.createdAt, repo.pushedAt);
