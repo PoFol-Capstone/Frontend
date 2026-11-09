@@ -11,6 +11,7 @@
 | [2026-11-10-login-continue.md](2026-11-10-login-continue.md) | [기능] 마지막 로그인 계정으로 계속하기 | 구현, 브라우저 확인 전 |
 | [2026-11-09-pivot-step1-4-impl.md](2026-11-09-pivot-step1-4-impl.md) | [구현] 서비스 전환 1~4 — 모집 숨김 · 팀 레포 · 분석 이력 · 새 점검 규칙 (프론트 · 백엔드) | 구현 완료 |
 | [2026-11-06-pivot-summary.md](2026-11-06-pivot-summary.md) | **[종합]** 서비스 전환 — 모든 판단 · 미결 사항 · 작업 순서 | 최신 기준 |
+| [2026-11-10-job-trends-plan.md](2026-11-10-job-trends-plan.md) | [기획] 채용공고 기술 스택 수집 · 우대 기술 ↔ 내 레포 매칭 | 계획, 0번(출처 확인) 완료 11/10 — 사람인 API 신청 대기 |
 | [2026-11-06-pivot-plan.md](2026-11-06-pivot-plan.md) | [기획] 전환 기획서 본문 — 배경, 타겟, 경쟁 · 수요, 출처 | 기준 |
 | [2026-11-06-pivot-review-ai-data.md](2026-11-06-pivot-review-ai-data.md) | [검토] 분석 데이터 활용 · 재점검 지표 · 프롬프트 · Organization 레포 | 결정 대기 |
 | [2026-11-06-pivot-review-community.md](2026-11-06-pivot-review-community.md) | [검토] 팀원 모집 삭제 · 게시판 역할 · 기회 피드 | 결정 대기 |
