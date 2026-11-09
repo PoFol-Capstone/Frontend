@@ -23,14 +23,12 @@
     "login": "Log in",
     "getStarted": "Get Started",
     "mainNav": "Main menu",
-    "myProjects": "My projects",
-    "explore": "Explore"
+    "myProjects": "My projects"
   },
   "localeSwitcher": {
     "label": "Select language"
   },
   "profileMenu": {
-    "recruitment": "Recruitment",
     "settings": "Settings",
     "logout": "Log out",
     "bookmark": "Bookmarks"
@@ -126,11 +124,6 @@
       "title": "Interview practice",
       "description": "Questions are built from the code you wrote and the frameworks it uses.<br></br>Answer with the files and commits behind each question.<br></br>What you can explain becomes your asset."
     },
-    "recruitment": {
-      "step": "03",
-      "title": "Team Recruiting",
-      "description": "Find teammates that fit your project based on tech stack and interests.<br></br>Post whether you need a backend developer or a designer,<br></br>and student developers with similar goals will apply."
-    },
     "cta": {
       "title": "Get started right now",
       "button": "Start for free →"
@@ -142,7 +135,6 @@
     "schoolVerificationRequired": "Verify your school to see posts only from people at your school.",
     "categories": {
       "all": "All",
-      "recruiting": "Recruiting",
       "school": "School",
       "bookmarks": "Bookmarks",
       "label": "Post categories"

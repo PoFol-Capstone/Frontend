@@ -3,7 +3,6 @@ import { isSessionRejected } from "@/lib/http.server";
 import { parsePageParam } from "@/lib/pagination";
 import { getBookmarkedPosts, getPosts } from "@/lib/post";
 import { getSchoolCookie } from "@/lib/school";
-import { PostType } from "@/types/post";
 import BoardClient from "./_components/BoardClient";
 import { boardHref, toCategory, type Category } from "./_components/categories";
 
@@ -29,8 +28,6 @@ export default function BoardPage({ searchParams }: Props) {
 function fetchBoardPage(category: Category, page: number) {
   const paging = { page, size: PAGE_SIZE };
   switch (category) {
-    case "Recruiting":
-      return getPosts({ ...paging, type: PostType.RECRUIT });
     case "School":
       return getPosts({ ...paging, mySchoolOnly: true });
     case "Bookmarks":

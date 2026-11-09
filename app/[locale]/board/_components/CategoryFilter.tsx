@@ -7,7 +7,6 @@ import { boardHref, CATEGORIES, type Category } from "./categories";
 
 const CATEGORY_LABEL_KEYS: Record<Category, string> = {
   All: "all",
-  Recruiting: "recruiting",
   School: "school",
   Bookmarks: "bookmarks",
 };
@@ -18,6 +17,7 @@ interface Props {
 
 export default function CategoryFilter({ selected }: Props) {
   const t = useTranslations("board.categories");
+  const tHeader = useTranslations("header");
   const { handleLinkClick } = useNavigation();
 
   return (
@@ -40,6 +40,14 @@ export default function CategoryFilter({ selected }: Props) {
           </Link>
         );
       })}
+      {/* 게시판이 헤더 메뉴에서 빠져 글쓰기 입구를 게시판 안으로 옮겼다 */}
+      <Link
+        href="/board/write"
+        onClick={(e) => handleLinkClick(e, "/board/write")}
+        className="-mb-px ml-auto pb-3 text-sm font-medium text-gray-900 hover:text-gray-500"
+      >
+        {tHeader("createPost")}
+      </Link>
     </nav>
   );
 }

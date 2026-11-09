@@ -12,12 +12,11 @@ import { LinkType, PostType } from "@/types/post";
 import { useRouter } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Monitor, Users, ImageIcon } from "lucide-react";
+import { Monitor, ImageIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { Skill } from "@/types/skill";
 import ProjectInfoSection from "./_components/ProjectInfoSection";
 import TagsSection from "./_components/TagsSection";
-import TeamRecruitSection from "./_components/TeamRecruitSection";
 import UploadLinksSection, {
   type UploadSectionId,
 } from "./_components/UploadLinksSection";
@@ -84,11 +83,11 @@ export default function Page() {
       const raw = sessionStorage.getItem(DRAFT_KEY);
       if (raw) {
         const draft = JSON.parse(raw) as Partial<Draft>;
-        if (draft.postTypeSelection) setPostTypeSelection(draft.postTypeSelection);
-        if (draft.currentStep) setCurrentStep(draft.currentStep);
+        // 팀원 모집 숨김 — 예전 모집글 임시본은 유형 선택부터 다시 하게 한다
+        if (draft.postTypeSelection === "project") setPostTypeSelection("project");
+        if (draft.currentStep && draft.postTypeSelection === "project") setCurrentStep(draft.currentStep);
         if (draft.tags) setTags(draft.tags);
         if (draft.uploadLinks) setUploadLinks(draft.uploadLinks);
-        if (draft.teamRecruitEnabled) setTeamRecruitEnabled(draft.teamRecruitEnabled);
         if (draft.recruitDescription) setRecruitDescription(draft.recruitDescription);
         if (draft.roleCounts) setRoleCounts(draft.roleCounts);
         if (draft.projectName) project.setProjectName(draft.projectName);
@@ -322,39 +321,8 @@ export default function Page() {
               </p>
             </button>
 
-            <button
-              type="button"
-              onClick={() => handleTypeSelect("recruit")}
-              className={`rounded-2xl border-2 p-6 text-left transition-all ${
-                postTypeSelection === "recruit"
-                  ? "border-black bg-black text-white"
-                  : "border-gray-200 bg-white hover:border-gray-400"
-              }`}
-            >
-              <Users size={28} className="mb-3" />
-              <p className="font-bold text-base">{t("step1.recruitTitle")}</p>
-              <p
-                className={`mt-1 text-sm leading-5 ${postTypeSelection === "recruit" ? "text-gray-300" : "text-gray-500"}`}
-              >
-                {t("step1.recruitDesc")}
-              </p>
-            </button>
           </div>
 
-          {postTypeSelection === "recruit" && (
-            <TeamRecruitSection
-              enabled={true}
-              onEnabledChange={setTeamRecruitEnabled}
-              description={recruitDescription}
-              onDescriptionChange={setRecruitDescription}
-              roleCounts={roleCounts}
-              onRoleCountsChange={setRoleCounts}
-              hideToggle
-              positionsError={
-                recruitPositionsValid ? null : t("teamRecruit.positionsRequired")
-              }
-            />
-          )}
 
           <div className="flex justify-end pt-2">
             <button

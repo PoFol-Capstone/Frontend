@@ -9,7 +9,6 @@ import { useRouter } from "@/i18n/navigation";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { deletePostAction } from "../../actions";
-import ApplicationSection from "../ApplicationSection";
 import CommentSection from "../CommentSection";
 import RelatedPosts from "../RelatedPosts";
 import AuthorBar from "./AuthorBar";
@@ -127,14 +126,6 @@ export default function PostDetail({
             links={post.links ?? []}
             postType={post.postType}
             recruitPositionInfos={post.recruitPositionInfos}
-          />
-
-          <ApplicationSection
-            postUuid={post.uuid}
-            postType={post.postType}
-            recruitPositions={post.recruitPositionInfos}
-            isRecruiting={post.isRecruiting !== false}
-            isAuthor={isAuthor}
           />
 
           <AuthorBar

@@ -10,7 +10,7 @@ import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
-import { Bell, CirclePlus, Search, User } from "lucide-react";
+import { Bell, Search, User } from "lucide-react";
 
 export default function Header({ session }: { session: string | null }) {
   const t = useTranslations("header");
@@ -92,7 +92,7 @@ export default function Header({ session }: { session: string | null }) {
             <BrandLogo />
           </Link>
           {isLoggedIn && (
-            // 메인은 내 프로젝트, 피드는 다른 학생의 프로젝트를 둘러보는 보조 메뉴 (팀원 모집 · 이력서 · 북마크는 프로필 메뉴 안)
+            // 게시판(탐방)은 메인 메뉴에서 뺐다 — 페이지 · 데이터는 유지 (docs/2026-11-06-pivot-summary.md 5장)
             <nav
               aria-label={t("mainNav")}
               className="ml-4 flex items-center gap-3 text-sm font-medium sm:ml-6 sm:gap-5"
@@ -102,11 +102,6 @@ export default function Header({ session }: { session: string | null }) {
                   href: "/profile",
                   label: t("myProjects"),
                   active: pathname === "/profile",
-                },
-                {
-                  href: "/board",
-                  label: t("explore"),
-                  active: pathname.startsWith("/board"),
                 },
               ].map((item) => (
                 <Link
@@ -146,15 +141,6 @@ export default function Header({ session }: { session: string | null }) {
             </div>
 
             <div className="flex shrink-0 items-center gap-3 sm:gap-4">
-              <Link
-                href="/board/write"
-                onClick={(e) => handleLinkClick(e, "/board/write")}
-                className="flex items-center justify-center text-gray-600 transition hover:text-black"
-                aria-label={t("createPost")}
-              >
-                <CirclePlus className="h-5 w-5" />
-              </Link>
-
               <button
                 type="button"
                 onClick={handleOpenNotifications}
