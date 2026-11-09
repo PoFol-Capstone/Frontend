@@ -37,7 +37,7 @@
 
 ### 0. 마무리 (먼저)
 
-- [ ] 작업 트리 커밋 — 헤더 정리 + 게시판 UI 변경(`board/_components/*`, 이건 문서 없음)
+- [x] 작업 트리 커밋 — 헤더 정리 + 게시판 UI 변경 (11/09)
 - [ ] `feature/portfolio-coach` → `main` PR · 배포 — **main은 아직 10/25 커밋(`9dd1bb2`)에 멈춰 있음**. 백엔드 먼저 배포 ([impl S0 2.2](2026-11-03-project-asset-impl.md))
 - [ ] 1차 기능 통합 QA ([impl S0 2.3](2026-11-03-project-asset-impl.md)) + S1 프로젝트 탭 브라우저 확인
 
@@ -45,10 +45,10 @@
 
 | # | 작업 | 지금 상태 |
 |---|---|---|
-| 1 | 팀원 모집 숨김 + 게시판 메인 메뉴 제외 | 미착수 — 헤더에 "탐방"(`/board`), `＋`(글쓰기), 드롭다운 "모집 관리" · "북마크"가 아직 있음 |
-| 2 | Organization 레포 수정 (백엔드) | 미착수 — `GitHubCollector.java:67`, `GitHubService.java:58`이 아직 `affiliation=owner` |
-| 3 | 분석 이력 테이블 (재점검 비율 측정용) | 미착수 |
-| 4 | 새 점검 규칙(`.env` 커밋, README 실행 방법, CI) + AI 입력 개선 | 미착수 — `RepoCheckRule`에 해당 규칙 없음 |
+| 1 | 팀원 모집 숨김 + 게시판 메인 메뉴 제외 | **완료 (11/09, 1단계 숨김)** — 모집 관리 메뉴 · 모집중 카테고리 · 글쓰기 모집 유형 · 지원 영역 · 랜딩 소개 제거, `/recruitment`→`/board`, 헤더 "탐방" · `＋` 제거(글쓰기는 게시판 안). 2단계 코드 삭제는 남음 |
+| 2 | Organization 레포 수정 (백엔드) | **완료 (11/09)** — 팀 레포는 내 커밋 있는 것만 최대 10개, 소유 구분 · 내 커밋 수 표시. 실제 Organization 계정 확인은 남음 |
+| 3 | 분석 이력 테이블 (재점검 비율 측정용) | **완료 (11/09)** — `github_analysis_history`, 화면에 "지난 분석보다 N개 해결" |
+| 4 | 새 점검 규칙(`.env` 커밋, README 실행 방법, CI) + AI 입력 개선 | **완료 (11/09)** — `ENV_FILE_COMMITTED` · `NO_CI` · `README_NO_RUN_GUIDE`, AI 입력에 점검 항목 · README 제목 목록 |
 | 5 | 프롬프트 재설계 — 사실 ID, `json_schema` strict, 생성 후 검증 | 미착수 — `completeJson`은 `json_object`, `system` 분리는 `project-card`만 |
 | 6 | 기회 피드 MVP (수동 JSON 20~50건 + 스택 매칭) | 미착수 |
 | 7 | 공개 포트폴리오 링크 다듬기 (`/profile/[id]`) | 미착수 |
