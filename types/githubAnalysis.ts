@@ -10,6 +10,9 @@ export type CheckCode =
   | "NO_TESTS"
   | "TOO_FEW_COMMITS"
   | "WEAK_COMMIT_MESSAGES"
+  | "ENV_FILE_COMMITTED"
+  | "NO_CI"
+  | "README_NO_RUN_GUIDE"
   | "FORK_HEAVY"
   | "NO_PROFILE_README";
 

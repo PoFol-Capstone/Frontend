@@ -39,8 +39,15 @@ export function checkTotals(repos: AnalyzedRepo[]): Map<string, number> {
   return totals;
 }
 
-const EXCERPT_FOR_AI = 300;
+const EXCERPT_FOR_AI = 800;
 const REPOS_FOR_AI = 15;
+const HEADINGS_FOR_AI = 15;
+
+/** README 발췌의 제목 목록 — 앞부분만 잘라도 구성(설치 · 스택 · 스크린샷 등)이 보이게 */
+export function readmeHeadings(readme: string | null): string[] {
+  if (!readme) return [];
+  return [...readme.matchAll(/^#{1,6}\s+(.+)$/gm)].map((m) => m[1].trim()).slice(0, HEADINGS_FOR_AI);
+}
 
 /** AI 프롬프트용 분석 요약 (README는 앞부분만, 커밋 메시지·코드 원문 없음) */
 export function compactAnalysis(analysis: GitHubAnalysis) {
@@ -62,7 +69,10 @@ export function compactAnalysis(analysis: GitHubAnalysis) {
       contributors: r.contributorCount,
       deployed: !!r.homepage,
       firstCommitToLastPush: periodLabel(r.createdAt, r.pushedAt),
+      readmeHeadings: readmeHeadings(r.readmeExcerpt),
       readme: r.readmeExcerpt?.slice(0, EXCERPT_FOR_AI) ?? null,
+      // 규칙으로 확인된 문제 — AI는 이걸 전제로 "어떻게 고칠지"만 쓴다 (무시한 항목은 뺀다)
+      confirmedIssues: r.checks.filter((c) => !c.ignored).map((c) => c.code),
     }));
   return {
     repoCount: analysis.summary?.repoCount ?? null,

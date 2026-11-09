@@ -8,6 +8,7 @@ import { isSlidesEmbedUrl, toSlidesEmbedUrl } from "@/lib/slides";
 import {
   assembleReadme,
   checkTotals,
+  compactAnalysis,
   editSentence,
   groupLanguages,
   OTHER_LANGUAGE,
@@ -62,6 +63,19 @@ const analysis = (overrides: Partial<GitHubAnalysis> = {}): GitHubAnalysis => ({
   visibility: { summary: false, languages: false, topRepos: false, direction: false },
   progress: null,
   ...overrides,
+});
+
+describe("AI 입력 요약 (compactAnalysis)", () => {
+  it("README 제목 목록과 무시하지 않은 점검 항목을 함께 넘긴다", () => {
+    const [summary] = compactAnalysis(analysis({
+      repos: [repo({
+        readmeExcerpt: "# app\n소개\n## 실행 방법\nnpm start\n### Tech Stack",
+        checks: [{ code: "NO_TESTS", ignored: false }, { code: "NO_CI", ignored: true }],
+      })],
+    })).repos;
+    assert.deepEqual(summary.readmeHeadings, ["app", "실행 방법", "Tech Stack"]);
+    assert.deepEqual(summary.confirmedIssues, ["NO_TESTS"]);
+  });
 });
 
 describe("구글 슬라이드 링크 변환 (3.5)", () => {

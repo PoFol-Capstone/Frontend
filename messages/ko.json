@@ -628,6 +628,8 @@
         "copyReadmeTemplate": "README 템플릿 복사",
         "openRepoAbout": "GitHub에서 About 편집하기",
         "testGuide": "{language} 테스트 시작 가이드",
+        "ciGuide": "GitHub Actions 시작 가이드",
+        "envGuide": "커밋된 비밀 정보 지우는 방법",
         "openSettings": "레포 설정 열기 (비공개·보관)",
         "profileReadmeAction": "아래 '프로필 README'에서 초안을 만들 수 있어요.",
         "codes": {
@@ -654,6 +656,18 @@
           "WEAK_COMMIT_MESSAGES": {
             "label": "커밋 메시지 품질",
             "guide": "최근 커밋 대부분이 \"update\", \"수정\"처럼 내용이 없어요. 무엇을 왜 바꿨는지 적어 보세요."
+          },
+          "ENV_FILE_COMMITTED": {
+            "label": ".env 파일이 올라가 있음",
+            "guide": "루트에 .env 파일이 있어요. 비밀키가 들어 있다면 키를 바로 재발급하고, 파일을 지운 뒤 .gitignore에 추가하세요. 예시는 .env.example로 두면 돼요."
+          },
+          "NO_CI": {
+            "label": "CI 없음",
+            "guide": "GitHub Actions 같은 자동 빌드·테스트 설정이 없어요. 푸시할 때 테스트가 돌게 해 두면 자동화 경험을 보여줄 수 있어요."
+          },
+          "README_NO_RUN_GUIDE": {
+            "label": "README에 실행 방법 없음",
+            "guide": "설치·실행 방법이 안 보여요. 처음 보는 사람이 그대로 따라 할 수 있게 명령어를 적어 주세요."
           },
           "FORK_HEAVY": {
             "label": "포크 위주",

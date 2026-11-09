@@ -185,6 +185,7 @@ function CheckAction({ code, repo }: { code: CheckCode; repo?: AnalyzedRepo }) {
 
   switch (code) {
     case "NO_README":
+    case "README_NO_RUN_GUIDE":
       return (
         <button type="button" onClick={() => copy(README_TEMPLATE)} className={linkClass}>
           <Copy size={14} /> {copied ? t("copied") : t("copyReadmeTemplate")}
@@ -214,6 +215,18 @@ function CheckAction({ code, repo }: { code: CheckCode; repo?: AnalyzedRepo }) {
     case "WEAK_COMMIT_MESSAGES":
       return (
         <pre className="mt-3 overflow-x-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-700">{COMMIT_CONVENTION}</pre>
+      );
+    case "NO_CI":
+      return (
+        <a href="https://docs.github.com/actions/writing-workflows/quickstart" target="_blank" rel="noopener noreferrer" className={linkClass}>
+          <ExternalLink size={14} /> {t("ciGuide")}
+        </a>
+      );
+    case "ENV_FILE_COMMITTED":
+      return (
+        <a href="https://docs.github.com/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository" target="_blank" rel="noopener noreferrer" className={linkClass}>
+          <ExternalLink size={14} /> {t("envGuide")}
+        </a>
       );
     case "NO_PROFILE_README":
       return <p className="mt-3 text-xs text-gray-500">{t("profileReadmeAction")}</p>;

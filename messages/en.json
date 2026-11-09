@@ -628,6 +628,8 @@
         "copyReadmeTemplate": "Copy README template",
         "openRepoAbout": "Edit About on GitHub",
         "testGuide": "Getting started with {language} tests",
+        "ciGuide": "GitHub Actions quickstart",
+        "envGuide": "How to remove committed secrets",
         "openSettings": "Open repo settings (private / archive)",
         "profileReadmeAction": "Generate a draft in 'Profile README' below.",
         "codes": {
@@ -654,6 +656,18 @@
           "WEAK_COMMIT_MESSAGES": {
             "label": "Weak commit messages",
             "guide": "Most recent commits say little (\"update\", \"fix\"). Describe what changed and why."
+          },
+          "ENV_FILE_COMMITTED": {
+            "label": ".env file committed",
+            "guide": "A .env file is in the repo root. If it holds secrets, rotate them now, delete the file, and add it to .gitignore. Keep a .env.example instead."
+          },
+          "NO_CI": {
+            "label": "No CI",
+            "guide": "No automated build or test setup such as GitHub Actions. Running tests on every push shows automation experience."
+          },
+          "README_NO_RUN_GUIDE": {
+            "label": "No run instructions in README",
+            "guide": "The README does not say how to install or run the project. Add commands a newcomer can copy."
           },
           "FORK_HEAVY": {
             "label": "Mostly forks",
