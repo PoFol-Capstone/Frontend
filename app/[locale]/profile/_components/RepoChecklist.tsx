@@ -52,6 +52,9 @@ const TEST_GUIDES: Record<string, string> = {
   Go: "https://go.dev/doc/tutorial/add-a-test",
 };
 
+/** 바로 고쳐야 하는 항목 — 빨간 강조 (나머지는 주황) */
+const SEVERE = new Set<CheckCode>(["ENV_FILE_COMMITTED"]);
+
 /** 3.2 레포 점검 체크리스트 — 점수 대신 해결하면 사라지는 할 일 목록 */
 export default function RepoChecklist({ analysis, onChange }: Props) {
   const t = useTranslations("profile.github.checklist");
@@ -86,7 +89,7 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
     <Section title={t("heading")} description={t("desc")}>
 
       {allClear && (
-        <p className="flex items-center gap-2 rounded-xl bg-green-50 p-4 text-sm font-medium text-green-700">
+        <p className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-sm font-medium text-emerald-700">
           <CheckCircle2 size={18} /> {t("allClear")}
         </p>
       )}
@@ -94,7 +97,9 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
       {totals.size > 0 && (
         <ul className="flex flex-wrap gap-2">
           {[...totals.entries()].map(([code, count]) => (
-            <li key={code} className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+            <li key={code} className={`rounded-full px-3 py-1 text-xs font-medium ring-1 ${
+              SEVERE.has(code as CheckCode) ? "bg-red-50 text-red-700 ring-red-200" : "bg-amber-50 text-amber-800 ring-amber-200"
+            }`}>
               {t("chip", { label: t(`codes.${code}.label`), count })}
             </li>
           ))}
@@ -111,7 +116,8 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
 
       {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
 
-      <ul className="divide-y divide-gray-200 rounded-2xl border border-gray-200">
+      {reposWithChecks.length > 0 && (
+      <ul className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white">
         {reposWithChecks.map((repo) => {
           const open = openRepo === repo.fullName;
           const remaining = repo.checks.filter((c) => !c.ignored).length;
@@ -121,21 +127,28 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
                 type="button"
                 onClick={() => setOpenRepo(open ? null : repo.fullName)}
                 aria-expanded={open}
-                className="flex w-full items-center justify-between px-5 py-4 text-left"
+                className={`flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition hover:bg-gray-50 ${open ? "bg-gray-50" : ""}`}
               >
-                <span className="font-medium">
+                <span className="flex min-w-0 flex-wrap items-center gap-x-2 font-medium">
+                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gray-100 text-xs font-bold uppercase text-gray-600">
+                    {repo.name.slice(0, 2)}
+                  </span>
                   {repo.name}
-                  {repo.partial && <span className="ml-2 text-xs text-gray-400">{t("partial")}</span>}
+                  {repo.partial && <span className="text-xs text-gray-400">{t("partial")}</span>}
                   {/* 팀 레포는 내가 고칠 권한이 없을 수 있다 */}
-                  {repo.ownership !== "OWNER" && <span className="ml-2 text-xs text-gray-400">{t("teamSuggest")}</span>}
+                  {repo.ownership !== "OWNER" && <span className="text-xs text-gray-400">{t("teamSuggest")}</span>}
                 </span>
-                <span className="flex items-center gap-2 text-sm text-gray-500">
-                  {remaining > 0 ? t("remaining", { count: remaining }) : t("done")}
+                <span className="flex shrink-0 items-center gap-2 text-sm text-gray-500">
+                  <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    remaining > 0 ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-700"
+                  }`}>
+                    {remaining > 0 ? t("remaining", { count: remaining }) : t("done")}
+                  </span>
                   <ChevronDown size={16} className={`transition ${open ? "rotate-180" : ""}`} />
                 </span>
               </button>
               {open && (
-                <ul className="space-y-2 px-5 pb-5">
+                <ul className="space-y-2 bg-gray-50 px-5 pb-5">
                   {repo.checks.map((check) => (
                     <CheckRow key={check.code} check={check} repo={repo}
                       onToggleIgnore={() => toggleIgnore(repo.fullName, check)} />
@@ -146,6 +159,7 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
           );
         })}
       </ul>
+      )}
     </Section>
   );
 }
@@ -153,13 +167,17 @@ export default function RepoChecklist({ analysis, onChange }: Props) {
 function CheckRow({ check, repo, onToggleIgnore }: { check: RepoCheck; repo?: AnalyzedRepo; onToggleIgnore: () => void }) {
   const t = useTranslations("profile.github.checklist");
   return (
-    <li className={`rounded-xl border p-4 ${check.ignored ? "border-gray-100 bg-gray-50 text-gray-400" : "border-gray-200"}`}>
+    <li className={`rounded-xl border border-l-4 p-4 ${
+      check.ignored
+        ? "border-gray-100 border-l-gray-200 bg-gray-50 text-gray-400"
+        : `border-gray-200 bg-white ${SEVERE.has(check.code) ? "border-l-red-500" : "border-l-amber-400"}`
+    }`}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <p className={`text-sm font-semibold ${check.ignored ? "line-through" : ""}`}>{t(`codes.${check.code}.label`)}</p>
           <p className="mt-0.5 text-sm text-gray-500">{t(`codes.${check.code}.guide`)}</p>
         </div>
-        <button type="button" onClick={onToggleIgnore} className="shrink-0 text-xs font-medium text-gray-500 hover:text-black">
+        <button type="button" onClick={onToggleIgnore} className="shrink-0 rounded-lg px-2 py-1 text-xs font-medium text-gray-500 transition hover:bg-gray-100 hover:text-black">
           {check.ignored ? t("unignore") : t("ignore")}
         </button>
       </div>
@@ -180,7 +198,7 @@ function CheckAction({ code, repo }: { code: CheckCode; repo?: AnalyzedRepo }) {
       // 클립보드 권한이 없으면 조용히 무시 (사용자가 직접 선택해 복사할 수 있다)
     }
   };
-  const linkClass = "mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-black";
+  const linkClass = "mt-3 inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-800 transition hover:bg-gray-900 hover:text-white";
   const repoUrl = repo ? `https://github.com/${repo.fullName}` : null;
 
   switch (code) {
@@ -214,7 +232,7 @@ function CheckAction({ code, repo }: { code: CheckCode; repo?: AnalyzedRepo }) {
       ) : null;
     case "WEAK_COMMIT_MESSAGES":
       return (
-        <pre className="mt-3 overflow-x-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-700">{COMMIT_CONVENTION}</pre>
+        <pre className="mt-3 overflow-x-auto rounded-lg bg-gray-900 p-3 text-xs leading-5 text-gray-100">{COMMIT_CONVENTION}</pre>
       );
     case "NO_CI":
       return (

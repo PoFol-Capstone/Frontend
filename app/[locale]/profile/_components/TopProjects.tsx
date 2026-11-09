@@ -86,25 +86,30 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
         <p className="text-sm text-gray-500">{t("empty")}</p>
       ) : (
         <ul className="grid gap-4 md:grid-cols-3">
-          {shown.map(({ fullName, reasons }) => {
+          {shown.map(({ fullName, reasons }, i) => {
             const repo = repos.get(fullName);
             const pinned = analysis.featuredRepos.includes(fullName);
             return (
-              <li key={fullName} className={`flex flex-col rounded-2xl border p-5 ${pinned ? "border-black" : "border-gray-200"}`}>
+              <li key={fullName} className={`relative flex flex-col overflow-hidden rounded-2xl border bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gray-200/60 ${
+                pinned ? "border-gray-900 ring-1 ring-gray-900" : "border-gray-200"
+              }`}>
+                <span aria-hidden className="pointer-events-none absolute -right-1 -top-4 text-7xl font-black text-gray-100">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <a href={`https://github.com/${fullName}`} target="_blank" rel="noopener noreferrer"
-                  className="font-semibold hover:underline">
+                  className="relative font-semibold hover:underline">
                   {repo?.name ?? fullName}
                 </a>
-                <p className="mt-1 line-clamp-2 text-sm text-gray-500">{repo?.description ?? ""}</p>
+                <p className="relative mt-1 line-clamp-2 text-sm text-gray-500">{repo?.description ?? ""}</p>
                 <ul className="mt-3 flex flex-wrap gap-1.5">
                   {reasons.map((reason) => (
-                    <li key={reason} className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700">
+                    <li key={reason} className="rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">
                       {t(`reasons.${reason}`)}
                     </li>
                   ))}
                 </ul>
                 <button type="button" onClick={() => toggleFeatured(fullName)}
-                  className="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-semibold text-gray-700 hover:text-black">
+                  className={`mt-auto inline-flex items-center gap-1.5 self-start pt-4 text-xs font-semibold ${pinned ? "text-gray-900" : "text-gray-500 hover:text-black"}`}>
                   {pinned ? <PinOff size={14} /> : <Pin size={14} />}
                   {pinned ? t("unpin") : t("pin")}
                 </button>
@@ -114,27 +119,30 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
         </ul>
       )}
 
-      <div className="card">
-        <h3 className="font-semibold">{t("directionHeading")}</h3>
+      <div className="card relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-emerald-50">
+        <h3 className="flex items-center gap-2 font-semibold">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gray-900 text-white"><Sparkles size={16} /></span>
+          {t("directionHeading")}
+        </h3>
         {direction ? (
           <div className="mt-3 space-y-3 text-sm">
             <p className="leading-6">{direction.summary}</p>
             {direction.evidence.length > 0 && (
               <ul className="flex flex-wrap gap-1.5">
                 {direction.evidence.map((e) => (
-                  <li key={e} className="rounded-full border border-gray-300 px-2 py-0.5 text-xs">{e}</li>
+                  <li key={e} className="rounded-full border border-gray-200 bg-white px-2.5 py-0.5 text-xs">{e}</li>
                 ))}
               </ul>
             )}
             {direction.targetRole && (direction.fits.length > 0 || direction.gaps.length > 0) && (
               <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <p className="font-semibold">{t("fits", { role: direction.targetRole })}</p>
-                  <ul className="mt-1 list-disc pl-5 text-gray-600">{direction.fits.map((f) => <li key={f}>{f}</li>)}</ul>
+                <div className="rounded-xl border border-emerald-200 bg-white p-4">
+                  <p className="font-semibold text-emerald-700">{t("fits", { role: direction.targetRole })}</p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-600 marker:text-emerald-500">{direction.fits.map((f) => <li key={f}>{f}</li>)}</ul>
                 </div>
-                <div>
-                  <p className="font-semibold">{t("gaps")}</p>
-                  <ul className="mt-1 list-disc pl-5 text-gray-600">{direction.gaps.map((g) => <li key={g}>{g}</li>)}</ul>
+                <div className="rounded-xl border border-amber-200 bg-white p-4">
+                  <p className="font-semibold text-amber-700">{t("gaps")}</p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-600 marker:text-amber-500">{direction.gaps.map((g) => <li key={g}>{g}</li>)}</ul>
                 </div>
               </div>
             )}
@@ -146,7 +154,7 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
         <div className="mt-6 flex flex-wrap items-center gap-2">
           <select value={targetRole} onChange={(e) => setTargetRole(e.target.value)}
             aria-label={t("targetRole")}
-            className="input w-auto">
+            className="input w-auto bg-white">
             <option value="">{t("targetRoleNone")}</option>
             {TARGET_ROLES.map((role) => <option key={role} value={tRole(role)}>{tRole(role)}</option>)}
           </select>
