@@ -49,7 +49,7 @@ async function BoardContent({ searchParams }: Props) {
   // 학교 인증 전이면 학교 탭은 조회할 게 없다 — 안내만 보여준다
   if (category === "School" && !school) {
     return (
-      <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">
+      <main className="min-h-[calc(100vh-64px)] mx-auto max-w-5xl bg-white px-4 py-10 sm:px-6">
         <BoardClient category={category} hasSchool={false} result={null} />
       </main>
     );
@@ -68,7 +68,7 @@ async function BoardContent({ searchParams }: Props) {
   }
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">
+    <main className="min-h-[calc(100vh-64px)] mx-auto max-w-5xl bg-white px-4 py-10 sm:px-6">
       <BoardClient category={category} hasSchool={!!school} result={result} />
     </main>
   );

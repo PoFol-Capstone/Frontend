@@ -21,7 +21,7 @@ export default function CategoryFilter({ selected }: Props) {
   const { handleLinkClick } = useNavigation();
 
   return (
-    <nav aria-label={t("label")} className="mb-8 flex flex-wrap gap-2">
+    <nav aria-label={t("label")} className="mb-8 flex flex-wrap gap-x-6 border-b border-gray-200">
       {CATEGORIES.map((category) => {
         const href = boardHref(category);
         return (
@@ -30,10 +30,10 @@ export default function CategoryFilter({ selected }: Props) {
             href={href}
             onClick={(e) => handleLinkClick(e, href)}
             aria-current={selected === category ? "page" : undefined}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+            className={`-mb-px border-b-2 pb-3 text-sm font-medium transition ${
               selected === category
-                ? "bg-black text-white"
-                : "border border-gray-200 text-gray-600 hover:border-gray-400 hover:text-black"
+                ? "border-gray-900 text-gray-900"
+                : "border-transparent text-gray-400 hover:text-gray-900"
             }`}
           >
             {t(CATEGORY_LABEL_KEYS[category])}

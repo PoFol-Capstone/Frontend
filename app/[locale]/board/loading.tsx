@@ -2,16 +2,15 @@ import { Skeleton, SkeletonCardGrid } from "@/components/Skeleton";
 
 export default function BoardLoading() {
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-6">
-      <div className="mb-6 space-y-4">
-        <Skeleton className="h-9 w-48" />
-        <div className="flex gap-2">
-          {Array.from({ length: 5 }, (_, i) => (
-            <Skeleton key={i} className="h-8 w-20 rounded-full" />
-          ))}
-        </div>
+    <main className="mx-auto min-h-[calc(100vh-64px)] max-w-5xl bg-white px-4 py-10 sm:px-6">
+      <div className="mb-8 flex gap-6 border-b border-gray-200 pb-3">
+        {Array.from({ length: 4 }, (_, i) => (
+          <Skeleton key={i} className="h-5 w-14" />
+        ))}
       </div>
-      <SkeletonCardGrid />
+      <div className="border border-gray-900 p-5">
+        <SkeletonCardGrid />
+      </div>
     </main>
   );
 }
