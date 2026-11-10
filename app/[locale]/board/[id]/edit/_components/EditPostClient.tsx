@@ -20,6 +20,8 @@ import {
 import { THUMBNAIL_ACCEPT } from "@/lib/uploadLimits";
 import type { PostDocument, PostLink, ResponsePosts } from "@/types/post";
 import DocumentSection from "@/app/[locale]/board/write/_components/DocumentSection";
+import VideoField from "@/app/[locale]/board/write/_components/VideoField";
+import { toVideoEmbedUrl } from "@/lib/video";
 import { LinkType, PostType } from "@/types/post";
 import type { Skill } from "@/types/skill";
 import Image from "next/image";
@@ -34,6 +36,7 @@ export default function EditPostClient({ post }: Props) {
   const t = useTranslations("board.edit");
   const tThumbnail = useTranslations("board.thumbnail");
   const tRecruit = useTranslations("board.write.teamRecruit");
+  const tVideo = useTranslations("board.video");
   const router = useRouter();
 
   // 첫 구분자에서만 나눈다 — 구분자가 여러 번 있어도 뒤쪽 내용이 편집 화면에서 사라지지 않는다
@@ -48,6 +51,9 @@ export default function EditPostClient({ post }: Props) {
   const [mainFeatures, setMainFeatures] = useState(initialContent.features);
   const [deployUrl, setDeployUrl] = useState(
     post.links?.find((l) => l.type === LinkType.DEPLOY)?.url ?? "",
+  );
+  const [videoUrl, setVideoUrl] = useState(
+    post.links?.find((l) => l.type === LinkType.VIDEO)?.url ?? "",
   );
   const [uploadLinks, setUploadLinks] = useState<Record<UploadSectionId, string>>({
     figma: post.links?.find((l) => l.type === LinkType.FIGMA)?.url ?? "",
@@ -106,6 +112,11 @@ export default function EditPostClient({ post }: Props) {
       setError(tRecruit("positionsRequired"));
       return;
     }
+    const videoEmbedUrl = videoUrl.trim() ? toVideoEmbedUrl(videoUrl) : null;
+    if (videoUrl.trim() && !videoEmbedUrl) {
+      setError(tVideo("invalid"));
+      return;
+    }
     setError(null);
     setIsSubmitting(true);
     try {
@@ -129,6 +140,7 @@ export default function EditPostClient({ post }: Props) {
       const links: PostLink[] = [
         ...(githubLink ? [githubLink] : []),
         ...(deployUrl ? [{ type: LinkType.DEPLOY, url: deployUrl }] : []),
+        ...(videoEmbedUrl ? [{ type: LinkType.VIDEO, url: videoEmbedUrl }] : []),
         ...(uploadLinks.figma
           ? [{ type: LinkType.FIGMA, url: uploadLinks.figma }]
           : []),
@@ -225,6 +237,8 @@ export default function EditPostClient({ post }: Props) {
             className="input"
           />
         </Field>
+
+        <VideoField value={videoUrl} onChange={setVideoUrl} />
 
         <Field label={t("techStack")}>
           <SkillPicker selected={selectedSkills} onChange={setSelectedSkills} />

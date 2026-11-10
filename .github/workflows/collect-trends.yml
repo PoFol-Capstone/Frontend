@@ -1,4 +1,4 @@
-# 매달 지난달 트렌드 지표를 모아 PR을 열고 디스코드로 알린다.
+# 매달 지난달 언어 트렌드(GitHub) · 이번 달 채용공고 기술(Greenhouse)을 모아 PR을 열고 디스코드로 알린다.
 # 확인 → PR 머지 = 반영 (Vercel이 배포). 이상하면 PR을 닫는다.
 #
 # 준비 (한 번만):
@@ -36,11 +36,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SUMMARY_FILE: ${{ runner.temp }}/summary.md
 
+      # 채용공고(Greenhouse) — 실패해도 GitHub 트렌드 PR은 연다
+      - name: Collect jobs
+        id: jobs
+        continue-on-error: true
+        run: node --import ./tests/setup/register.mjs scripts/collect-jobs.ts
+        env:
+          SUMMARY_FILE: ${{ runner.temp }}/jobs-summary.md
+
       - name: Open PR
         id: pr
         run: |
           period=$(ls data/trends/github | sort | tail -1 | sed 's/\.json$//')
           branch="trends/$period"
+          body="$RUNNER_TEMP/pr-body.md"
+          cat "$RUNNER_TEMP/summary.md" > "$body"
+          [ -f "$RUNNER_TEMP/jobs-summary.md" ] && printf '\n\n---\n\n' >> "$body" && cat "$RUNNER_TEMP/jobs-summary.md" >> "$body"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -C "$branch"
@@ -48,15 +59,24 @@ jobs:
           git commit -m "data: 트렌드 수집 $period"
           git push -f origin "$branch"
           url=$(gh pr list --head "$branch" --state open --json url -q '.[0].url')
-          [ -n "$url" ] || url=$(gh pr create --head "$branch" --title "data: 트렌드 수집 $period" --body-file "$RUNNER_TEMP/summary.md")
+          [ -n "$url" ] || url=$(gh pr create --head "$branch" --title "data: 트렌드 수집 $period" --body-file "$body")
           echo "url=$url" >> "$GITHUB_OUTPUT"
 
+      # 디스코드는 메시지당 2000자 제한 — 언어 트렌드 · 채용공고를 따로 보낸다
       - name: Notify Discord
         if: env.DISCORD_WEBHOOK_URL != ''
         run: |
-          # 디스코드 메시지는 2000자 제한
-          content=$(printf '%s\n\n👉 확인 · 머지: %s' "$(head -c 1700 "$RUNNER_TEMP/summary.md")" "${{ steps.pr.outputs.url }}")
-          jq -n --arg c "$content" '{content: $c}' | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
+          send() {
+            content=$(printf '%s\n\n👉 확인 · 머지: %s' "$(head -c 1700 "$1")" "${{ steps.pr.outputs.url }}")
+            jq -n --arg c "$content" '{content: $c}' | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
+          }
+          send "$RUNNER_TEMP/summary.md"
+          if [ -f "$RUNNER_TEMP/jobs-summary.md" ]; then
+            send "$RUNNER_TEMP/jobs-summary.md"
+          elif [ "${{ steps.jobs.outcome }}" = "failure" ]; then
+            jq -n --arg c "⚠️ 채용공고 수집 실패 (언어 트렌드는 정상): ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" '{content: $c}' \
+              | curl -fsS -H "Content-Type: application/json" -d @- "$DISCORD_WEBHOOK_URL"
+          fi
 
       - name: Notify failure
         if: failure() && env.DISCORD_WEBHOOK_URL != ''

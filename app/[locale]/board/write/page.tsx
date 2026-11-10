@@ -7,6 +7,7 @@ import {
   toRecruitPositionRequests,
 } from "@/lib/recruitPositions";
 import { THUMBNAIL_ACCEPT } from "@/lib/uploadLimits";
+import { toVideoEmbedUrl } from "@/lib/video";
 import type { PostDocument, PostLink } from "@/types/post";
 import { LinkType, PostType } from "@/types/post";
 import { useRouter } from "@/i18n/navigation";
@@ -42,6 +43,7 @@ type Draft = {
   projectDescription: string;
   mainFeatures: string;
   deployUrl: string;
+  videoUrl: string;
   thumbnailUrl: string;
   selectedSkills: Skill[];
   document: PostDocument | null;
@@ -49,6 +51,7 @@ type Draft = {
 
 export default function Page() {
   const t = useTranslations("board.write");
+  const tVideo = useTranslations("board.video");
   const STEPS = [
     t("steps.type"),
     t("steps.content"),
@@ -74,6 +77,7 @@ export default function Page() {
   const [isDraftRestored, setIsDraftRestored] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [postDocument, setPostDocument] = useState<PostDocument | null>(null);
+  const [videoUrl, setVideoUrl] = useState("");
   const [isDocumentUploading, setIsDocumentUploading] = useState(false);
 
   // 마운트 시 1회: 이전에 저장된 임시 작성본이 있으면 복원한다(GitHub 연동
@@ -94,6 +98,7 @@ export default function Page() {
         if (draft.projectDescription) project.setProjectDescription(draft.projectDescription);
         if (draft.mainFeatures) project.setMainFeatures(draft.mainFeatures);
         if (draft.deployUrl) project.setDeployUrl(draft.deployUrl);
+        if (draft.videoUrl) setVideoUrl(draft.videoUrl);
         if (draft.thumbnailUrl) project.setThumbnailUrl(draft.thumbnailUrl);
         if (draft.selectedSkills) project.handleSkillsChange(draft.selectedSkills);
         if (draft.document) setPostDocument(draft.document);
@@ -121,6 +126,7 @@ export default function Page() {
       projectDescription: project.projectDescription,
       mainFeatures: project.mainFeatures,
       deployUrl: project.deployUrl,
+      videoUrl,
       thumbnailUrl: project.thumbnailUrl,
       selectedSkills: project.selectedSkills,
       document: postDocument,
@@ -143,6 +149,7 @@ export default function Page() {
     project.projectDescription,
     project.mainFeatures,
     project.deployUrl,
+    videoUrl,
     project.thumbnailUrl,
     project.selectedSkills,
     postDocument,
@@ -160,7 +167,8 @@ export default function Page() {
   const step1Valid =
     postTypeSelection !== null &&
     (!isRecruit || (!!recruitDescription.trim() && recruitPositionsValid));
-  const step2Valid = isRecruit || hasProject;
+  const videoValid = !videoUrl.trim() || !!toVideoEmbedUrl(videoUrl);
+  const step2Valid = (isRecruit || hasProject) && videoValid;
 
   const githubUrl = github.selectedRepo
     ? `https://github.com/${github.selectedRepo}`
@@ -196,6 +204,12 @@ export default function Page() {
       }
       return;
     }
+    const videoEmbedUrl = videoUrl.trim() ? toVideoEmbedUrl(videoUrl) : null;
+    if (videoUrl.trim() && !videoEmbedUrl) {
+      setSubmitError(tVideo("invalid"));
+      setCurrentStep(2);
+      return;
+    }
     setIsSubmitting(true);
     setSubmitError(null);
     try {
@@ -211,6 +225,7 @@ export default function Page() {
         ...(project.deployUrl
           ? [{ type: LinkType.DEPLOY, url: project.deployUrl }]
           : []),
+        ...(videoEmbedUrl ? [{ type: LinkType.VIDEO, url: videoEmbedUrl }] : []),
         ...(uploadLinks.figma
           ? [{ type: LinkType.FIGMA, url: uploadLinks.figma }]
           : []),
@@ -421,6 +436,8 @@ export default function Page() {
               onMainFeaturesChange={project.setMainFeatures}
               deployUrl={project.deployUrl}
               onDeployUrlChange={project.setDeployUrl}
+              videoUrl={videoUrl}
+              onVideoUrlChange={setVideoUrl}
               selectedSkills={project.selectedSkills}
               onSkillsChange={project.handleSkillsChange}
               isLoadingRepoData={project.isLoadingRepoData}

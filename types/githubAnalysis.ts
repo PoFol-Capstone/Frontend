@@ -107,7 +107,7 @@ export type PublicGitHub = {
   featuredRepos: PublicFeaturedRepo[];
 };
 
-export type AiFeature = "github-direction" | "profile-readme" | "resume" | "project-card";
+export type AiFeature = "github-direction" | "profile-readme" | "resume" | "project-card" | "summarize";
 
 export type AiFeatureUsage = {
   feature: AiFeature;

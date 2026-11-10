@@ -124,7 +124,7 @@ export default function ResumeEditor({ initial, profile }: Props) {
                 {project.facts.length > 0 && (
                   <ul className="flex flex-wrap gap-1.5">
                     {project.facts.map((fact, j) => (
-                      <li key={j} className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-700">✅ {fact.text}</li>
+                      <li key={j} className="rounded-full bg-green-50 px-2 py-0.5 text-xs text-green-700">{fact.text}</li>
                     ))}
                   </ul>
                 )}

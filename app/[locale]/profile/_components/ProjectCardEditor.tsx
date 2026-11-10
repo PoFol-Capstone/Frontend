@@ -16,12 +16,17 @@ import {
   type ProjectFeature,
 } from "@/types/project";
 
+// 입력란을 상자 대신 글 영역처럼 — 테두리·리사이즈 손잡이 없이 내용 따라 늘어난다
+const FIELD =
+  "input h-auto border-transparent bg-gray-50 py-3 text-[15px] leading-7 hover:border-transparent focus:border-gray-200 focus:bg-white";
+const AREA = `${FIELD} min-h-24 resize-none field-sizing-content`;
+
 type Props = {
   project: Project;
   onSaved: (project: Project) => void;
 };
 
-/** 정리 카드 7칸 — 칸마다 따로 저장한다. 고친 칸은 출처가 ✏️ 본인 작성이 된다 */
+/** 정리 카드 7칸 — 칸마다 따로 저장한다. 고친 칸은 출처가 본인 작성이 된다 */
 export default function ProjectCardEditor({ project, onSaved }: Props) {
   const t = useTranslations("profile.projects.card.ai");
   const [aiBusy, setAiBusy] = useState(false);
@@ -55,16 +60,19 @@ export default function ProjectCardEditor({ project, onSaved }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-gray-50 p-5">
-        <p className="mr-auto text-sm text-gray-600">{t("hint")}</p>
+      <div className="flex animate-fade-in-up flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5">
+        <p className="mr-auto flex items-center gap-2 text-[13px] text-gray-600">
+          <Sparkles className="h-4 w-4 shrink-0 text-gray-400" /> {t("hint")}
+        </p>
         <button type="button" onClick={generate} disabled={aiBusy}
           className="btn btn-primary btn-sm">
-          <Sparkles className="h-4 w-4" /> {aiBusy ? t("running") : t("run")}
+          <Sparkles className={`h-4 w-4 ${aiBusy ? "animate-pulse" : ""}`} /> {aiBusy ? t("running") : t("run")}
         </button>
         {aiError && <p role="alert" className="w-full text-sm text-red-500">{aiError}</p>}
       </div>
-      {CARD_SLOTS.map((slot) => (
+      {CARD_SLOTS.map((slot, i) => (
         <SlotEditor
+          index={i}
           key={`${project.uuid}-${slot}`}
           uuid={project.uuid}
           slot={slot}
@@ -79,7 +87,8 @@ export default function ProjectCardEditor({ project, onSaved }: Props) {
   );
 }
 
-function SlotEditor({ uuid, slot, saved, source, onSaved, skipReason, techCompare }: {
+function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, techCompare }: {
+  index: number;
   uuid: string;
   slot: CardSlot;
   saved: CardValue<CardSlot>;
@@ -117,16 +126,21 @@ function SlotEditor({ uuid, slot, saved, source, onSaved, skipReason, techCompar
   };
 
   return (
-    <section className="card">
-      <div className="mb-1 flex items-center gap-2">
-        <span className="text-xs font-semibold text-gray-400">{CARD_SLOTS.indexOf(slot) + 1}</span>
-        <h3 className="text-lg font-bold tracking-tight text-gray-900">{t(`${slot}.title`)}</h3>
+    <section style={{ animationDelay: `${80 + index * 60}ms` }}
+      className={`card animate-fade-in-up transition-[border-color,box-shadow] duration-300 hover:shadow-sm ${
+        dirty ? "border-gray-400" : "hover:border-gray-300"
+      }`}>
+      <div className="mb-1 flex items-center gap-2.5">
+        <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors duration-300 ${
+          isSlotFilled(saved) ? "bg-black text-white" : "bg-gray-100 text-gray-400"
+        }`}>{index + 1}</span>
+        <h3 className="text-[17px] font-bold tracking-tight text-gray-900">{t(`${slot}.title`)}</h3>
         {isSlotFilled(saved) && <SourceBadge source={source} />}
       </div>
-      <p className="mb-6 text-sm text-gray-500">{t(`${slot}.hint`)}</p>
+      <p className="mb-5 pl-8.5 text-[13px] leading-relaxed text-gray-500">{t(`${slot}.hint`)}</p>
 
       {showSkip && (
-        <div role="status" className="mb-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <div role="status" className="mb-3 animate-fade-in-up rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
           {t("ai.skipped")}
           {skipReason && <span className="block text-xs text-amber-700">{skipReason}</span>}
         </div>
@@ -151,10 +165,10 @@ function SlotEditor({ uuid, slot, saved, source, onSaved, skipReason, techCompar
         <ProblemInput value={draft as ProblemSolving} onChange={setDraft} />
       ) : slot === "oneLiner" ? (
         <input value={draft as string} onChange={(e) => setDraft(e.target.value)} maxLength={200}
-          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className="input" />
+          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className={`${FIELD} h-12 py-0`} />
       ) : (
-        <textarea value={draft as string} onChange={(e) => setDraft(e.target.value)} maxLength={3000} rows={4}
-          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className="input resize-y" />
+        <textarea value={draft as string} onChange={(e) => setDraft(e.target.value)} maxLength={3000} rows={3}
+          aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className={AREA} />
       )}
 
       <div className="mt-4 flex items-center justify-end gap-3">
@@ -181,10 +195,10 @@ function FeaturesInput({ value, onChange }: { value: ProjectFeature[]; onChange:
   return (
     <div className="space-y-3">
       {value.map((f, i) => (
-        <div key={i} className="rounded-xl bg-gray-50 p-4">
+        <div key={i} className="animate-fade-in-up rounded-xl border border-gray-100 p-4">
           <div className="flex items-center gap-2">
             <input value={f.name} onChange={(e) => update(i, { name: e.target.value })} maxLength={40}
-              aria-label={t("name")} placeholder={t("name")} className="input min-w-0 flex-1" />
+              aria-label={t("name")} placeholder={t("name")} className={`${FIELD} h-11 min-w-0 flex-1 py-0 font-semibold`} />
             <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))}
               aria-label={t("remove")} className="shrink-0 p-1 text-gray-400 hover:text-black">
               <X className="h-4 w-4" />
@@ -192,11 +206,11 @@ function FeaturesInput({ value, onChange }: { value: ProjectFeature[]; onChange:
           </div>
           <textarea value={f.description} onChange={(e) => update(i, { description: e.target.value })} maxLength={500}
             rows={2} aria-label={t("description")} placeholder={t("description")}
-            className="input mt-3 resize-y" />
+            className={`${AREA} mt-2 min-h-16`} />
           {f.evidence.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">
               {f.evidence.map((path) => (
-                <code key={path} className="rounded bg-white px-1.5 py-0.5 text-[11px] text-gray-500">{path}</code>
+                <code key={path} className="rounded bg-gray-100 px-1.5 py-0.5 text-[11px] text-gray-500">{path}</code>
               ))}
             </div>
           )}
@@ -218,9 +232,9 @@ function ProblemInput({ value, onChange }: { value: ProblemSolving; onChange: (v
     <div className="grid gap-6 sm:grid-cols-2">
       {PROBLEM_FIELDS.map((field) => (
         <label key={field} className="block">
-          <span className="mb-2 block text-sm font-semibold text-gray-900">{t(field)}</span>
+          <span className="mb-2 block text-[13px] font-semibold text-gray-700">{t(field)}</span>
           <textarea value={value[field]} onChange={(e) => onChange({ ...value, [field]: e.target.value })}
-            maxLength={3000} rows={3} placeholder={t(`${field}Placeholder`)} className="input resize-y" />
+            maxLength={3000} rows={3} placeholder={t(`${field}Placeholder`)} className={AREA} />
         </label>
       ))}
     </div>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
 import { parseSummarizeInput } from "@/lib/aiInput";
+import { completeJson, consumeAiUsage } from "@/lib/aiCoachServer";
 import { rateLimit, rateLimitResponse } from "@/lib/rateLimit";
 import { requireVerifiedUser, withRefreshedSession } from "@/lib/verifiedUser";
 
@@ -39,7 +39,9 @@ export async function POST(req: NextRequest) {
   if (!input.ok) return respond({ error: input.error }, { status: 400 });
   const { projectName, readmeText, techStack } = input.value;
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  // 월 한도 (백엔드) — 분당 제한은 서버 인스턴스마다 따로라 이것이 실제 비용 방어선
+  const usageError = await consumeAiUsage("summarize");
+  if (usageError) return withRefreshedSession(usageError, user);
 
   const prompt = `다음은 GitHub 프로젝트 정보입니다.
 
@@ -57,14 +59,7 @@ ${readmeText}
 }`;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-      response_format: { type: "json_object" },
-      temperature: 0.5,
-    });
-
-    const result = JSON.parse(completion.choices[0].message.content ?? "{}");
+    const result = await completeJson("summarize", prompt, 0.5);
 
     return respond({
       projectDescription: result.projectDescription ?? "",

@@ -18,7 +18,7 @@ export default class OpenAI {
       completions: {
         create: async () => {
           state.calls += 1;
-          return { choices: [{ message: { content: state.content } }] };
+          return { choices: [{ message: { content: state.content } }], usage: { prompt_tokens: 120, completion_tokens: 30 } };
         },
       },
     };

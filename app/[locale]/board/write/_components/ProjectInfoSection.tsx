@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import Field from "@/components/ui/Field";
 import SkillPicker from "./SkillPicker";
+import VideoField from "./VideoField";
 
 type Props = {
   projectName: string;
@@ -14,6 +15,8 @@ type Props = {
   onMainFeaturesChange: (v: string) => void;
   deployUrl: string;
   onDeployUrlChange: (v: string) => void;
+  videoUrl: string;
+  onVideoUrlChange: (v: string) => void;
   selectedSkills: Skill[];
   onSkillsChange: (skills: Skill[]) => void;
   isLoadingRepoData: boolean;
@@ -29,6 +32,8 @@ export default function ProjectInfoSection({
   onMainFeaturesChange,
   deployUrl,
   onDeployUrlChange,
+  videoUrl,
+  onVideoUrlChange,
   selectedSkills,
   onSkillsChange,
   isLoadingRepoData,
@@ -123,6 +128,8 @@ export default function ProjectInfoSection({
           />
         )}
       </Field>
+
+      <VideoField value={videoUrl} onChange={onVideoUrlChange} />
 
       <Field label={t("techStack")}>
         {isLoadingRepoData ? (

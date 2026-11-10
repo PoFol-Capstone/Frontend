@@ -37,10 +37,31 @@ export async function consumeAiUsage(feature: AiFeature): Promise<NextResponse |
 }
 
 /**
- * JSON 응답을 강제한 프롬프트 호출.
+ * OpenAI 응답의 토큰 수를 기능별 월 합계에 더한다 (비용 실측, 백엔드 Redis).
+ * 기록 실패가 사용자 요청을 실패시키면 안 되므로 오류는 로그만 남긴다.
+ */
+export async function recordAiTokens(
+  feature: AiFeature,
+  usage: { prompt_tokens?: number; completion_tokens?: number } | undefined,
+): Promise<void> {
+  if (!usage) return;
+  try {
+    await http.post(
+      "/api/ai/usage/tokens",
+      { feature, inputTokens: usage.prompt_tokens ?? 0, outputTokens: usage.completion_tokens ?? 0 },
+      { requireAuth: true },
+    );
+  } catch (err) {
+    console.error(`[ai] ${feature} 토큰 기록 실패:`, err);
+  }
+}
+
+/**
+ * JSON 응답을 강제한 프롬프트 호출. 끝나면 토큰 수를 feature 이름으로 기록한다.
  * system을 주면 지시는 system에, 레포 내용 같은 데이터는 prompt(user)에만 실린다 — README 속 "지시를 무시하라" 차단
  */
 export async function completeJson(
+  feature: AiFeature,
   prompt: string,
   temperature = 0.5,
   system?: string,
@@ -55,6 +76,7 @@ export async function completeJson(
     response_format: { type: "json_object" },
     temperature,
   });
+  await recordAiTokens(feature, completion.usage);
   const parsed = JSON.parse(completion.choices[0].message.content ?? "{}");
   return typeof parsed === "object" && parsed !== null ? parsed : {};
 }
