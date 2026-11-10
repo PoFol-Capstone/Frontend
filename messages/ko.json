@@ -955,7 +955,7 @@
       "print": "PDF로 저장",
       "delete": "이력서 삭제",
       "deleteConfirm": "이 이력서를 삭제할까요?",
-      "legend": "✅ 검증됨: GitHub 데이터로 확인된 사실 · ✏️ 본인 작성 · 🤖 AI 작성 — 문장을 고치면 본인 작성으로 바뀌어요. PDF에는 검증 배지만 남아요.",
+      "legend": "검증됨: GitHub 데이터로 확인된 사실 · 본인 작성 · AI 작성 — 문장을 고치면 본인 작성으로 바뀌어요. PDF에는 검증 배지만 남아요.",
       "headlinePlaceholder": "어떤 개발자인지 한 줄로",
       "summary": "소개",
       "summaryPlaceholder": "자기소개 문장",
@@ -970,9 +970,9 @@
       "addLine": "문장 추가",
       "removeLine": "문장 삭제",
       "source": {
-        "VERIFIED": "✅ 검증됨",
-        "SELF": "✏️ 본인 작성",
-        "AI": "🤖 AI 작성"
+        "VERIFIED": "검증됨",
+        "SELF": "본인 작성",
+        "AI": "AI 작성"
       }
     }
   },

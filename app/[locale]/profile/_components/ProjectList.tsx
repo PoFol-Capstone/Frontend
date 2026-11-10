@@ -42,7 +42,7 @@ export default function ProjectList({ projects, selected, onSelect, onImport }: 
           value={selected ?? ""}
           onChange={(e) => onSelect(e.target.value)}
           aria-label={t("listLabel")}
-          className="w-full min-w-0 cursor-pointer appearance-none truncate rounded-lg bg-transparent py-1 pr-8 text-2xl font-bold hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          className="w-full min-w-0 cursor-pointer appearance-none truncate rounded-lg bg-transparent py-1 pr-8 text-xl font-bold tracking-tight hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
         >
           {projects.map((p) => (
             <option key={p.uuid} value={p.uuid} className="text-base font-normal">

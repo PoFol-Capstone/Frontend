@@ -955,7 +955,7 @@
       "print": "Save as PDF",
       "delete": "Delete resume",
       "deleteConfirm": "Delete this resume?",
-      "legend": "✅ Verified by GitHub data · ✏️ Written by you · 🤖 Written by AI — edited sentences become yours. Only verified badges appear in the PDF.",
+      "legend": "Verified by GitHub data · Written by you · Written by AI — edited sentences become yours. Only verified badges appear in the PDF.",
       "headlinePlaceholder": "Who you are, in one line",
       "summary": "Summary",
       "summaryPlaceholder": "A summary sentence",
@@ -970,9 +970,9 @@
       "addLine": "Add line",
       "removeLine": "Remove line",
       "source": {
-        "VERIFIED": "✅ Verified",
-        "SELF": "✏️ You",
-        "AI": "🤖 AI"
+        "VERIFIED": "Verified",
+        "SELF": "You",
+        "AI": "AI"
       }
     }
   },

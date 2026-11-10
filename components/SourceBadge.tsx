@@ -9,7 +9,7 @@ const SOURCE_STYLE: Record<SentenceSource, string> = {
   AI: "bg-violet-50 text-violet-700",
 };
 
-/** 출처 배지 — ✅ 검증됨 / ✏️ 본인 작성 / 🤖 AI 작성 (이력서 · 프로젝트 정리 카드 공통). 인쇄에는 ✅만 남긴다 */
+/** 출처 배지 — 검증됨 / 본인 작성 / AI 작성 (이력서 · 프로젝트 정리 카드 공통). 인쇄에는 검증됨만 남긴다 */
 export function SourceBadge({ source }: { source: SentenceSource }) {
   const t = useTranslations("resume.editor.source");
   return (

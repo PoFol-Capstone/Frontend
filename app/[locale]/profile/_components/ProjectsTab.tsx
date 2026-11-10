@@ -113,8 +113,10 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
 
   if (projects.length === 0) {
     return (
-      <div className="card p-10 text-center">
-        <FolderGit2 className="mx-auto mb-3 h-9 w-9 text-gray-400" />
+      <div className="card animate-fade-in-up p-12 text-center">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
+          <FolderGit2 className="h-7 w-7 text-gray-500" />
+        </div>
         <p className="font-semibold">{t("emptyTitle")}</p>
         <p className="mt-1 text-sm text-gray-500">{t("emptyDesc")}</p>
         <button type="button" onClick={() => setImporting(true)}
@@ -126,45 +128,59 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
     );
   }
 
+  const percent = detail ? Math.round((detail.filledSlots / CARD_SLOTS.length) * 100) : 0;
+
   return (
     <div className="mx-auto w-full max-w-3xl">
-      <header className="mb-6 flex flex-wrap items-center gap-3">
-        <ProjectList projects={projects} selected={selected} onSelect={select} onImport={() => setImporting(true)} />
-        {detail && (
-          <>
-            <StageBadge stage={detail.stage} />
-            <span className="text-sm text-gray-500">{t("progress", { filled: detail.filledSlots, total: CARD_SLOTS.length })}</span>
-            <div className="ml-auto flex items-center gap-3 text-sm">
+      <header className="card mb-6 animate-fade-in-up !p-5 md:!p-6">
+        <div className="flex flex-wrap items-center gap-3">
+          <ProjectList projects={projects} selected={selected} onSelect={select} onImport={() => setImporting(true)} />
+          {detail && <StageBadge stage={detail.stage} />}
+          {detail && (
+            <div className="ml-auto flex items-center gap-1 text-sm">
               {detail.post && (
-                <Link href={`/board/${detail.post.uuid}`} className="text-gray-500 hover:text-black">
+                <Link href={`/board/${detail.post.uuid}`}
+                  className="rounded-full px-3 py-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-black">
                   {t("viewPost")}
                 </Link>
               )}
               <a href={`https://github.com/${detail.repoFullName}`} target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-gray-500 hover:text-black">
+                className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-black">
                 GitHub <ExternalLink className="h-3.5 w-3.5" />
               </a>
               <button type="button" onClick={() => remove(detail)} aria-label={t("delete")}
-                className="text-gray-400 hover:text-red-500">
+                className="rounded-full p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-500">
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
-          </>
+          )}
+        </div>
+        {detail && (
+          <div className="mt-4 flex items-center gap-3">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-100">
+              <div className="h-full rounded-full bg-black transition-[width] duration-700 ease-out motion-reduce:transition-none"
+                style={{ width: `${percent}%` }} />
+            </div>
+            <span className="shrink-0 text-xs font-medium tabular-nums text-gray-500">
+              {t("progress", { filled: detail.filledSlots, total: CARD_SLOTS.length })}
+            </span>
+          </div>
         )}
       </header>
 
       <div className="min-w-0">
         {detail ? (
-          <>
-            <div role="tablist" aria-label={t("detailTabsLabel")} className="mb-5 flex gap-2 overflow-x-auto">
+          <div key={detail.uuid}>
+            <div role="tablist" aria-label={t("detailTabsLabel")}
+              className="mb-6 flex w-fit max-w-full gap-1 overflow-x-auto rounded-full bg-gray-100 p-1">
               {DETAIL_TABS.map((id) => {
                 const ready = READY_TABS.includes(id);
                 return (
                   <button key={id} type="button" role="tab" aria-selected={tab === id} disabled={!ready}
                     onClick={() => setTab(id)} title={ready ? undefined : t("comingSoon")}
-                    className={`shrink-0 rounded-full border px-3 py-1.5 text-sm transition ${
-                      tab === id ? "border-black bg-black text-white" : "border-gray-200 text-gray-600 hover:border-gray-400"
-                    } disabled:cursor-not-allowed disabled:opacity-40`}>
+                    className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+                      tab === id ? "bg-white text-black shadow-sm" : "text-gray-500 hover:text-black"
+                    } disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-gray-500`}>
                     {t(`tabs.${id}`)}
                   </button>
                 );
@@ -172,9 +188,9 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
             </div>
 
             {tab === "card" && <ProjectCardEditor project={detail} onSaved={applySaved} />}
-          </>
+          </div>
         ) : detailError ? (
-          <p role="alert" className="card p-10 text-center text-sm text-gray-500">{t("detailFailed")}</p>
+          <p role="alert" className="card animate-fade-in-up p-10 text-center text-sm text-gray-500">{t("detailFailed")}</p>
         ) : (
           <div className="space-y-4">
             <Skeleton className="h-8 w-1/2" />
