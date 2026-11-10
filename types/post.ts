@@ -12,6 +12,8 @@ export enum LinkType {
   ERD = "ERD",
   CLASS = "CLASS",
   EXTRA = "EXTRA",
+  /** 데모 영상 — 유튜브 nocookie / 구글 드라이브 preview embed URL만 (lib/video.ts) */
+  VIDEO = "VIDEO",
 }
 
 export type PostLink = {

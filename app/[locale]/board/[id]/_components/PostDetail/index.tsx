@@ -16,6 +16,7 @@ import DeleteModal from "./DeleteModal";
 import PostContent from "./PostContent";
 import PostHero from "./PostHero";
 import DocumentViewer from "../DocumentViewer";
+import VideoViewer from "../VideoViewer";
 
 type Props = {
   post: ResponsePosts;
@@ -55,6 +56,7 @@ export default function PostDetail({
   };
 
   const deployUrl = post.links?.find((l) => l.type === LinkType.DEPLOY)?.url;
+  const videoUrl = post.links?.find((l) => l.type === LinkType.VIDEO)?.url;
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-6 py-8">
@@ -117,13 +119,15 @@ export default function PostDetail({
             )}
           </div>
 
+          {videoUrl && <VideoViewer url={videoUrl} />}
+
           {post.document && <DocumentViewer document={post.document} />}
 
           <PostContent
             content={post.content}
             recruitNote={post.recruitNote}
             tags={post.tags}
-            links={post.links ?? []}
+            links={(post.links ?? []).filter((l) => l.type !== LinkType.VIDEO)}
             postType={post.postType}
             recruitPositionInfos={post.recruitPositionInfos}
           />

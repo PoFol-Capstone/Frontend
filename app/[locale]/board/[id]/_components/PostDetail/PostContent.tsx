@@ -12,6 +12,7 @@ const LINK_ICON: Record<LinkType, string> = {
   [LinkType.ERD]: "⊞",
   [LinkType.CLASS]: "⊟",
   [LinkType.EXTRA]: "+",
+  [LinkType.VIDEO]: "▶",
 };
 
 const LINK_LABEL_KEYS: Record<LinkType, string> = {
@@ -21,6 +22,7 @@ const LINK_LABEL_KEYS: Record<LinkType, string> = {
   [LinkType.ERD]: "linkErd",
   [LinkType.CLASS]: "linkClass",
   [LinkType.EXTRA]: "linkExtra",
+  [LinkType.VIDEO]: "linkVideo",
 };
 
 type Props = {

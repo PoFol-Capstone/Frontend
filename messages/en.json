@@ -174,7 +174,8 @@
       "bookmarkFailed": "Failed to update the bookmark.",
       "likeFailed": "Failed to update the like.",
       "copyFailed": "Failed to copy the link.",
-      "recruitNote": "Recruitment details"
+      "recruitNote": "Recruitment details",
+      "linkVideo": "Demo video"
     },
     "apply": {
       "sectionCompleteTitle": "Application submitted",
@@ -396,6 +397,25 @@
       "viewerHeading": "Presentation",
       "fullscreen": "Fullscreen",
       "openNewTab": "Open in new tab"
+    },
+    "video": {
+      "label": "Demo video",
+      "invalid": "Only YouTube or Google Drive video links are supported. See 'How to add a video' below.",
+      "previewHint": "If the preview doesn't play, check the video's visibility (YouTube 'Unlisted', Drive 'Anyone with the link').",
+      "heading": "Demo video",
+      "guide": {
+        "title": "How to add a video",
+        "youtubeTitle": "YouTube (recommended)",
+        "youtube1": "In YouTube Studio, click 'Create → Upload videos'.",
+        "youtube2": "Set visibility to 'Unlisted' — only people with the link can watch, and it won't appear in search. 'Private' videos won't play.",
+        "youtube3": "Click 'Share → Copy link' under the video.",
+        "youtube4": "Paste the link above. Both youtu.be and watch?v= links work.",
+        "driveTitle": "Google Drive",
+        "drive1": "Upload the video file to Drive.",
+        "drive2": "Right-click → 'Share', and set General access to 'Anyone with the link · Viewer'.",
+        "drive3": "Click 'Copy link' and paste it above.",
+        "tip": "Tip: a 1–3 minute walkthrough of the core features works best. Viewers decide within the first 30 seconds."
+      }
     }
   },
   "profile": {
