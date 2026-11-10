@@ -76,7 +76,7 @@ ${targetRole ? `\n희망 직무: ${targetRole}\n` : ""}
 
   let result: DirectionResult;
   try {
-    const raw = await completeJson(prompt);
+    const raw = await completeJson("github-direction", prompt);
     result = {
       summary: asString(raw.summary, 600),
       evidence: asStringList(raw.evidence, 6, 40),

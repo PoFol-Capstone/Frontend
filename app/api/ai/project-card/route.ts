@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
 
   let draft;
   try {
-    draft = toAiDraft(await completeJson(`레포 데이터:\n${JSON.stringify(data)}`, 0.2, SYSTEM), tree);
+    draft = toAiDraft(await completeJson("project-card", `레포 데이터:\n${JSON.stringify(data)}`, 0.2, SYSTEM), tree);
   } catch (error) {
     return respond(aiErrorResponse(error, "AI 정리 카드 초안"));
   }

@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
 
   let markdown: string;
   try {
-    const raw = await completeJson(prompt);
+    const raw = await completeJson("profile-readme", prompt);
     const ai = {
       intro: asString(raw.intro, 1_500),
       projects: asString(raw.projects, 4_000),

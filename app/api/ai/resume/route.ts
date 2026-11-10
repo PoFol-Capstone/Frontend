@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
 
   let content: ResumeContent;
   try {
-    const raw = await completeJson(prompt, 0.4);
+    const raw = await completeJson("resume", prompt, 0.4);
     const repos = new Map((analysis?.repos ?? []).map((r) => [r.fullName, r]));
     const projects: ResumeProject[] = (Array.isArray(raw.projects) ? raw.projects : [])
       .slice(0, 3)

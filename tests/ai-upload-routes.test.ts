@@ -24,6 +24,8 @@ before(async () => {
   summarize = (await import("@/app/api/ai/summarize/route")).POST;
   thumbnail = (await import("@/app/api/ai/thumbnail/route")).POST;
   upload = (await import("@/app/api/upload/thumbnail/route")).POST;
+  backend.route("POST /api/ai/usage/consume", () => ({ status: 200, body: {} }));
+  backend.route("POST /api/ai/usage/tokens", () => ({ status: 204 }));
 });
 
 after(async () => {
@@ -156,7 +158,8 @@ describe("AI·업로드 라우트 인증 (P1-1)", () => {
       }),
     );
     assert.equal(res.status, 200);
-    assert.equal(backend.countRequests("POST", "/api/auth/refresh"), 1);
+    // 인증 확인 + 월 한도 차감 + 토큰 기록이 각각 쿠키의 만료 토큰을 보고 갱신한다 (다른 AI 라우트와 같음, refresh token 회전 없음)
+    assert.equal(backend.countRequests("POST", "/api/auth/refresh"), 3);
     const setCookie = res.headers.getSetCookie().join("\n");
     assert.match(setCookie, /access_token=/);
     assert.match(setCookie, new RegExp(`uuid=${user.uuid}`));
@@ -189,6 +192,37 @@ describe("AI·업로드 라우트 인증 (P1-1)", () => {
       assertNoExternalCalls();
     } finally {
       backend.setDown(false);
+    }
+  });
+});
+
+describe("summarize 월 한도 · 토큰 기록", () => {
+  it("월 한도가 남았으면 차감 후 호출하고, 응답의 토큰 수를 기록한다", async () => {
+    const res = await summarize(jsonRequest("/api/ai/summarize", validSummary, signedIn().cookies));
+    assert.equal(res.status, 200);
+    assert.equal(backend.countRequests("POST", "/api/ai/usage/consume"), 1);
+    const tokens = backend.requests.filter((r) => r.path === "/api/ai/usage/tokens");
+    assert.deepEqual(tokens.map((r) => r.body), [{ feature: "summarize", inputTokens: 120, outputTokens: 30 }]);
+  });
+
+  it("월 한도를 다 썼으면 429이고 OpenAI를 부르지 않는다", async () => {
+    backend.route("POST /api/ai/usage/consume", () => ({ status: 429, body: { error: "이번 달 AI 사용 횟수(20회)를 모두 사용했습니다" } }));
+    try {
+      const res = await summarize(jsonRequest("/api/ai/summarize", validSummary, signedIn().cookies));
+      assert.equal(res.status, 429);
+      assert.equal(openaiCalls(), 0);
+    } finally {
+      backend.route("POST /api/ai/usage/consume", () => ({ status: 200, body: {} }));
+    }
+  });
+
+  it("토큰 기록이 실패해도 사용자 응답은 성공한다", async () => {
+    backend.route("POST /api/ai/usage/tokens", () => ({ status: 500, body: { error: "redis down" } }));
+    try {
+      const res = await summarize(jsonRequest("/api/ai/summarize", validSummary, signedIn().cookies));
+      assert.equal(res.status, 200);
+    } finally {
+      backend.route("POST /api/ai/usage/tokens", () => ({ status: 204 }));
     }
   });
 });
