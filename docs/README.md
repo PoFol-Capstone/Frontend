@@ -8,6 +8,8 @@
 | 문서 | 내용 | 상태 |
 |---|---|---|
 | [2026-11-06-pivot-summary.md](2026-11-06-pivot-summary.md) | **[종합]** 서비스 전환 — 모든 판단 · 미결 사항 · 작업 순서 | 최신 기준 |
+| [2026-11-10-ai-usage-bm-plan.md](2026-11-10-ai-usage-bm-plan.md) | [분석 · 기획] AI 호출량 · 비용 + 비즈니스 모델 + 발표 반영 | 추정, 토큰 실측 대기 |
+| [2026-11-10-project-ai-depth-plan.md](2026-11-10-project-ai-depth-plan.md) | [기획] 정리 카드 품질 개선 + 구현 설명 · 면접 연습 · 기술 추천 열기 (자산화 S2 · S3 재정렬) | 계획 |
 | [2026-11-06-pivot-plan.md](2026-11-06-pivot-plan.md) | [기획] 전환 기획서 본문 — 배경, 타겟, 경쟁 · 수요, 출처 | 기준 |
 | [2026-11-06-pivot-review-ai-data.md](2026-11-06-pivot-review-ai-data.md) | [검토] 분석 데이터 활용 · 재점검 지표 · 프롬프트 · Organization 레포 | 결정 대기 |
 | [2026-11-06-pivot-review-community.md](2026-11-06-pivot-review-community.md) | [검토] 팀원 모집 삭제 · 게시판 역할 · 기회 피드 | 결정 대기 |
