@@ -41,6 +41,62 @@ export type ProjectCard = {
 
 export type CardValue<S extends CardSlot> = ProjectCard[S]["value"];
 
+// ── 탭별 결과물 (백엔드 project.assets_json) ─────────────────────────
+
+/** 기술 선택 이유를 레포에서 못 찾았을 때 — 비교해 볼 기술 */
+export type TechCompare = { tech: string; alternatives: string[]; question: string };
+
+/** 정리 카드 보조 정보 — AI 초안이 남긴 비운 이유 · 비교 기술 · 회고 질문 · 근거 커밋 */
+export type CardHints = {
+  skipped?: Partial<Record<CardSlot, string>>;
+  techCompare?: TechCompare[];
+  retroQuestions?: string[];
+  problemCommit?: string | null;
+};
+
+export type ExplainData = {
+  structure: { dir: string; role: string }[];
+  flows: { name: string; steps: { label: string; path: string }[] }[];
+  keyFiles: { path: string; role: string }[];
+  designChoices: { topic: string; claim: string; evidence: string[]; isGuess: boolean }[];
+};
+
+export const QUESTION_TYPES = ["myCode", "framework", "troubleshooting", "techChoice", "expansion"] as const;
+export type QuestionType = (typeof QUESTION_TYPES)[number];
+
+export type InterviewQuestion = {
+  id: string;
+  type: QuestionType;
+  question: string;
+  evidence: { paths: string[]; commit: string | null };
+  /** 자주 나오는 면접 주제 (수집 스냅샷 기준, 없으면 null) */
+  theme: string | null;
+  goodAnswerPoints: string[];
+  answer?: string | null;
+  practicedAt?: string | null;
+};
+
+export type TechRecoItem = {
+  id: string;
+  name: string;
+  icon: string | null;
+  reason: string;
+  firstStep: string;
+  done: boolean;
+};
+
+export type ProjectAssets = {
+  hints?: CardHints;
+  explain?: { pushedAt: string; data: ExplainData };
+  interview?: {
+    pushedAt: string;
+    questions: InterviewQuestion[];
+    /** 질문 주제의 출처 (공개 면접 질문 모음 레포) */
+    themeSources?: { repo: string; url: string }[];
+  };
+  techReco?: { generatedAt: string; role: string | null; source: string; items: TechRecoItem[] };
+};
+
 export type ProjectSummary = {
   uuid: string;
   repoFullName: string;
@@ -53,6 +109,7 @@ export type ProjectSummary = {
 export type Project = ProjectSummary & {
   post: { uuid: string; title: string } | null;
   card: ProjectCard;
+  assets?: ProjectAssets | null;
   createdAt: string;
 };
 

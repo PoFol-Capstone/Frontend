@@ -74,6 +74,11 @@ test("htmlToText — 한 번 이스케이프된 Greenhouse 본문과 그 안의 
   assert.deepEqual(extractJobTech(htmlToText(html)).required, ["react", "redux"]);
 });
 
+test("테스트 — 코드 테스트 표현은 잡고 A/B 테스트(통계 실험)는 안 잡는다", () => {
+  assert.deepEqual(findTech("자동화 테스트 프레임워크 경험, Pytest"), ["testing"]);
+  assert.deepEqual(findTech("A/B 테스트를 설계하고 분석"), []);
+});
+
 test("사전 id는 겹치지 않는다", () => {
   assert.equal(new Set(TECH.map((t) => t.id)).size, TECH.length);
 });

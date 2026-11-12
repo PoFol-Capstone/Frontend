@@ -19,14 +19,19 @@ export async function GET(req: NextRequest) {
         }));
 
     const location = res.headers.location as string | undefined;
+    const redirectUrl =
+      (res.status === 302 || res.status === 301) && location
+        ? location
+        : (res.data?.redirectUrl ?? res.data?.url);
 
-    if ((res.status === 302 || res.status === 301) && location) {
-      return NextResponse.json({ redirectUrl: location });
-    }
-
-    const redirectUrl = res.data?.redirectUrl ?? res.data?.url;
     if (redirectUrl) {
-      return NextResponse.json({ redirectUrl });
+      // 백엔드가 심는 oauth_binding(state를 이 브라우저에 묶는 쿠키)을 그대로 넘겨야
+      // 콜백(같은 프론트 호스트의 /api/auth/github/callback)에서 invalid_state가 나지 않는다
+      const response = NextResponse.json({ redirectUrl });
+      for (const cookie of ([] as string[]).concat(res.headers["set-cookie"] ?? [])) {
+        response.headers.append("Set-Cookie", cookie);
+      }
+      return response;
     }
 
     if (res.status === 401 || res.status === 400) {

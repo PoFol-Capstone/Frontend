@@ -68,7 +68,8 @@
       "or": "or",
       "githubContinue": "Continue with GitHub",
       "noAccount": "Don't have an account?",
-      "signupLink": "Sign up"
+      "signupLink": "Sign up",
+      "githubFailed": "GitHub login failed. Please try again."
     },
     "signupName": {
       "title": "Enter your name",
@@ -105,11 +106,6 @@
       "verifyFailed": "Failed to verify the code.",
       "needSignup": "This email isn't registered yet. Please enter your name to sign up.",
       "back": "Back"
-    },
-    "oauth": {
-      "unsupportedTitle": "GitHub login isn't supported right now",
-      "unsupportedDesc": "Log in with your email, then link your GitHub account from the write page.",
-      "goToLogin": "Go to login"
     }
   },
   "home": {
@@ -420,13 +416,16 @@
   },
   "profile": {
     "postsHeading": "Posts",
+    "scrollTop": "Back to top",
     "sidebar": {
       "monthsSuffix": " mo.",
       "noBio": "Add a bio",
       "githubNotConnected": "GitHub not linked",
       "noPortfolio": "No portfolio",
       "noEmail": "No email",
-      "editProfile": "Edit profile"
+      "editProfile": "Edit profile",
+      "showMore": "Show bio, skills & links",
+      "showLess": "Show less"
     },
     "follow": {
       "following": "Following",
@@ -492,6 +491,8 @@
       "loadFailed": "Could not load your projects. Please try again later.",
       "detailFailed": "Could not load this project. Please try again later.",
       "progress": "{filled}/{total} slots",
+      "slotFilled": "filled",
+      "slotEmpty": "empty, click to fill",
       "viewPost": "View post",
       "delete": "Delete project",
       "deleteConfirm": "Delete {repo}? Its project card will be deleted too.",
@@ -509,6 +510,70 @@
         "DRAFT": "In progress",
         "ORGANIZED": "Organized",
         "INTERVIEW_READY": "Interview ready"
+      },
+      "explain": {
+        "emptyTitle": "No implementation explanation yet",
+        "emptyDesc": "AI reads your key files and explains the folder structure, request flows and design choices. Part of your public repo code is sent to the AI.",
+        "generate": "Explain implementation",
+        "regenerate": "Regenerate",
+        "running": "Reading code…",
+        "failed": "Couldn't create the explanation. Please try again shortly.",
+        "unchanged": "The repo hasn't changed, so the existing explanation was kept. (No usage consumed)",
+        "hint": "Regenerate after new commits land in the repo.",
+        "structure": "Folder structure",
+        "flow": "Request flow — {name}",
+        "keyFiles": "Key files",
+        "designChoices": "Design choices",
+        "guessBadge": "guess"
+      },
+      "interview": {
+        "emptyTitle": "No interview questions yet",
+        "emptyDesc": "AI builds 15 questions grounded in your code, commits and frequently asked interview topics. Part of your public repo code is sent to the AI.",
+        "emailGuide": "If your commits aren't detected, link your Git commit email to your GitHub account.",
+        "generate": "Generate questions",
+        "regenerate": "Regenerate questions",
+        "running": "Generating…",
+        "failed": "Couldn't generate questions. Please try again shortly.",
+        "unchanged": "The repo hasn't changed, so the existing questions were kept. (No usage consumed)",
+        "progress": "{practiced} of {total} practiced — practice 10 to earn the interview-ready badge.",
+        "noGrading": "Answers aren't graded. Write yours, then compare with the key points.",
+        "next5": "Next 5",
+        "types": {
+          "myCode": "My code",
+          "framework": "Framework",
+          "troubleshooting": "Troubleshooting",
+          "techChoice": "Tech choice",
+          "expansion": "Scaling"
+        },
+        "practiced": "Practiced",
+        "evidence": "Evidence",
+        "answerLabel": "My answer",
+        "answerPlaceholder": "Write the key points as if answering out loud.",
+        "saveAnswer": "Record practice",
+        "saving": "Saving…",
+        "saveFailed": "Couldn't save your answer. Please try again shortly.",
+        "goodAnswer": "Key points of a good answer",
+        "sources": "Question topic sources:"
+      },
+      "feedbackPrompt": {
+        "copy": "Copy feedback prompt",
+        "copied": "Copied!",
+        "hint": "Paste it into ChatGPT or Claude to get interviewer-style feedback.",
+        "manualCopy": "If copying fails, copy the text below manually."
+      },
+      "techReco": {
+        "emptyTitle": "No tech recommendations yet",
+        "emptyDesc": "We compare preferred skills from job postings for your target role with what this repo already uses. No AI is called, so no usage is consumed.",
+        "generate": "Get recommendations",
+        "regenerate": "Recalculate",
+        "running": "Calculating…",
+        "failed": "Couldn't build recommendations. Please try again shortly.",
+        "hint": "Apply a recommended tech to the repo and it drops out of the next calculation.",
+        "sourceJobs": "Based on {period} job posting stats",
+        "sourceFallback": "Job data not collected yet — using the curated fallback. Switches automatically once postings are collected on the 2nd of each month.",
+        "allCovered": "You already use every preferred tech. Nice!",
+        "firstStep": "First step:",
+        "done": "Tried it"
       },
       "importModal": {
         "title": "Import repo",
@@ -573,12 +638,17 @@
           "placeholder": "e.g. We added tests too late, which made refactoring hard…"
         },
         "ai": {
-          "hint": "Reads the README, file tree and commit history to fill empty slots. Slots you already wrote stay as they are.",
-          "run": "Draft with AI",
+          "hint": "Fill facts checked in the repo first (your commits, tests, CI, deploy, period). Write the rest yourself, or ask for an AI draft only if you want. Slots you already wrote stay as they are.",
+          "run": "AI draft (optional)",
+          "facts": "Fill facts · no AI",
           "running": "Analyzing repo…",
+          "wait": "Reading the README, file tree and commits. Large repos can take up to a minute.",
           "failed": "Couldn't create a draft. Please try again shortly.",
           "skipped": "No evidence found in the repo, so this was left empty. Please write it yourself.",
-          "compareTitle": "Compare these before writing your reasons"
+          "compareTitle": "Compare these before writing your reasons",
+          "retroTitle": "Answer these before writing your retrospective",
+          "problemEvidence": "Evidence commit:",
+          "codeNotice": "The AI draft sends part of your public repo code to the AI."
         }
       }
     },
@@ -599,7 +669,6 @@
       "emptyTitle": "Turn your GitHub into a portfolio",
       "emptyDesc": "We read public repos only to summarize, check, and pick highlights. No code is stored.",
       "noProfileReadmeBanner": "You don't have a GitHub profile README",
-      "noProfileReadmeHint": "Generate a draft below under 'Profile README' and copy it.",
       "dashboardHeading": "GitHub summary",
       "ownedRepos": "Own repos",
       "forkedRepos": "{count} forks",
@@ -656,7 +725,6 @@
         "ciGuide": "GitHub Actions quickstart",
         "envGuide": "How to remove committed secrets",
         "openSettings": "Open repo settings (private / archive)",
-        "profileReadmeAction": "Generate a draft in 'Profile README' below.",
         "codes": {
           "NO_README": {
             "label": "No README",
@@ -693,6 +761,14 @@
           "README_NO_RUN_GUIDE": {
             "label": "No run instructions in README",
             "guide": "The README does not say how to install or run the project. Add commands a newcomer can copy."
+          },
+          "NO_LOCKFILE": {
+            "label": "No lockfile",
+            "guide": "There is a package.json but no lockfile (package-lock.json, yarn.lock …). Commit one so every install gets the same versions."
+          },
+          "NO_LINT_CONFIG": {
+            "label": "No linter / formatter config",
+            "guide": "No ESLint or Prettier config at the root. Enforcing style with tools shows good collaboration habits."
           },
           "FORK_HEAVY": {
             "label": "Mostly forks",
@@ -732,59 +808,6 @@
         "remaining": "{count} left this month",
         "limitReached": "You've used this month's quota.",
         "aiFailed": "AI analysis failed."
-      },
-      "readme": {
-        "heading": "Profile README",
-        "exists": "You already have a profile README. Generate a new draft to compare.",
-        "missing": "A README in {login}/{login} shows on your GitHub profile.",
-        "decorations": "Decorations (only checked ones are added)",
-        "decoration": {
-          "badges": {
-            "label": "Tech stack badges",
-            "hint": "shields.io — built from your profile skills"
-          },
-          "stats": {
-            "label": "Stats card",
-            "hint": "github-readme-stats — the public instance can be slow; self-hosting is recommended"
-          },
-          "streak": {
-            "label": "Contribution streak",
-            "hint": "github-readme-streak-stats"
-          },
-          "header": {
-            "label": "Header banner",
-            "hint": "capsule-render"
-          },
-          "solvedac": {
-            "label": "Algorithm tier",
-            "hint": "solved.ac badge — needs your Baekjoon ID"
-          },
-          "blog": {
-            "label": "Latest blog posts",
-            "hint": "blog-post-workflow (GitHub Actions) — your blog's RSS feed"
-          }
-        },
-        "lessIsMore": "Too many decorations hurt readability. Pick only what matters.",
-        "solvedacPlaceholder": "Baekjoon ID",
-        "blogPlaceholder": "Blog RSS URL (https://...)",
-        "targetRole": "Target role",
-        "targetRoleNone": "Target role (optional)",
-        "generate": "Generate draft",
-        "regenerate": "Regenerate",
-        "generating": "Generating...",
-        "remaining": "{count} left this month",
-        "failed": "Couldn't generate the draft.",
-        "preview": "Preview",
-        "edit": "Edit",
-        "save": "Save",
-        "saved": "Saved.",
-        "copy": "Copy",
-        "copied": "Copied. Paste it on GitHub.",
-        "copyFailed": "Couldn't copy. Select the text in Edit and copy it.",
-        "openEditor": "Edit on GitHub",
-        "createRepo": "Create {login} repo",
-        "workflowHeading": "Blog post workflow",
-        "workflowHint": "Save as .github/workflows/blog-post.yml."
       }
     }
   },

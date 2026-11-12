@@ -13,6 +13,8 @@ export type CheckCode =
   | "ENV_FILE_COMMITTED"
   | "NO_CI"
   | "README_NO_RUN_GUIDE"
+  | "NO_LOCKFILE"
+  | "NO_LINT_CONFIG"
   | "FORK_HEAVY"
   | "NO_PROFILE_README";
 
@@ -107,7 +109,14 @@ export type PublicGitHub = {
   featuredRepos: PublicFeaturedRepo[];
 };
 
-export type AiFeature = "github-direction" | "profile-readme" | "resume" | "project-card" | "summarize";
+export type AiFeature =
+  | "github-direction"
+  | "profile-readme"
+  | "resume"
+  | "project-card"
+  | "summarize"
+  | "project-explain"
+  | "interview-questions";
 
 export type AiFeatureUsage = {
   feature: AiFeature;

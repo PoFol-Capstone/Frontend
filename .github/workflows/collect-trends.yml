@@ -44,6 +44,14 @@ jobs:
         env:
           SUMMARY_FILE: ${{ runner.temp }}/jobs-summary.md
 
+      # 면접 질문 주제 (공개 질문 모음 레포 문서 제목, 출처 기록) — 실패해도 나머지 PR은 연다
+      - name: Collect interview themes
+        continue-on-error: true
+        run: node --import ./tests/setup/register.mjs scripts/collect-interview-themes.ts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SUMMARY_FILE: ${{ runner.temp }}/interview-summary.md
+
       - name: Open PR
         id: pr
         run: |
@@ -52,6 +60,7 @@ jobs:
           body="$RUNNER_TEMP/pr-body.md"
           cat "$RUNNER_TEMP/summary.md" > "$body"
           [ -f "$RUNNER_TEMP/jobs-summary.md" ] && printf '\n\n---\n\n' >> "$body" && cat "$RUNNER_TEMP/jobs-summary.md" >> "$body"
+          [ -f "$RUNNER_TEMP/interview-summary.md" ] && printf '\n\n---\n\n' >> "$body" && cat "$RUNNER_TEMP/interview-summary.md" >> "$body"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -C "$branch"
