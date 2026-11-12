@@ -2,8 +2,8 @@ import { Skeleton } from "@/components/Skeleton";
 
 export default function ProfileLoading() {
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-white px-10 py-8">
-      <div className="mx-auto grid max-w-6xl grid-cols-[300px_1fr] gap-12">
+    <main className="min-h-[calc(100vh-64px)] bg-white px-4 py-6 sm:px-10 sm:py-8">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-[300px_1fr] lg:gap-12">
         <aside className="h-fit space-y-4 border border-gray-300 px-8 py-7">
           <Skeleton className="mx-auto h-24 w-24 rounded-full" />
           <Skeleton className="mx-auto h-8 w-40" />
@@ -18,7 +18,7 @@ export default function ProfileLoading() {
 
         <section className="space-y-6">
           <Skeleton className="h-9 w-56" />
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {Array.from({ length: 4 }, (_, i) => (
               <div key={i} className="space-y-3">
                 <Skeleton className="aspect-video w-full" />

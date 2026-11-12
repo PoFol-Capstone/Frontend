@@ -2,6 +2,7 @@
 
 import BrandLogo from "@/components/BrandLogo";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import MobileTabBar from "@/components/MobileTabBar";
 import { useNavigation } from "@/components/NavigationProvider";
 import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
@@ -95,7 +96,7 @@ export default function Header({ session }: { session: string | null }) {
             // 게시판(탐방)은 메인 메뉴에서 뺐다 — 페이지 · 데이터는 유지 (docs/2026-11-06-pivot-summary.md 5장)
             <nav
               aria-label={t("mainNav")}
-              className="ml-4 flex items-center gap-3 text-sm font-medium sm:ml-6 sm:gap-5"
+              className="ml-6 hidden items-center gap-5 text-sm font-medium md:flex"
             >
               {[
                 {
@@ -196,6 +197,8 @@ export default function Header({ session }: { session: string | null }) {
               onItemRead={markOneRead}
               onMarkAllRead={markAllRead}
             />
+
+            <MobileTabBar />
           </>
         ) : (
           <div className="flex items-center gap-3">
