@@ -1016,6 +1016,27 @@
       "hint": "Users with 'Korea' in their GitHub location (cumulative). Approximate: users who only wrote a city are missing.",
       "unit": ""
     },
-    "incomplete": "GitHub could not finish counting some searches, so numbers may be lower than actual."
+    "incomplete": "GitHub could not finish counting some searches, so numbers may be lower than actual.",
+    "charts": {
+      "compare": {
+        "title": "Global vs Korea",
+        "hint": "Each line links the same language. A higher right end means it's relatively more used in Korea.",
+        "global": "Global new repos",
+        "korea": "Korean developers"
+      },
+      "line": {
+        "title": "Monthly share",
+        "hint": "Based on global new repos. Click the legend to toggle languages."
+      },
+      "bump": {
+        "title": "Rank changes",
+        "hint": "Based on global new repos — how each language's rank moved month to month."
+      },
+      "three": {
+        "title": "3D view",
+        "hint": "Language (x) × month (depth) × share (height). Drag to rotate."
+      },
+      "needMore": "Monthly charts appear once two or more months of data are collected."
+    }
   }
 }

@@ -1,6 +1,11 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { rankRows, type RankRow } from "@/lib/trends";
+import { rankRows, trendSeries, type RankRow } from "@/lib/trends";
 import { readSnapshots } from "@/lib/trends.server";
+import CompareSlope from "./_components/CompareSlope";
+import RankBump from "./_components/RankBump";
+import Trend3DLazy from "./_components/Trend3DLazy";
+import TrendBarChart from "./_components/TrendBarChart";
+import TrendLineChart from "./_components/TrendLineChart";
 
 /**
  * 채용 트렌드 — 매달 GitHub Actions가 모아 PR로 올리고, 머지된 data/trends/github/*.json만 보여준다.
@@ -14,6 +19,9 @@ export default async function TrendsPage({ params }: { params: Promise<{ locale:
   const snapshots = readSnapshots();
   const current = snapshots.at(-1);
   const previous = snapshots.at(-2) ?? null;
+  const globalRows = current ? rankRows(current.globalNewRepos, previous?.globalNewRepos ?? null) : [];
+  const koreaRows = current ? rankRows(current.koreaUsers, previous?.koreaUsers ?? null) : [];
+  const series = trendSeries(snapshots, "globalNewRepos");
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
@@ -41,7 +49,7 @@ export default async function TrendsPage({ params }: { params: Promise<{ locale:
           <Section
             title={t("global.title")}
             hint={t("global.hint")}
-            rows={rankRows(current.globalNewRepos, previous?.globalNewRepos ?? null)}
+            rows={globalRows}
             unit={t("global.unit")}
             locale={locale}
             changeLabel={t("changeLabel")}
@@ -49,11 +57,35 @@ export default async function TrendsPage({ params }: { params: Promise<{ locale:
           <Section
             title={t("korea.title")}
             hint={t("korea.hint")}
-            rows={rankRows(current.koreaUsers, previous?.koreaUsers ?? null)}
+            rows={koreaRows}
             unit={t("korea.unit")}
             locale={locale}
             changeLabel={t("changeLabel")}
           />
+
+          <ChartSection title={t("charts.compare.title")} hint={t("charts.compare.hint")}>
+            <CompareSlope global={globalRows} korea={koreaRows} leftLabel={t("charts.compare.global")} rightLabel={t("charts.compare.korea")} />
+          </ChartSection>
+
+          {snapshots.length >= 2 ? (
+            <ChartSection title={t("charts.line.title")} hint={t("charts.line.hint")}>
+              <TrendLineChart series={series} />
+            </ChartSection>
+          ) : (
+            <p className="mt-10 rounded-xl border border-dashed border-gray-300 p-4 text-center text-xs text-gray-500">
+              {t("charts.needMore")}
+            </p>
+          )}
+
+          {snapshots.length >= 3 && (
+            <ChartSection title={t("charts.bump.title")} hint={t("charts.bump.hint")}>
+              <RankBump series={series} />
+            </ChartSection>
+          )}
+
+          <ChartSection title={t("charts.three.title")} hint={t("charts.three.hint")}>
+            <Trend3DLazy series={series} />
+          </ChartSection>
 
           {current.incomplete.length > 0 && (
             <p className="mt-6 text-xs text-amber-600">{t("incomplete")}</p>
@@ -84,7 +116,10 @@ function Section({
     <section className="mt-10">
       <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
       <p className="mt-1 text-xs text-gray-500">{hint}</p>
-      <ol className="mt-4 space-y-2">
+      <div className="mt-4">
+        <TrendBarChart rows={rows} unit={unit} locale={locale} />
+      </div>
+      <ol className="sr-only">
         {rows.map((r, i) => (
           <li key={r.language} className="grid grid-cols-[1.5rem_6rem_1fr_auto] items-center gap-3 text-sm">
             <span className="text-gray-400">{i + 1}</span>
@@ -107,6 +142,16 @@ function Section({
           </li>
         ))}
       </ol>
+    </section>
+  );
+}
+
+function ChartSection({ title, hint, children }: { title: string; hint: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-12">
+      <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+      <p className="mt-1 text-xs text-gray-500">{hint}</p>
+      <div className="mt-4">{children}</div>
     </section>
   );
 }
