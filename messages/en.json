@@ -1039,9 +1039,15 @@
       "needMore": "Monthly charts appear once two or more months of data are collected."
     },
     "ui": {
-      "title": "UI/UX design trends",
-      "hint": "New articles from NN/g, Smashing Magazine, UX Collective, Figma and web.dev, collected daily. Click to read the original.",
-      "empty": "No articles yet. Updated daily at 09:00 KST."
+      "hint": "New articles from NN/g, Smashing Magazine, UX Collective, Figma and web.dev, collected daily. Click a card to read the original.",
+      "empty": "No articles yet. Updated daily at 09:00 KST.",
+      "original": "Original"
+    },
+    "tabs": {
+      "label": "Trend views",
+      "languages": "All languages",
+      "compare": "Korea vs global",
+      "ui": "UI trends"
     }
   }
 }

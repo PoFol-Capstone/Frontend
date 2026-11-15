@@ -1039,9 +1039,15 @@
       "needMore": "월별 변화 그래프는 데이터가 두 달 이상 쌓이면 나타나요."
     },
     "ui": {
-      "title": "UI/UX 디자인 트렌드",
-      "hint": "NN/g · Smashing Magazine · UX Collective · Figma · web.dev의 새 글을 매일 모아요. 누르면 원문으로 이동합니다.",
-      "empty": "아직 모은 글이 없어요. 매일 오전 9시에 갱신됩니다."
+      "hint": "NN/g · Smashing Magazine · UX Collective · Figma · web.dev의 새 글을 매일 모아요. 제목과 요약은 AI로 번역했고, 카드를 누르면 원문으로 이동합니다.",
+      "empty": "아직 모은 글이 없어요. 매일 오전 9시에 갱신됩니다.",
+      "original": "원제"
+    },
+    "tabs": {
+      "label": "트렌드 보기",
+      "languages": "전체 언어",
+      "compare": "국내 · 해외 비교",
+      "ui": "UI 트렌드"
     }
   }
 }
