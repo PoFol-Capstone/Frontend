@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { rankRows, trendSeries, type RankRow } from "@/lib/trends";
-import { readSnapshots } from "@/lib/trends.server";
+import { readSnapshots, readUiPosts } from "@/lib/trends.server";
+import { latestPosts, type UiPost } from "@/lib/uiTrends";
 import CompareSlope from "./_components/CompareSlope";
 import RankBump from "./_components/RankBump";
 import Trend3DLazy from "./_components/Trend3DLazy";
@@ -22,6 +23,7 @@ export default async function TrendsPage({ params }: { params: Promise<{ locale:
   const globalRows = current ? rankRows(current.globalNewRepos, previous?.globalNewRepos ?? null) : [];
   const koreaRows = current ? rankRows(current.koreaUsers, previous?.koreaUsers ?? null) : [];
   const series = trendSeries(snapshots, "globalNewRepos");
+  const uiPosts = latestPosts(readUiPosts());
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
@@ -92,7 +94,60 @@ export default async function TrendsPage({ params }: { params: Promise<{ locale:
           )}
         </>
       )}
+
+      <UiTrendsSection
+        title={t("ui.title")}
+        hint={t("ui.hint")}
+        empty={t("ui.empty")}
+        posts={uiPosts}
+        locale={locale}
+      />
     </main>
+  );
+}
+
+/** UI/UX 디자인 트렌드 — scripts/collect-ui-trends.ts가 매일 쌓는 글 중 최신 12개 */
+function UiTrendsSection({
+  title,
+  hint,
+  empty,
+  posts,
+  locale,
+}: {
+  title: string;
+  hint: string;
+  empty: string;
+  posts: UiPost[];
+  locale: string;
+}) {
+  const dateFormat = new Intl.DateTimeFormat(locale, { month: "short", day: "numeric", timeZone: "Asia/Seoul" });
+  return (
+    <section className="mt-12">
+      <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+      <p className="mt-1 text-xs text-gray-500">{hint}</p>
+      {posts.length === 0 ? (
+        <p className="mt-4 rounded-xl border border-dashed border-gray-300 p-4 text-center text-xs text-gray-500">{empty}</p>
+      ) : (
+        <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          {posts.map((p) => (
+            <li key={p.link}>
+              <a
+                href={p.link}
+                target="_blank"
+                rel="noreferrer"
+                className="flex h-full flex-col rounded-xl border border-gray-200 p-4 transition hover:border-gray-400 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-gray-800"
+              >
+                <span className="text-xs text-gray-400">
+                  {p.source} · <time dateTime={p.date}>{dateFormat.format(new Date(p.date))}</time>
+                </span>
+                <span className="mt-1 line-clamp-2 text-sm font-medium text-gray-900">{p.title}</span>
+                {p.summary && <span className="mt-1 line-clamp-2 text-xs text-gray-500">{p.summary}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 
