@@ -18,6 +18,11 @@ export type UiPost = {
   link: string;
   date: string; // ISO
   summary: string;
+  /** AI 번역 — 실패하면 비어 있고 다음 실행 때 다시 시도 */
+  titleKo?: string;
+  summaryKo?: string;
+  /** 글의 og:image. 찾아봤는데 없으면 "" (다시 찾지 않음), 아직 안 찾았으면 undefined */
+  image?: string;
 };
 
 export const MAX_PER_RUN = 10;
@@ -49,6 +54,8 @@ export function pickNew(items: Partial<UiPost>[], sentLinks: string[], now = Dat
       link,
       date: new Date(time(item)).toISOString(),
       summary: clip((item.summary ?? "").replace(/\s+/g, " ").trim(), 200),
+      // 피드에서 찾은 이미지만 미리 채운다. 없으면 undefined → 수집 스크립트가 og:image를 찾아본다
+      image: safeImageUrl(item.image, link) || undefined,
     });
   }
   return fresh.sort((a, b) => time(b) - time(a)).slice(0, MAX_PER_RUN).reverse();
@@ -57,16 +64,63 @@ export function pickNew(items: Partial<UiPost>[], sentLinks: string[], now = Dat
 /** 오래된 것부터 버리고 최근 max개만 */
 export const trimKept = <T>(list: T[], max = MAX_KEPT) => list.slice(-max);
 
-/** 디스코드 embed — 제목(링크), 요약, 푸터에 출처 + 날짜 */
+/** 디스코드 embed — 제목(링크), 요약, 대표 이미지, 푸터에 출처 + 날짜. 번역이 있으면 한국어로 */
 export function buildEmbed(post: UiPost) {
   return {
-    title: post.title,
+    title: post.titleKo || post.title,
     url: post.link,
-    description: post.summary || undefined, // 빈 문자열은 디스코드가 거부
+    description: post.summaryKo || post.summary || undefined, // 빈 문자열은 디스코드가 거부
+    image: post.image ? { url: post.image } : undefined,
     footer: { text: post.source },
     timestamp: post.date,
     color: 0x7c5cff,
   };
+}
+
+/** 번역이나 이미지 찾기가 아직 안 된 글 — 다음 실행 때 다시 채운다 */
+export const needsEnrich = (p: UiPost) => !p.titleKo || p.image === undefined;
+
+/** 외부에서 온 이미지 주소 → 절대 http(s) URL, 아니면 "" */
+export function safeImageUrl(raw: string | undefined, base: string): string {
+  if (!raw) return "";
+  try {
+    const url = new URL(raw.replace(/&amp;/g, "&"), base);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : "";
+  } catch {
+    return "";
+  }
+}
+
+/** 글 HTML에서 og:image(없으면 twitter:image) — 속성 순서 무관 */
+export function extractOgImage(html: string, pageUrl: string): string {
+  for (const tag of html.match(/<meta\b[^>]*>/gi) ?? []) {
+    if (!/(?:property|name)=["'](?:og:image|twitter:image)["']/i.test(tag)) continue;
+    const url = safeImageUrl(tag.match(/content=["']([^"']+)["']/i)?.[1], pageUrl);
+    if (url) return url;
+  }
+  return "";
+}
+
+/** RSS 본문의 첫 <img> — Medium(UX Collective)은 페이지 요청을 막지만 본문에 대표 이미지를 싣는다 */
+export const firstImage = (html: string, pageUrl: string) =>
+  safeImageUrl(html.match(/<img\b[^>]*\bsrc=["']([^"']+)["']/i)?.[1], pageUrl);
+
+/**
+ * 번역 응답 {items:[{id,title,summary}]}을 글에 반영. 모델 출력도 외부 입력이라
+ * id 범위 · 문자열 여부 · 길이를 확인하고, 잘못된 항목은 건너뛴다 (그 글은 다음 실행 때 다시 번역).
+ */
+export function applyTranslations(posts: UiPost[], response: unknown): number {
+  const items = (response as { items?: unknown })?.items;
+  if (!Array.isArray(items)) return 0;
+  let applied = 0;
+  for (const item of items as { id?: unknown; title?: unknown; summary?: unknown }[]) {
+    const post = typeof item?.id === "number" ? posts[item.id] : undefined;
+    if (!post || typeof item.title !== "string" || !item.title.trim()) continue;
+    post.titleKo = clip(item.title.trim(), 256);
+    post.summaryKo = typeof item.summary === "string" ? clip(item.summary.trim(), 200) : "";
+    applied++;
+  }
+  return applied;
 }
 
 /** 페이지용 — 최신 글 n개, 최신 순 */

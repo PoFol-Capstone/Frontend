@@ -1,6 +1,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { MAX_AGE_DAYS, MAX_KEPT, MAX_PER_RUN, buildEmbed, latestPosts, pickNew, trimKept, type UiPost } from "@/lib/uiTrends";
+import {
+  MAX_AGE_DAYS,
+  MAX_KEPT,
+  MAX_PER_RUN,
+  applyTranslations,
+  buildEmbed,
+  extractOgImage,
+  firstImage,
+  latestPosts,
+  needsEnrich,
+  pickNew,
+  trimKept,
+  type UiPost,
+} from "@/lib/uiTrends";
 
 const NOW = Date.parse("2026-01-31T00:00:00Z");
 const HOUR = 3_600_000;
@@ -82,4 +95,63 @@ test("latestPosts — 최신 순 n개", () => {
 test("readUiPosts — 파일 없으면 빈 배열", async () => {
   const { readUiPosts } = await import("@/lib/trends.server");
   assert.deepEqual(readUiPosts("/no/such/posts.json"), []);
+});
+
+test("pickNew — 피드 이미지는 http(s)만 남기고, 없으면 undefined (og:image를 찾아볼 대상)", () => {
+  const [withImage, noImage, badImage] = pickNew(
+    [post(3, { image: "https://cdn.example.com/a.png" }), post(2), post(1, { image: "javascript:alert(1)" })],
+    [],
+    NOW,
+  );
+  assert.equal(withImage.image, "https://cdn.example.com/a.png");
+  assert.equal(noImage.image, undefined);
+  assert.equal(badImage.image, undefined);
+});
+
+test("extractOgImage — 속성 순서 무관, twitter:image 대체, 상대 경로 · &amp; 처리, 위험한 URL 무시", () => {
+  const page = "https://site.com/blog/post";
+  assert.equal(extractOgImage(`<meta content="/img/a.png?x=1&amp;y=2" property="og:image">`, page), "https://site.com/img/a.png?x=1&y=2");
+  assert.equal(extractOgImage(`<meta name="twitter:image" content="https://cdn.site.com/t.jpg"/>`, page), "https://cdn.site.com/t.jpg");
+  assert.equal(extractOgImage(`<meta property="og:image" content="javascript:alert(1)">`, page), "");
+  assert.equal(extractOgImage(`<meta property="og:title" content="x">`, page), "");
+});
+
+test("firstImage — RSS 본문의 첫 <img>", () => {
+  const html = `<figure><img alt="" src="https://cdn-images-1.medium.com/max/1024/hero.png" /></figure><img src="second.png">`;
+  assert.equal(firstImage(html, "https://uxdesign.cc/p"), "https://cdn-images-1.medium.com/max/1024/hero.png");
+  assert.equal(firstImage("<p>no image</p>", "https://uxdesign.cc/p"), "");
+});
+
+test("applyTranslations — id로 매칭, 잘못된 항목 · 형식은 건너뜀", () => {
+  const posts = pickNew([post(2), post(1)], [], NOW);
+  const applied = applyTranslations(posts, {
+    items: [
+      { id: 0, title: " 두 번째 글 ", summary: "요약" },
+      { id: 1, title: "" }, // 빈 제목 → 건너뜀
+      { id: 9, title: "없는 글" },
+      { id: "0", title: "문자열 id" },
+    ],
+  });
+  assert.equal(applied, 1);
+  assert.equal(posts[0].titleKo, "두 번째 글");
+  assert.equal(posts[0].summaryKo, "요약");
+  assert.equal(posts[1].titleKo, undefined);
+  assert.equal(applyTranslations(posts, "not json object"), 0);
+  assert.equal(applyTranslations(posts, { items: "x" }), 0);
+});
+
+test("buildEmbed — 번역 · 이미지가 있으면 한국어 제목 · 요약 + 대표 이미지", () => {
+  const [p] = pickNew([post(1, { image: "https://cdn.example.com/a.png" })], [], NOW);
+  const embed = buildEmbed({ ...p, titleKo: "한국어 제목", summaryKo: "한국어 요약" });
+  assert.equal(embed.title, "한국어 제목");
+  assert.equal(embed.description, "한국어 요약");
+  assert.deepEqual(embed.image, { url: "https://cdn.example.com/a.png" });
+  assert.equal(buildEmbed({ ...p, image: "" }).image, undefined);
+});
+
+test("needsEnrich — 번역이 없거나 이미지를 아직 안 찾았으면 다시 채운다", () => {
+  const [p] = pickNew([post(1)], [], NOW);
+  assert.equal(needsEnrich(p), true);
+  assert.equal(needsEnrich({ ...p, titleKo: "제목", image: "" }), false); // 이미지 없음 확인 완료
+  assert.equal(needsEnrich({ ...p, titleKo: "제목" }), true);
 });

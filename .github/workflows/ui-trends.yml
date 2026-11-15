@@ -3,8 +3,9 @@
 #
 # 준비 (한 번만):
 #  1. Secrets → Actions의 DISCORD_WEBHOOK_URL (트렌드 수집과 같은 값을 쓴다 · 없으면 알림만 건너뜀)
-#  2. Settings → Actions → General → Workflow permissions를 "Read and write"로
-#  3. main에 브랜치 보호(직접 push 금지)가 있으면 github-actions를 예외로 두어야 커밋된다
+#  2. Secrets → Actions에 OPENAI_API_KEY (Vercel에 넣은 값과 같은 키 · 없으면 번역만 건너뜀, 하루 1회 호출)
+#  3. Settings → Actions → General → Workflow permissions를 "Read and write"로
+#  4. main에 브랜치 보호(직접 push 금지)가 있으면 github-actions를 예외로 두어야 커밋된다
 name: UI trends
 
 on:
@@ -37,6 +38,7 @@ jobs:
         run: node --import ./tests/setup/register.mjs scripts/collect-ui-trends.ts
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # 제목 · 요약 한국어 번역 (없으면 영어 그대로)
 
       # 전송이 중간에 실패해도 실행 — 이미 보낸 글이 내일 또 가지 않게
       - name: Commit posts.json
