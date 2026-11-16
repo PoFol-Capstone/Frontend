@@ -1,70 +1,70 @@
 {
   "period": "2026-10",
-  "collectedAt": "2026-11-09T16:51:21.425Z",
+  "collectedAt": "2026-11-10T08:02:33.811Z",
   "source": "GitHub Search API",
   "sourceUrl": "https://docs.github.com/en/rest/search/search",
   "globalNewRepos": [
     {
       "language": "JavaScript",
-      "count": 1066176
+      "count": 1066207
     },
     {
       "language": "TypeScript",
-      "count": 853034
+      "count": 853098
     },
     {
       "language": "Python",
-      "count": 1460749
+      "count": 1461061
     },
     {
       "language": "Java",
-      "count": 296457
+      "count": 296468
     },
     {
       "language": "Kotlin",
-      "count": 96494
+      "count": 96519
     },
     {
       "language": "Go",
-      "count": 66702
+      "count": 66736
     },
     {
       "language": "Rust",
-      "count": 82900
+      "count": 82935
     },
     {
       "language": "C++",
-      "count": 146809
+      "count": 146897
     },
     {
       "language": "C#",
-      "count": 142121
+      "count": 142189
     },
     {
       "language": "Swift",
-      "count": 46253
+      "count": 46266
     },
     {
       "language": "Dart",
-      "count": 59359
+      "count": 59411
     },
     {
       "language": "PHP",
-      "count": 89789
+      "count": 89831
     }
   ],
   "koreaUsers": [
     {
       "language": "JavaScript",
-      "count": 10162
+      "count": 10163
     },
     {
       "language": "TypeScript",
-      "count": 3527
+      "count": 3528
     },
     {
       "language": "Python",
-      "count": 13748
+      "count": 13750
     },
     {
       "language": "Java",
@@ -84,19 +84,19 @@
     },
     {
       "language": "C++",
-      "count": 4868
+      "count": 4869
     },
     {
       "language": "C#",
-      "count": 2317
+      "count": 2316
     },
     {
       "language": "Swift",
-      "count": 1108
+      "count": 1109
     },
     {
       "language": "Dart",
-      "count": 534
+      "count": 535
     },
     {
       "language": "PHP",

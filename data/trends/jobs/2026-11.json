@@ -1,0 +1,3037 @@
+{
+  "period": "2026-11",
+  "collectedAt": "2026-11-10T08:03:42.807Z",
+  "source": "Greenhouse Job Board API",
+  "sources": [
+    {
+      "company": "당근",
+      "url": "https://boards.greenhouse.io/daangn",
+      "postings": 31
+    },
+    {
+      "company": "쿠팡",
+      "url": "https://boards.greenhouse.io/coupang",
+      "postings": 65
+    },
+    {
+      "company": "크래프톤",
+      "url": "https://boards.greenhouse.io/krafton",
+      "postings": 20
+    },
+    {
+      "company": "몰로코",
+      "url": "https://boards.greenhouse.io/moloco",
+      "postings": 9
+    }
+  ],
+  "roles": {
+    "backend": {
+      "postings": 48,
+      "required": [
+        {
+          "id": "java",
+          "count": 22
+        },
+        {
+          "id": "kotlin",
+          "count": 14
+        },
+        {
+          "id": "msa",
+          "count": 12
+        },
+        {
+          "id": "spring",
+          "count": 11
+        },
+        {
+          "id": "python",
+          "count": 9
+        },
+        {
+          "id": "go",
+          "count": 8
+        },
+        {
+          "id": "aws",
+          "count": 7
+        },
+        {
+          "id": "grpc",
+          "count": 5
+        },
+        {
+          "id": "kubernetes",
+          "count": 5
+        },
+        {
+          "id": "cicd",
+          "count": 4
+        },
+        {
+          "id": "rest",
+          "count": 4
+        },
+        {
+          "id": "sql",
+          "count": 4
+        },
+        {
+          "id": "code-review",
+          "count": 3
+        },
+        {
+          "id": "graphql",
+          "count": 3
+        },
+        {
+          "id": "javascript",
+          "count": 3
+        },
+        {
+          "id": "linux",
+          "count": 3
+        },
+        {
+          "id": "typescript",
+          "count": 3
+        },
+        {
+          "id": "agile",
+          "count": 2
+        },
+        {
+          "id": "cpp",
+          "count": 2
+        },
+        {
+          "id": "docker",
+          "count": 2
+        },
+        {
+          "id": "kafka",
+          "count": 2
+        },
+        {
+          "id": "llm",
+          "count": 2
+        },
+        {
+          "id": "mysql",
+          "count": 2
+        },
+        {
+          "id": "postgresql",
+          "count": 2
+        },
+        {
+          "id": "gcp",
+          "count": 1
+        },
+        {
+          "id": "jpa",
+          "count": 1
+        },
+        {
+          "id": "nodejs",
+          "count": 1
+        },
+        {
+          "id": "redis",
+          "count": 1
+        },
+        {
+          "id": "spark",
+          "count": 1
+        }
+      ],
+      "preferred": [
+        {
+          "id": "kafka",
+          "count": 13
+        },
+        {
+          "id": "kubernetes",
+          "count": 12
+        },
+        {
+          "id": "agile",
+          "count": 11
+        },
+        {
+          "id": "msa",
+          "count": 11
+        },
+        {
+          "id": "aws",
+          "count": 9
+        },
+        {
+          "id": "jpa",
+          "count": 8
+        },
+        {
+          "id": "spark",
+          "count": 8
+        },
+        {
+          "id": "redis",
+          "count": 7
+        },
+        {
+          "id": "gcp",
+          "count": 6
+        },
+        {
+          "id": "java",
+          "count": 6
+        },
+        {
+          "id": "kotlin",
+          "count": 6
+        },
+        {
+          "id": "llm",
+          "count": 6
+        },
+        {
+          "id": "docker",
+          "count": 5
+        },
+        {
+          "id": "nodejs",
+          "count": 5
+        },
+        {
+          "id": "spring",
+          "count": 5
+        },
+        {
+          "id": "azure",
+          "count": 4
+        },
+        {
+          "id": "go",
+          "count": 4
+        },
+        {
+          "id": "airflow",
+          "count": 3
+        },
+        {
+          "id": "cicd",
+          "count": 3
+        },
+        {
+          "id": "elasticsearch",
+          "count": 3
+        },
+        {
+          "id": "graphql",
+          "count": 3
+        },
+        {
+          "id": "code-review",
+          "count": 2
+        },
+        {
+          "id": "grpc",
+          "count": 2
+        },
+        {
+          "id": "react",
+          "count": 2
+        },
+        {
+          "id": "android",
+          "count": 1
+        },
+        {
+          "id": "ios",
+          "count": 1
+        },
+        {
+          "id": "mysql",
+          "count": 1
+        },
+        {
+          "id": "python",
+          "count": 1
+        },
+        {
+          "id": "pytorch",
+          "count": 1
+        },
+        {
+          "id": "sql",
+          "count": 1
+        },
+        {
+          "id": "tensorflow",
+          "count": 1
+        }
+      ]
+    },
+    "frontend": {
+      "postings": 9,
+      "required": [
+        {
+          "id": "typescript",
+          "count": 6
+        },
+        {
+          "id": "javascript",
+          "count": 5
+        },
+        {
+          "id": "react",
+          "count": 5
+        },
+        {
+          "id": "angular",
+          "count": 2
+        },
+        {
+          "id": "babel",
+          "count": 2
+        },
+        {
+          "id": "html-css",
+          "count": 2
+        },
+        {
+          "id": "redux",
+          "count": 2
+        },
+        {
+          "id": "storybook",
+          "count": 2
+        },
+        {
+          "id": "testing",
+          "count": 2
+        },
+        {
+          "id": "vue",
+          "count": 2
+        },
+        {
+          "id": "webpack",
+          "count": 2
+        },
+        {
+          "id": "agile",
+          "count": 1
+        },
+        {
+          "id": "java",
+          "count": 1
+        },
+        {
+          "id": "llm",
+          "count": 1
+        },
+        {
+          "id": "ssr",
+          "count": 1
+        },
+        {
+          "id": "web-performance",
+          "count": 1
+        }
+      ],
+      "preferred": [
+        {
+          "id": "web-performance",
+          "count": 4
+        },
+        {
+          "id": "graphql",
+          "count": 3
+        },
+        {
+          "id": "ssr",
+          "count": 3
+        },
+        {
+          "id": "agile",
+          "count": 2
+        },
+        {
+          "id": "cicd",
+          "count": 2
+        },
+        {
+          "id": "express",
+          "count": 2
+        },
+        {
+          "id": "git",
+          "count": 2
+        },
+        {
+          "id": "msa",
+          "count": 2
+        },
+        {
+          "id": "nestjs",
+          "count": 2
+        },
+        {
+          "id": "nodejs",
+          "count": 2
+        },
+        {
+          "id": "spa",
+          "count": 2
+        },
+        {
+          "id": "spring",
+          "count": 2
+        },
+        {
+          "id": "react",
+          "count": 1
+        }
+      ]
+    },
+    "mobile": {
+      "postings": 10,
+      "required": [
+        {
+          "id": "ios",
+          "count": 6
+        },
+        {
+          "id": "kotlin",
+          "count": 4
+        },
+        {
+          "id": "android",
+          "count": 3
+        },
+        {
+          "id": "jetpack-compose",
+          "count": 3
+        },
+        {
+          "id": "swift",
+          "count": 2
+        },
+        {
+          "id": "swiftui",
+          "count": 2
+        },
+        {
+          "id": "web-performance",
+          "count": 2
+        },
+        {
+          "id": "java",
+          "count": 1
+        }
+      ],
+      "preferred": [
+        {
+          "id": "llm",
+          "count": 3
+        },
+        {
+          "id": "agile",
+          "count": 1
+        },
+        {
+          "id": "android",
+          "count": 1
+        },
+        {
+          "id": "flutter",
+          "count": 1
+        }
+      ]
+    },
+    "infra": {
+      "postings": 29,
+      "required": [
+        {
+          "id": "python",
+          "count": 12
+        },
+        {
+          "id": "aws",
+          "count": 5
+        },
+        {
+          "id": "cicd",
+          "count": 3
+        },
+        {
+          "id": "llm",
+          "count": 3
+        },
+        {
+          "id": "terraform",
+          "count": 3
+        },
+        {
+          "id": "gcp",
+          "count": 2
+        },
+        {
+          "id": "kubernetes",
+          "count": 2
+        },
+        {
+          "id": "linux",
+          "count": 2
+        },
+        {
+          "id": "android",
+          "count": 1
+        },
+        {
+          "id": "azure",
+          "count": 1
+        },
+        {
+          "id": "cpp",
+          "count": 1
+        },
+        {
+          "id": "git",
+          "count": 1
+        },
+        {
+          "id": "go",
+          "count": 1
+        },
+        {
+          "id": "ios",
+          "count": 1
+        },
+        {
+          "id": "kafka",
+          "count": 1
+        },
+        {
+          "id": "rest",
+          "count": 1
+        },
+        {
+          "id": "sql",
+          "count": 1
+        }
+      ],
+      "preferred": [
+        {
+          "id": "kubernetes",
+          "count": 7
+        },
+        {
+          "id": "aws",
+          "count": 6
+        },
+        {
+          "id": "azure",
+          "count": 5
+        },
+        {
+          "id": "python",
+          "count": 5
+        },
+        {
+          "id": "terraform",
+          "count": 5
+        },
+        {
+          "id": "gcp",
+          "count": 4
+        },
+        {
+          "id": "docker",
+          "count": 3
+        },
+        {
+          "id": "llm",
+          "count": 3
+        },
+        {
+          "id": "sql",
+          "count": 3
+        },
+        {
+          "id": "javascript",
+          "count": 2
+        },
+        {
+          "id": "airflow",
+          "count": 1
+        },
+        {
+          "id": "android",
+          "count": 1
+        },
+        {
+          "id": "cicd",
+          "count": 1
+        },
+        {
+          "id": "code-review",
+          "count": 1
+        },
+        {
+          "id": "go",
+          "count": 1
+        },
+        {
+          "id": "graphql",
+          "count": 1
+        },
+        {
+          "id": "ios",
+          "count": 1
+        },
+        {
+          "id": "msa",
+          "count": 1
+        },
+        {
+          "id": "mysql",
+          "count": 1
+        },
+        {
+          "id": "rest",
+          "count": 1
+        },
+        {
+          "id": "spark",
+          "count": 1
+        },
+        {
+          "id": "typescript",
+          "count": 1
+        }
+      ]
+    },
+    "data": {
+      "postings": 29,
+      "required": [
+        {
+          "id": "python",
+          "count": 13
+        },
+        {
+          "id": "go",
+          "count": 7
+        },
+        {
+          "id": "java",
+          "count": 7
+        },
+        {
+          "id": "llm",
+          "count": 6
+        },
+        {
+          "id": "cicd",
+          "count": 4
+        },
+        {
+          "id": "kotlin",
+          "count": 3
+        },
+        {
+          "id": "aws",
+          "count": 2
+        },
+        {
+          "id": "gcp",
+          "count": 2
+        },
+        {
+          "id": "kubernetes",
+          "count": 2
+        },
+        {
+          "id": "nodejs",
+          "count": 2
+        },
+        {
+          "id": "scala",
+          "count": 2
+        },
+        {
+          "id": "sql",
+          "count": 2
+        },
+        {
+          "id": "cpp",
+          "count": 1
+        },
+        {
+          "id": "pytorch",
+          "count": 1
+        },
+        {
+          "id": "react",
+          "count": 1
+        },
+        {
+          "id": "terraform",
+          "count": 1
+        },
+        {
+          "id": "web-performance",
+          "count": 1
+        }
+      ],
+      "preferred": [
+        {
+          "id": "llm",
+          "count": 7
+        },
+        {
+          "id": "aws",
+          "count": 4
+        },
+        {
+          "id": "gcp",
+          "count": 4
+        },
+        {
+          "id": "kubernetes",
+          "count": 4
+        },
+        {
+          "id": "terraform",
+          "count": 4
+        },
+        {
+          "id": "python",
+          "count": 3
+        },
+        {
+          "id": "react",
+          "count": 3
+        },
+        {
+          "id": "typescript",
+          "count": 3
+        },
+        {
+          "id": "azure",
+          "count": 2
+        },
+        {
+          "id": "docker",
+          "count": 2
+        },
+        {
+          "id": "web-performance",
+          "count": 2
+        },
+        {
+          "id": "airflow",
+          "count": 1
+        },
+        {
+          "id": "cicd",
+          "count": 1
+        },
+        {
+          "id": "fastapi",
+          "count": 1
+        },
+        {
+          "id": "spark",
+          "count": 1
+        },
+        {
+          "id": "sql",
+          "count": 1
+        },
+        {
+          "id": "tailwind",
+          "count": 1
+        }
+      ]
+    }
+  },
+  "all": {
+    "postings": 125,
+    "required": [
+      {
+        "id": "python",
+        "count": 34
+      },
+      {
+        "id": "java",
+        "count": 31
+      },
+      {
+        "id": "kotlin",
+        "count": 21
+      },
+      {
+        "id": "go",
+        "count": 16
+      },
+      {
+        "id": "aws",
+        "count": 14
+      },
+      {
+        "id": "llm",
+        "count": 12
+      },
+      {
+        "id": "msa",
+        "count": 12
+      },
+      {
+        "id": "cicd",
+        "count": 11
+      },
+      {
+        "id": "spring",
+        "count": 11
+      },
+      {
+        "id": "kubernetes",
+        "count": 9
+      },
+      {
+        "id": "typescript",
+        "count": 9
+      },
+      {
+        "id": "javascript",
+        "count": 8
+      },
+      {
+        "id": "ios",
+        "count": 7
+      },
+      {
+        "id": "sql",
+        "count": 7
+      },
+      {
+        "id": "react",
+        "count": 6
+      },
+      {
+        "id": "gcp",
+        "count": 5
+      },
+      {
+        "id": "grpc",
+        "count": 5
+      },
+      {
+        "id": "linux",
+        "count": 5
+      },
+      {
+        "id": "rest",
+        "count": 5
+      },
+      {
+        "id": "android",
+        "count": 4
+      },
+      {
+        "id": "cpp",
+        "count": 4
+      },
+      {
+        "id": "terraform",
+        "count": 4
+      },
+      {
+        "id": "web-performance",
+        "count": 4
+      },
+      {
+        "id": "agile",
+        "count": 3
+      },
+      {
+        "id": "code-review",
+        "count": 3
+      },
+      {
+        "id": "graphql",
+        "count": 3
+      },
+      {
+        "id": "jetpack-compose",
+        "count": 3
+      },
+      {
+        "id": "kafka",
+        "count": 3
+      },
+      {
+        "id": "nodejs",
+        "count": 3
+      },
+      {
+        "id": "angular",
+        "count": 2
+      },
+      {
+        "id": "babel",
+        "count": 2
+      },
+      {
+        "id": "docker",
+        "count": 2
+      },
+      {
+        "id": "html-css",
+        "count": 2
+      },
+      {
+        "id": "mysql",
+        "count": 2
+      },
+      {
+        "id": "postgresql",
+        "count": 2
+      },
+      {
+        "id": "redux",
+        "count": 2
+      },
+      {
+        "id": "scala",
+        "count": 2
+      },
+      {
+        "id": "storybook",
+        "count": 2
+      },
+      {
+        "id": "swift",
+        "count": 2
+      },
+      {
+        "id": "swiftui",
+        "count": 2
+      },
+      {
+        "id": "testing",
+        "count": 2
+      },
+      {
+        "id": "vue",
+        "count": 2
+      },
+      {
+        "id": "webpack",
+        "count": 2
+      },
+      {
+        "id": "azure",
+        "count": 1
+      },
+      {
+        "id": "git",
+        "count": 1
+      },
+      {
+        "id": "jpa",
+        "count": 1
+      },
+      {
+        "id": "pytorch",
+        "count": 1
+      },
+      {
+        "id": "redis",
+        "count": 1
+      },
+      {
+        "id": "spark",
+        "count": 1
+      },
+      {
+        "id": "ssr",
+        "count": 1
+      }
+    ],
+    "preferred": [
+      {
+        "id": "kubernetes",
+        "count": 23
+      },
+      {
+        "id": "aws",
+        "count": 19
+      },
+      {
+        "id": "llm",
+        "count": 19
+      },
+      {
+        "id": "agile",
+        "count": 14
+      },
+      {
+        "id": "gcp",
+        "count": 14
+      },
+      {
+        "id": "msa",
+        "count": 14
+      },
+      {
+        "id": "kafka",
+        "count": 13
+      },
+      {
+        "id": "azure",
+        "count": 11
+      },
+      {
+        "id": "docker",
+        "count": 10
+      },
+      {
+        "id": "spark",
+        "count": 10
+      },
+      {
+        "id": "python",
+        "count": 9
+      },
+      {
+        "id": "terraform",
+        "count": 9
+      },
+      {
+        "id": "jpa",
+        "count": 8
+      },
+      {
+        "id": "cicd",
+        "count": 7
+      },
+      {
+        "id": "graphql",
+        "count": 7
+      },
+      {
+        "id": "nodejs",
+        "count": 7
+      },
+      {
+        "id": "redis",
+        "count": 7
+      },
+      {
+        "id": "spring",
+        "count": 7
+      },
+      {
+        "id": "java",
+        "count": 6
+      },
+      {
+        "id": "kotlin",
+        "count": 6
+      },
+      {
+        "id": "react",
+        "count": 6
+      },
+      {
+        "id": "web-performance",
+        "count": 6
+      },
+      {
+        "id": "airflow",
+        "count": 5
+      },
+      {
+        "id": "go",
+        "count": 5
+      },
+      {
+        "id": "sql",
+        "count": 5
+      },
+      {
+        "id": "typescript",
+        "count": 4
+      },
+      {
+        "id": "android",
+        "count": 3
+      },
+      {
+        "id": "code-review",
+        "count": 3
+      },
+      {
+        "id": "elasticsearch",
+        "count": 3
+      },
+      {
+        "id": "ssr",
+        "count": 3
+      },
+      {
+        "id": "express",
+        "count": 2
+      },
+      {
+        "id": "git",
+        "count": 2
+      },
+      {
+        "id": "grpc",
+        "count": 2
+      },
+      {
+        "id": "ios",
+        "count": 2
+      },
+      {
+        "id": "javascript",
+        "count": 2
+      },
+      {
+        "id": "mysql",
+        "count": 2
+      },
+      {
+        "id": "nestjs",
+        "count": 2
+      },
+      {
+        "id": "spa",
+        "count": 2
+      },
+      {
+        "id": "fastapi",
+        "count": 1
+      },
+      {
+        "id": "flutter",
+        "count": 1
+      },
+      {
+        "id": "pytorch",
+        "count": 1
+      },
+      {
+        "id": "rest",
+        "count": 1
+      },
+      {
+        "id": "tailwind",
+        "count": 1
+      },
+      {
+        "id": "tensorflow",
+        "count": 1
+      }
+    ]
+  },
+  "unsectioned": 1,
+  "postings": [
+    {
+      "company": "당근",
+      "title": "Data Analytics Engineer - 데이터 가치화",
+      "url": "https://about.daangn.com?gh_jid=7507320003",
+      "role": "data",
+      "required": [
+        "python",
+        "sql"
+      ],
+      "preferred": [
+        "airflow",
+        "aws",
+        "gcp"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Network Engineer - 인프라 (네트워크, Cloud)",
+      "url": "https://about.daangn.com?gh_jid=5004587003",
+      "role": "infra",
+      "required": [
+        "aws",
+        "gcp"
+      ],
+      "preferred": [
+        "python",
+        "go",
+        "kubernetes",
+        "terraform"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Security Engineer - 인프라 (보안, Detection & Response)",
+      "url": "https://about.daangn.com?gh_jid=6043519003",
+      "role": "infra",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Site Reliability Engineer - 인프라 (클러스터)",
+      "url": "https://about.daangn.com?gh_jid=5811688003",
+      "role": "infra",
+      "required": [
+        "kubernetes",
+        "linux"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer - 테크코어 (AI Platform)",
+      "url": "https://about.daangn.com?gh_jid=7990084003",
+      "role": "data",
+      "required": [
+        "llm"
+      ],
+      "preferred": [
+        "typescript",
+        "python",
+        "react",
+        "tailwind",
+        "fastapi",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Android",
+      "url": "https://about.daangn.com?gh_jid=8042571003",
+      "role": "mobile",
+      "required": [
+        "kotlin",
+        "android",
+        "jetpack-compose"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Android",
+      "url": "https://about.daangn.com?gh_jid=4496730003",
+      "role": "mobile",
+      "required": [
+        "kotlin",
+        "android",
+        "jetpack-compose"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Android (인턴)",
+      "url": "https://about.daangn.com?gh_jid=7980543003",
+      "role": "mobile",
+      "required": [
+        "kotlin",
+        "jetpack-compose"
+      ],
+      "preferred": [
+        "llm",
+        "android"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend",
+      "url": "https://about.daangn.com?gh_jid=8043876003",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "grpc",
+        "msa",
+        "kafka",
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 광고",
+      "url": "https://about.daangn.com?gh_jid=6640363003",
+      "role": "backend",
+      "required": [
+        "grpc",
+        "msa",
+        "code-review"
+      ],
+      "preferred": [
+        "aws",
+        "gcp",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 피드 (피드 인프라)",
+      "url": "https://about.daangn.com?gh_jid=5046757003",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "go",
+        "msa",
+        "kafka",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 로컬 잡스",
+      "url": "https://about.daangn.com?gh_jid=5781885003",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "go",
+        "react",
+        "nodejs",
+        "graphql"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 부동산",
+      "url": "https://about.daangn.com?gh_jid=5296522003",
+      "role": "backend",
+      "required": [
+        "typescript",
+        "java",
+        "kotlin",
+        "python",
+        "go"
+      ],
+      "preferred": [
+        "react",
+        "nodejs",
+        "graphql"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 인프라 (공통 서비스 개발, 콘텐츠 서빙)",
+      "url": "https://about.daangn.com?gh_jid=7644271003",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "kotlin",
+        "go"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 나의당근",
+      "url": "https://about.daangn.com?gh_jid=7659289003",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "kotlin",
+        "spring",
+        "grpc",
+        "kafka",
+        "mysql",
+        "redis",
+        "llm",
+        "aws",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 커뮤니티",
+      "url": "https://about.daangn.com?gh_jid=7762062003",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "spring"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - Content & User Understanding",
+      "url": "https://about.daangn.com?gh_jid=7995038003",
+      "role": "backend",
+      "required": [
+        "llm"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Backend - 서비스 코어 (Identity Service)",
+      "url": "https://about.daangn.com?gh_jid=5046759003",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "go",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Data - 데이터 가치화",
+      "url": "https://about.daangn.com?gh_jid=4300801003",
+      "role": "data",
+      "required": [
+        "java",
+        "kotlin",
+        "python",
+        "go",
+        "scala",
+        "aws",
+        "gcp"
+      ],
+      "preferred": [
+        "spark",
+        "kubernetes",
+        "terraform"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Frontend",
+      "url": "https://about.daangn.com?gh_jid=8043875003",
+      "role": "frontend",
+      "required": [
+        "javascript",
+        "typescript"
+      ],
+      "preferred": [
+        "react",
+        "ssr",
+        "web-performance",
+        "graphql"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Frontend - 로컬 잡스",
+      "url": "https://about.daangn.com?gh_jid=6081125003",
+      "role": "frontend",
+      "required": [
+        "react",
+        "llm"
+      ],
+      "preferred": [
+        "graphql"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Frontend - 로컬 잡스 (레슨/과외 팀)",
+      "url": "https://about.daangn.com?gh_jid=7774455003",
+      "role": "frontend",
+      "required": [
+        "typescript",
+        "react"
+      ],
+      "preferred": [
+        "graphql"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Frontend - 커뮤니티",
+      "url": "https://about.daangn.com?gh_jid=7689088003",
+      "role": "frontend",
+      "required": [
+        "javascript",
+        "typescript",
+        "react",
+        "ssr"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Frontend - Cross Product Growth (Engagement Part)",
+      "url": "https://about.daangn.com?gh_jid=7668837003",
+      "role": "frontend",
+      "required": [],
+      "preferred": [
+        "web-performance"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, iOS",
+      "url": "https://about.daangn.com?gh_jid=5282170003",
+      "role": "mobile",
+      "required": [
+        "ios"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, iOS",
+      "url": "https://about.daangn.com?gh_jid=8043888003",
+      "role": "mobile",
+      "required": [
+        "ios"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Machine Learning",
+      "url": "https://about.daangn.com?gh_jid=5248527003",
+      "role": "data",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Machine Learning",
+      "url": "https://about.daangn.com?gh_jid=8043877003",
+      "role": "data",
+      "required": [],
+      "preferred": [
+        "python",
+        "web-performance",
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Machine Learning - 검색 (품질)",
+      "url": "https://about.daangn.com?gh_jid=6610455003",
+      "role": "data",
+      "required": [
+        "python",
+        "web-performance"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Software Engineer, Machine Learning - ML 인프라",
+      "url": "https://about.daangn.com?gh_jid=7498021003",
+      "role": "data",
+      "required": [
+        "llm"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "당근",
+      "title": "Test Automation Engineer",
+      "url": "https://about.daangn.com?gh_jid=6285317003",
+      "role": "backend",
+      "required": [
+        "llm"
+      ],
+      "preferred": [
+        "java",
+        "kotlin",
+        "sql",
+        "cicd"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[CFN] Staff Back-end Engineer (Lending Engineering)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8102540",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "spring"
+      ],
+      "preferred": [
+        "jpa",
+        "msa",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[Coupang Ads] Senior Back-end Engineer (Advertiser Platform)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8239019",
+      "role": "backend",
+      "required": [
+        "sql",
+        "graphql",
+        "grpc",
+        "rest",
+        "msa"
+      ],
+      "preferred": [
+        "java",
+        "kotlin",
+        "nodejs",
+        "spring",
+        "kafka",
+        "redis",
+        "elasticsearch",
+        "spark",
+        "aws",
+        "gcp",
+        "azure",
+        "docker",
+        "kubernetes",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[Coupang Pay] Senior Back-end Engineer (Pay Test Operations)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212656",
+      "role": "backend",
+      "required": [
+        "linux"
+      ],
+      "preferred": [
+        "java",
+        "aws",
+        "azure",
+        "docker",
+        "kubernetes",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[Coupang Pay] Sr. Back-end Engineer (Fintech Developer Platform)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8222501",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "python",
+        "go",
+        "aws",
+        "docker",
+        "kubernetes",
+        "linux",
+        "cicd"
+      ],
+      "preferred": [
+        "msa",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[Coupang Pay] Staff Back-end Engineer (Fintech Developer Platform)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8212664",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "python",
+        "go",
+        "aws",
+        "docker",
+        "kubernetes",
+        "linux",
+        "cicd"
+      ],
+      "preferred": [
+        "msa",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[Coupang Pay] Staff Back-end Engineer (Global Payments)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8287908",
+      "role": "backend",
+      "required": [
+        "java"
+      ],
+      "preferred": [
+        "jpa",
+        "msa"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[Coupang Pay] Staff Front-end Engineer (New Fintech Product)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8054705",
+      "role": "frontend",
+      "required": [
+        "javascript",
+        "typescript",
+        "html-css",
+        "react",
+        "vue",
+        "angular",
+        "redux",
+        "webpack",
+        "babel",
+        "storybook",
+        "testing"
+      ],
+      "preferred": [
+        "ssr",
+        "spa",
+        "web-performance",
+        "nodejs",
+        "express",
+        "nestjs",
+        "spring",
+        "msa",
+        "cicd",
+        "git",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[Coupang Pay Tech] Staff Android Engineer",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8194393",
+      "role": "mobile",
+      "required": [
+        "java",
+        "kotlin",
+        "android"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Director of Engineering, Fulfillment Optimization (Global Operations Technology)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8207192",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "grpc",
+        "kafka",
+        "redis"
+      ],
+      "preferred": [
+        "msa",
+        "llm",
+        "code-review",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Global Operations Technology(GOT) 개발자 집중 채용",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=6810667",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "jpa",
+        "msa",
+        "redis"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Manager, Back-end Engineering (Eats Merchant)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8175617",
+      "role": "backend",
+      "required": [
+        "msa"
+      ],
+      "preferred": [
+        "java",
+        "spring",
+        "jpa",
+        "kafka",
+        "code-review"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Manager, Back-end Engineering (Global Operations Technology)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=6137112",
+      "role": "backend",
+      "required": [
+        "java",
+        "spring",
+        "kafka",
+        "spark",
+        "aws"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Manager, Back-end Engineering (Rocket Pay)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078891",
+      "role": "backend",
+      "required": [
+        "jpa",
+        "msa",
+        "agile"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Manager iOS Engineer (CoupangEats)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8318669",
+      "role": "mobile",
+      "required": [
+        "ios"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Manager, iOS Engineer (CoupangEats)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8333651",
+      "role": "mobile",
+      "required": [
+        "ios"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[쿠팡페이] Senior Back-end Engineer (계약직)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8127212",
+      "role": "backend",
+      "required": [
+        "javascript",
+        "typescript",
+        "java",
+        "python"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior, Back-end Engineer(CX) - Coupang Play",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8186132",
+      "role": "backend",
+      "required": [
+        "javascript",
+        "java",
+        "go",
+        "nodejs",
+        "aws",
+        "gcp"
+      ],
+      "preferred": [
+        "graphql",
+        "android",
+        "ios"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior DevOps Engineer (SPIR/OC)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078331",
+      "role": "infra",
+      "required": [
+        "python"
+      ],
+      "preferred": [
+        "aws",
+        "docker",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior, Network Security Engineer (Detection Operations)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203405",
+      "role": "infra",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff Back-end Engineer (eCommerce Engineering;Interstellar)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078707",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "spring",
+        "msa",
+        "aws",
+        "kubernetes",
+        "code-review"
+      ],
+      "preferred": [
+        "kafka",
+        "spark",
+        "airflow"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff, Back-end Engineer (Global Operations Technology)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=5848138",
+      "role": "backend",
+      "required": [
+        "java",
+        "spring",
+        "aws"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff Back-end Engineer (Rocket Pay)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8155846",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "spring"
+      ],
+      "preferred": [
+        "jpa",
+        "msa",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff Data Scientist",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8048155",
+      "role": "data",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff Data Scientist",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8239021",
+      "role": "data",
+      "required": [
+        "python",
+        "sql"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff, Machine Learning Engineer (Coupang Eats Search)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8146344",
+      "role": "data",
+      "required": [
+        "llm"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff security engineer",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8239014",
+      "role": "infra",
+      "required": [
+        "python"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Staff Security Engineer, Mobile Security (Digital Trust)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203471",
+      "role": "infra",
+      "required": [
+        "android",
+        "ios"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior~Staff, Security Engineer (Web Security)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8206706",
+      "role": "infra",
+      "required": [],
+      "preferred": [
+        "javascript",
+        "python",
+        "sql",
+        "aws",
+        "gcp",
+        "azure"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior System Engineer - Fintech Cloud & Infrastructure",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8344977",
+      "role": "infra",
+      "required": [
+        "python",
+        "rest",
+        "aws",
+        "terraform",
+        "linux"
+      ],
+      "preferred": [
+        "mysql",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior System Engineer - Fintech IT Innovation",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8344981",
+      "role": "backend",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Senior Threat Detection Engineer",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188040",
+      "role": "backend",
+      "required": [
+        "python",
+        "sql",
+        "aws"
+      ],
+      "preferred": [
+        "llm",
+        "cicd"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Sr. Director, Back-End Engineering",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8118859",
+      "role": "backend",
+      "required": [
+        "kubernetes"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Sr. Director, Back-End Engineering",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8118861",
+      "role": "backend",
+      "required": [
+        "kubernetes",
+        "cicd"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[쿠팡페이] Sr. Security Engineer (Fintech Identity & Access Management)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8364741",
+      "role": "infra",
+      "required": [
+        "aws"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Sr. Staff Back-end Engineer (Coupang Pay)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7936538",
+      "role": "backend",
+      "required": [
+        "javascript",
+        "typescript",
+        "java",
+        "python",
+        "go",
+        "msa"
+      ],
+      "preferred": [
+        "llm",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Sr. Staff Front-end Engineer  (Global Operations Technology)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=5868936",
+      "role": "frontend",
+      "required": [
+        "javascript",
+        "typescript",
+        "agile"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Sr. Staff, Machine Learning Engineer (Search & Discovery)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8130040",
+      "role": "data",
+      "required": [
+        "java",
+        "python"
+      ],
+      "preferred": [
+        "aws",
+        "gcp"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff AI Engineer (Security)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8203172",
+      "role": "infra",
+      "required": [
+        "python"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Back-end Engineer (Advertiser Platform)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8175959",
+      "role": "backend",
+      "required": [
+        "sql",
+        "graphql",
+        "grpc",
+        "rest",
+        "msa"
+      ],
+      "preferred": [
+        "java",
+        "kotlin",
+        "nodejs",
+        "spring",
+        "kafka",
+        "redis",
+        "elasticsearch",
+        "spark",
+        "aws",
+        "gcp",
+        "azure",
+        "docker",
+        "kubernetes",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Back-end Engineer (Advertiser Platform)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7902369",
+      "role": "backend",
+      "required": [
+        "sql",
+        "graphql",
+        "grpc",
+        "rest",
+        "msa"
+      ],
+      "preferred": [
+        "java",
+        "kotlin",
+        "nodejs",
+        "spring",
+        "kafka",
+        "redis",
+        "elasticsearch",
+        "spark",
+        "aws",
+        "gcp",
+        "azure",
+        "docker",
+        "kubernetes",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Backend Engineer (ECommerce Engineering; Core Member)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8127146",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "msa"
+      ],
+      "preferred": [
+        "kafka",
+        "spark",
+        "airflow",
+        "aws",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Back-end Engineer (eCommerce Engineering; Interstellar)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8076371",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "spring",
+        "msa",
+        "code-review"
+      ],
+      "preferred": [
+        "python",
+        "kafka",
+        "spark",
+        "airflow",
+        "aws",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Backend Engineer (Fintech Data Platform)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8073876",
+      "role": "backend",
+      "required": [
+        "java",
+        "spring",
+        "rest",
+        "msa"
+      ],
+      "preferred": [
+        "kafka",
+        "redis",
+        "aws",
+        "docker",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Back-end Engineer (Global Operations Technology)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7230867",
+      "role": "backend",
+      "required": [
+        "java",
+        "spring",
+        "msa"
+      ],
+      "preferred": [
+        "jpa",
+        "redis",
+        "cicd"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Back-end Engineer (Rocket Pay)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8345259",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "spring"
+      ],
+      "preferred": [
+        "jpa",
+        "msa",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Back-end Engineer (Rocket Pay)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8236155",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "spring"
+      ],
+      "preferred": [
+        "jpa",
+        "msa",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Data Scientist - Fraud Strategy",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8273424",
+      "role": "data",
+      "required": [],
+      "preferred": [
+        "python",
+        "sql"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Front-end Engineer (Global Operations Technology)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=6412588",
+      "role": "frontend",
+      "required": [
+        "java",
+        "web-performance"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[쿠팡페이] Staff Front-end Engineer (Rocket Pay)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8152191",
+      "role": "frontend",
+      "required": [
+        "javascript",
+        "typescript",
+        "html-css",
+        "react",
+        "vue",
+        "angular",
+        "redux",
+        "webpack",
+        "babel",
+        "storybook",
+        "testing"
+      ],
+      "preferred": [
+        "ssr",
+        "spa",
+        "web-performance",
+        "nodejs",
+        "express",
+        "nestjs",
+        "spring",
+        "msa",
+        "cicd",
+        "git",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff IAM Engineer (IAM Architecture & Governance)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8172668",
+      "role": "backend",
+      "required": [
+        "python",
+        "go"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[쿠팡페이] Staff iOS Engineer (Core Payment)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8345064",
+      "role": "mobile",
+      "required": [
+        "swift",
+        "web-performance",
+        "ios",
+        "swiftui"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "[쿠팡페이] Staff iOS Engineer (Rocket Pay)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8146512",
+      "role": "mobile",
+      "required": [
+        "swift",
+        "web-performance",
+        "ios",
+        "swiftui"
+      ],
+      "preferred": [
+        "flutter",
+        "agile"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Machine Learning Engineer - Coupang Play",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=7927865",
+      "role": "data",
+      "required": [
+        "java",
+        "python",
+        "go",
+        "cpp",
+        "scala"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Machine Learning Engineer (Search & Discovery)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8130045",
+      "role": "data",
+      "required": [
+        "java",
+        "python"
+      ],
+      "preferred": [
+        "aws",
+        "gcp"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Network Engineer (Fulfillment and Logistics Network Engineering)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8171509",
+      "role": "infra",
+      "required": [],
+      "preferred": [
+        "python"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Network Security Engineer (Detection Operations)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8199951",
+      "role": "infra",
+      "required": [],
+      "preferred": [
+        "sql",
+        "aws",
+        "gcp",
+        "azure"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Security Data Platform Engineer",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8188042",
+      "role": "infra",
+      "required": [
+        "python",
+        "kafka",
+        "aws",
+        "cicd",
+        "git"
+      ],
+      "preferred": [
+        "airflow",
+        "llm",
+        "kubernetes",
+        "terraform"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Security DevOps Engineer (SPIR/OC)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8078329",
+      "role": "infra",
+      "required": [
+        "python"
+      ],
+      "preferred": [
+        "aws",
+        "docker",
+        "kubernetes"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Security Engineer(AI-Driven Vulnerability Discovery & Remediation)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8352094",
+      "role": "infra",
+      "required": [
+        "python",
+        "go",
+        "llm",
+        "terraform"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff, Security Engineer (Authentication & Access)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8222444",
+      "role": "infra",
+      "required": [
+        "python"
+      ],
+      "preferred": [
+        "aws",
+        "gcp",
+        "azure"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Security Engineer (Continuous Threat Exposure Management)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8163725",
+      "role": "infra",
+      "required": [],
+      "preferred": [
+        "javascript",
+        "typescript",
+        "python",
+        "sql",
+        "graphql",
+        "rest"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Security Engineer (DART)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8302443",
+      "role": "infra",
+      "required": [],
+      "preferred": [
+        "python",
+        "azure",
+        "docker",
+        "kubernetes",
+        "terraform",
+        "cicd"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff Security Engineer (Information Security CFS, CLS, CES and DDnayo)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8158581",
+      "role": "infra",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Staff~Sr. Staff, Machine Learning Engineer (Ads Engineering)",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8012236",
+      "role": "data",
+      "required": [
+        "python",
+        "react",
+        "llm",
+        "cicd"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "쿠팡",
+      "title": "Vulnerability Management Lead / Senior Staff Security Engineer",
+      "url": "https://www.coupang.jobs/en/jobs/?gh_jid=8352092",
+      "role": "infra",
+      "required": [
+        "python"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Frontier Div.] AI Inference Platform & Operations Engineer (5년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8883195002",
+      "role": "data",
+      "required": [
+        "kubernetes",
+        "terraform",
+        "cicd"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Frontier Div.] AI Native Full Stack Engineer (10년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8524447002",
+      "role": "data",
+      "required": [
+        "kotlin",
+        "python",
+        "go",
+        "nodejs",
+        "llm",
+        "cicd"
+      ],
+      "preferred": [
+        "typescript",
+        "react",
+        "aws",
+        "gcp",
+        "azure",
+        "docker",
+        "kubernetes",
+        "terraform"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Frontier Div.] AI Native Full Stack Engineer (5년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8815857002",
+      "role": "data",
+      "required": [
+        "kotlin",
+        "python",
+        "go",
+        "nodejs",
+        "llm",
+        "aws",
+        "gcp",
+        "cicd"
+      ],
+      "preferred": [
+        "typescript",
+        "react",
+        "azure",
+        "docker",
+        "kubernetes",
+        "terraform"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] AI Infra Engineer Lead (8년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8883198002",
+      "role": "data",
+      "required": [
+        "kubernetes"
+      ],
+      "preferred": [
+        "web-performance",
+        "llm",
+        "terraform",
+        "cicd"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] Foundation Model Evaluation Engineer - 독자 AI 파운데이션 모델 (2년 이상 / 인턴)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8632414002",
+      "role": "data",
+      "required": [],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] Research Engineer - Foundation Models (2년 이상 / 계약직)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8360146002",
+      "role": "data",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] Research Engineer - Vision Language Action Game Agent (2년 이상 / 인턴)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8417764002",
+      "role": "data",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] Research Scientist - Foundation Models (2년 이상 / 계약직)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8434572002",
+      "role": "data",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] Research Scientist Intern - 독자 AI 파운데이션 모델 (2년 이상 / 인턴)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8401231002",
+      "role": "data",
+      "required": [],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] Research Scientist - Specialized Model (2년 이상 / 인턴)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8836426002",
+      "role": "data",
+      "required": [
+        "pytorch"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Research Div.] Research Scientist - World Action Models (2년 이상 / 계약직)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8908455002",
+      "role": "data",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[AI Transformation Dept.] Sr. AI DevOps Engineer (7년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8581491002",
+      "role": "infra",
+      "required": [
+        "kubernetes",
+        "terraform",
+        "cicd"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Infra Div.] 위협 대응 엔지니어 (5~8년)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8931495002",
+      "role": "infra",
+      "required": [],
+      "preferred": [
+        "aws",
+        "gcp",
+        "azure"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Infra Div.] 클라우드·네트워크 보안 대응 엔지니어 (5~8년)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8931497002",
+      "role": "infra",
+      "required": [
+        "aws",
+        "gcp",
+        "azure"
+      ],
+      "preferred": [
+        "terraform"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Infra Div.] 웹·API 취약점 진단 엔지니어 (4~8년)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8931501002",
+      "role": "infra",
+      "required": [
+        "python",
+        "llm"
+      ],
+      "preferred": [
+        "msa",
+        "android",
+        "ios",
+        "code-review"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Infra Div.] DevSecOps/공급망 보안 엔지니어 (5~8년)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8931503002",
+      "role": "infra",
+      "required": [
+        "python",
+        "llm",
+        "cicd"
+      ],
+      "preferred": [
+        "kubernetes",
+        "terraform"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Infra Div.] IT Engineer (경력 무관 / 계약직)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8503567002",
+      "role": "infra",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Publishing Platform Div.] Game Security Data Scientist (7년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8581502002",
+      "role": "infra",
+      "required": [
+        "python",
+        "sql"
+      ],
+      "preferred": [
+        "spark"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Publishing Platform Div.] Game Security S/W Engineer (5년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8581568002",
+      "role": "infra",
+      "required": [
+        "cpp"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "크래프톤",
+      "title": "[Studio Support Div.] Sr. Client Engineer (7년 이상)",
+      "url": "https://job-boards.greenhouse.io/krafton/jobs/8754084002",
+      "role": "backend",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "채용관심등록 Expression of Interest: Software Engineer - Korea",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/7711666003",
+      "role": "backend",
+      "required": [],
+      "preferred": [],
+      "mentioned": [
+        "javascript",
+        "typescript",
+        "java",
+        "python",
+        "go",
+        "react",
+        "grpc",
+        "kafka",
+        "aws",
+        "gcp",
+        "azure",
+        "kubernetes",
+        "agile"
+      ]
+    },
+    {
+      "company": "몰로코",
+      "title": "Machine Learning Engineer (머신러닝 엔지니어)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/5820201003",
+      "role": "data",
+      "required": [
+        "java",
+        "python",
+        "go"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "Machine Learning Engineer Intern (3-month Internship)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/8044892003",
+      "role": "data",
+      "required": [
+        "java",
+        "python",
+        "go"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "Machine Learning Engineer-Technical Research Personnel (머신러닝 엔지니어-전문연구요원)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/6245366003",
+      "role": "data",
+      "required": [
+        "java",
+        "python",
+        "go"
+      ],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "QA Engineer (1-Year Contract)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/8003052003",
+      "role": "backend",
+      "required": [
+        "cicd",
+        "agile"
+      ],
+      "preferred": [
+        "llm"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "Senior/Staff Applied Scientist (시니어/스태프 응용 과학자)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/7452525003",
+      "role": "backend",
+      "required": [],
+      "preferred": [
+        "pytorch",
+        "tensorflow"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "Software Engineer - Ads Experience  (소프트웨어 엔지니어)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/7720325003",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "python",
+        "go",
+        "cpp",
+        "mysql",
+        "postgresql"
+      ],
+      "preferred": [
+        "kafka",
+        "spark",
+        "gcp"
+      ],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "Software Engineer Intern (3 months)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/8007407003",
+      "role": "backend",
+      "required": [],
+      "preferred": [],
+      "mentioned": []
+    },
+    {
+      "company": "몰로코",
+      "title": "Staff Software Engineer (소프트웨어 엔지니어)",
+      "url": "https://job-boards.greenhouse.io/moloco/jobs/8002090003",
+      "role": "backend",
+      "required": [
+        "java",
+        "kotlin",
+        "python",
+        "go",
+        "cpp",
+        "mysql",
+        "postgresql"
+      ],
+      "preferred": [
+        "kafka",
+        "spark",
+        "gcp"
+      ],
+      "mentioned": []
+    }
+  ]
+}
