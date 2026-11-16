@@ -23,7 +23,7 @@ export default async function ProfileTabs({ active }: { active: ProfileTab }) {
           key={tab.id}
           href={tab.href}
           aria-current={active === tab.id ? "page" : undefined}
-          className={`-mb-px border-b-2 pb-3 text-lg font-semibold transition ${
+          className={`-mb-px border-b-2 pb-3 text-base font-semibold sm:text-lg transition ${
             active === tab.id ? "border-black text-black" : "border-transparent text-gray-400 hover:text-gray-700"
           }`}
         >

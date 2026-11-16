@@ -2,6 +2,7 @@
 
 import BrandLogo from "@/components/BrandLogo";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import MobileTabBar from "@/components/MobileTabBar";
 import { useNavigation } from "@/components/NavigationProvider";
 import NotificationDrawer from "@/components/NotificationDrawer";
 import ProfileMenu from "@/components/ProfileMenu";
@@ -11,6 +12,9 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 import { Bell, Search, User } from "lucide-react";
+
+// 알림 · 검색 · 언어 변경은 잠시 숨김 — true로 바꾸면 복구
+const SHOW_HEADER_EXTRAS = false;
 
 export default function Header({ session }: { session: string | null }) {
   const t = useTranslations("header");
@@ -52,7 +56,7 @@ export default function Header({ session }: { session: string | null }) {
     retry: retryNotifications,
     markOneRead,
     markAllRead,
-  } = useNotifications(isLoggedIn);
+  } = useNotifications(isLoggedIn && SHOW_HEADER_EXTRAS);
 
   const profileRef = useRef<HTMLDivElement>(null);
 
@@ -95,7 +99,7 @@ export default function Header({ session }: { session: string | null }) {
             // 게시판(탐방)은 메인 메뉴에서 뺐다 — 페이지 · 데이터는 유지 (docs/2026-11-06-pivot-summary.md 5장)
             <nav
               aria-label={t("mainNav")}
-              className="ml-4 flex items-center gap-3 text-sm font-medium sm:ml-6 sm:gap-5"
+              className="ml-6 hidden items-center gap-5 text-sm font-medium md:flex"
             >
               {[
                 {
@@ -129,42 +133,46 @@ export default function Header({ session }: { session: string | null }) {
 
         {isLoggedIn ? (
           <>
-            <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:px-4 lg:px-10">
-              <form
-                onSubmit={handleSearch}
-                className="relative w-full max-w-md"
-              >
-                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                  placeholder={t("searchPlaceholder")}
-                  className="input h-10 pl-10"
-                />
-              </form>
-            </div>
+            {SHOW_HEADER_EXTRAS && (
+              <div className="order-last flex w-full justify-center sm:order-none sm:w-auto sm:min-w-0 sm:flex-1 sm:px-4 lg:px-10">
+                <form
+                  onSubmit={handleSearch}
+                  className="relative w-full max-w-md"
+                >
+                  <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={keyword}
+                    onChange={(e) => setKeyword(e.target.value)}
+                    placeholder={t("searchPlaceholder")}
+                    className="input h-10 pl-10"
+                  />
+                </form>
+              </div>
+            )}
 
             <div className="flex shrink-0 items-center gap-3 sm:gap-4">
-              <button
-                type="button"
-                onClick={handleOpenNotifications}
-                className="relative flex items-center justify-center text-gray-600 transition hover:text-black"
-                aria-label={t("openNotifications")}
-                aria-haspopup="dialog"
-                aria-expanded={isNotificationOpen}
-              >
-                <Bell className="h-5 w-5" />
+              {SHOW_HEADER_EXTRAS && (
+                <button
+                  type="button"
+                  onClick={handleOpenNotifications}
+                  className="relative flex items-center justify-center text-gray-600 transition hover:text-black"
+                  aria-label={t("openNotifications")}
+                  aria-haspopup="dialog"
+                  aria-expanded={isNotificationOpen}
+                >
+                  <Bell className="h-5 w-5" />
 
-                {unreadCount > 0 && (
-                  // <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-black px-1 text-[10px] font-semibold text-white">
-                  //   {unreadCount}
-                  // </span>
-                  <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-black" />
-                )}
-              </button>
+                  {unreadCount > 0 && (
+                    // <span className="absolute -right-2 -top-2 flex h-4 min-w-4 items-center justify-center rounded-full bg-black px-1 text-[10px] font-semibold text-white">
+                    //   {unreadCount}
+                    // </span>
+                    <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-black" />
+                  )}
+                </button>
+              )}
 
-              <LocaleSwitcher />
+              {SHOW_HEADER_EXTRAS && <LocaleSwitcher />}
 
               <div ref={profileRef} className="relative">
                 <button
@@ -196,10 +204,12 @@ export default function Header({ session }: { session: string | null }) {
               onItemRead={markOneRead}
               onMarkAllRead={markAllRead}
             />
+
+            <MobileTabBar />
           </>
         ) : (
           <div className="flex items-center gap-3">
-            <LocaleSwitcher />
+            {SHOW_HEADER_EXTRAS && <LocaleSwitcher />}
 
             <Link
               href="/login"

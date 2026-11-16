@@ -16,9 +16,9 @@ const PROTECTED = ["/board", "/settings", "/profile", "/recruitment", "/bookmark
 // 로그인 상태에서 접근하면 /board로 보낼 경로
 const AUTH_ONLY = ["/login", "/signup"];
 
-// 백엔드 GitHub 로그인 플로우는 state 없이 토큰을 쿼리로 실어 여기로 리다이렉트한다.
-// 브라우저에 묶인 state·일회성 코드 교환 계약이 없어서 이 토큰을 세션으로 받으면
-// 공격자가 자기 토큰이 든 링크로 피해자의 로그인 계정을 바꿔치기할 수 있다 — 받지 않는다.
+// 백엔드 GitHub 로그인 콜백은 일회성 교환 코드(?code=) 또는 ?error=를 실어 여기로 보낸다.
+// 코드는 시작 브라우저의 oauth_binding 쿠키와 함께여야 토큰이 되는데, 그 쿠키는 path가
+// /api/auth/github라 이 페이지엔 실리지 않는다 — 교환은 /api/auth/github/finish가 한다.
 const OAUTH_CALLBACK = "/oauth/callback";
 
 // pathname에서 locale prefix를 분리 ("/en/board" -> { localePrefix: "/en", bare: "/board" })
@@ -84,10 +84,18 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const { localePrefix, bare } = splitLocale(pathname);
 
-  // 토큰이 실린 콜백 URL은 세션에 손대지 않고 쿼리를 지운 주소로 보낸다 (주소창·기록에서도 제거)
-  if (bare === OAUTH_CALLBACK && search) {
+  // 코드가 실린 콜백은 교환 핸들러로, 그 외(거절·실패)는 로그인 화면으로 보낸다
+  if (bare === OAUTH_CALLBACK) {
+    const code = request.nextUrl.searchParams.get("code");
     const url = request.nextUrl.clone();
     url.search = "";
+    if (code) {
+      url.pathname = "/api/auth/github/finish";
+      url.searchParams.set("code", code);
+    } else {
+      url.pathname = `${localePrefix}/login`;
+      url.searchParams.set("error", "github");
+    }
     const response = NextResponse.redirect(url);
     response.headers.set("Cache-Control", "no-store");
     response.headers.set("Referrer-Policy", "no-referrer");

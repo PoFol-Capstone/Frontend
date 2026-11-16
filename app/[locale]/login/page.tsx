@@ -2,6 +2,7 @@
 
 import { Link, useRouter } from "@/i18n/navigation";
 import BrandLogo from "@/components/BrandLogo";
+import GithubLoginButton from "@/components/GithubLoginButton";
 import { sendOtp } from "@/lib/auth";
 import { beginLoginFlow, readLastLoginEmail } from "@/lib/authFlow";
 import { toSafeInternalPath } from "@/lib/safeRedirect";
@@ -17,7 +18,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     setEmail((current) => current || readLastLoginEmail() || "");
-  }, []);
+    // GitHub 로그인 거절·실패 시 proxy · /api/auth/github/finish가 ?error=github로 돌려보낸다
+    if (new URLSearchParams(window.location.search).get("error") === "github") {
+      setMessage(t("githubFailed"));
+    }
+  }, [t]);
 
   const handleLogin = async () => {
     if (!email.trim()) {
@@ -81,23 +86,13 @@ export default function LoginPage() {
 
         {message && <p className="mt-4 text-sm text-gray-500">{message}</p>}
 
-        {/* TODO: 임시로 GitHub 로그인 숨김 처리 */}
-        <div className="hidden">
-          <div className="my-6 flex w-full items-center gap-3">
-            <div className="h-px flex-1 bg-gray-200" />
-            <span className="text-xs text-gray-400">{t("or")}</span>
-            <div className="h-px flex-1 bg-gray-200" />
-          </div>
-
-          <div className="flex w-full flex-col gap-3">
-            <button
-              type="button"
-              className="h-12 rounded-xl border border-gray-200 px-4 text-[15px] font-semibold"
-            >
-              {t("githubContinue")}
-            </button>
-          </div>
+        <div className="my-6 flex w-full items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs text-gray-400">{t("or")}</span>
+          <div className="h-px flex-1 bg-gray-200" />
         </div>
+
+        <GithubLoginButton label={t("githubContinue")} />
 
         <p className="mt-8 text-sm text-gray-500">
           {t("noAccount")}{" "}

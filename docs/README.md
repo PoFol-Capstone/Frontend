@@ -9,7 +9,8 @@
 |---|---|---|
 | [2026-11-06-pivot-summary.md](2026-11-06-pivot-summary.md) | **[종합]** 서비스 전환 — 모든 판단 · 미결 사항 · 작업 순서 | 최신 기준 |
 | [2026-11-10-ai-usage-bm-plan.md](2026-11-10-ai-usage-bm-plan.md) | [분석 · 기획] AI 호출량 · 비용 + 비즈니스 모델 + 발표 반영 | 추정, 토큰 실측 대기 |
-| [2026-11-10-project-ai-depth-plan.md](2026-11-10-project-ai-depth-plan.md) | [기획] 정리 카드 품질 개선 + 구현 설명 · 면접 연습 · 기술 추천 열기 (자산화 S2 · S3 재정렬) | 계획 |
+| [2026-11-12-project-ai-depth-impl.md](2026-11-12-project-ai-depth-impl.md) | [구현] 정리 카드 v2 · 구현 설명 · 면접 연습 · 기술 추천 · 피드백 프롬프트 · 면접 주제 수집(출처) | 구현 완료, 브라우저 QA 전 |
+| [2026-11-10-project-ai-depth-plan.md](2026-11-10-project-ai-depth-plan.md) | [기획] 정리 카드 품질 개선 + 구현 설명 · 면접 연습 · 기술 추천 열기 (자산화 S2 · S3 재정렬) | 구현됨 → impl 문서 |
 | [2026-11-06-pivot-plan.md](2026-11-06-pivot-plan.md) | [기획] 전환 기획서 본문 — 배경, 타겟, 경쟁 · 수요, 출처 | 기준 |
 | [2026-11-06-pivot-review-ai-data.md](2026-11-06-pivot-review-ai-data.md) | [검토] 분석 데이터 활용 · 재점검 지표 · 프롬프트 · Organization 레포 | 결정 대기 |
 | [2026-11-06-pivot-review-community.md](2026-11-06-pivot-review-community.md) | [검토] 팀원 모집 삭제 · 게시판 역할 · 기회 피드 | 결정 대기 |
@@ -57,10 +58,9 @@
 | 8 | 트렌드 JSON + 화면 (+ 헤더 "채용 트렌드" 메뉴) | 미착수 |
 | — | 1월: 통합 QA, 사용자 테스트, 재점검 비율 첫 측정 | |
 
-### 2. 프로젝트 자산화 S2~S4 (전환 전 계획 — 할지 다시 정하기)
+### 2. 프로젝트 자산화 S2~S4
 
-- S2: AI 핵심 기능 · 구현 설명, 내 기여 표시 (`project-features`, `project-explain` 라우트 없음)
-- S3: 면접 연습 · 기술 추천
+- S2 · S3: **구현 완료 (11/12)** — [impl 문서](2026-11-12-project-ai-depth-impl.md). 내 기여 표시(`ContributionSummary`)만 남음
 - S4: 골든셋 평가 · 프롬프트 조정 — 전환 작업 5번(프롬프트 재설계)과 겹침
 
 ### 3. 결정할 것

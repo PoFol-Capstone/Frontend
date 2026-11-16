@@ -2,20 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ExternalLink, FolderGit2, Trash2 } from "lucide-react";
+import { Check, ExternalLink, FolderGit2, Trash2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Skeleton } from "@/components/Skeleton";
 import { deleteProject, getProject } from "@/lib/projects";
-import { CARD_SLOTS, type Project, type ProjectSummary } from "@/types/project";
+import { isSlotFilled } from "@/lib/projectCard";
+import { CARD_SLOTS, type CardSlot, type Project, type ProjectSummary } from "@/types/project";
 import { ConnectCard } from "./GitHubTab";
 import ProjectList, { StageBadge } from "./ProjectList";
 import ProjectCardEditor from "./ProjectCardEditor";
+import ImplementationExplainer from "./ImplementationExplainer";
+import InterviewPractice from "./InterviewPractice";
+import TechRecommendations from "./TechRecommendations";
 import RepoImportModal from "./RepoImportModal";
+import { jobKey, useJobs } from "@/lib/aiCardJobs";
 
-// 구현 설명 · 면접 연습 · 기술 추천은 S2 · S3에서 연다
 const DETAIL_TABS = ["card", "explain", "interview", "techReco"] as const;
 type DetailTab = (typeof DETAIL_TABS)[number];
-const READY_TABS: DetailTab[] = ["card"];
 
 type Props = {
   connected: boolean;
@@ -23,6 +26,8 @@ type Props = {
   initialProjects: ProjectSummary[] | null;
   /** ?project= 로 들어오면 그 프로젝트를 먼저 연다 */
   initialProjectUuid: string | null;
+  /** ?view= — 작업 완료 알림의 [보기]가 그 탭을 바로 연다 */
+  initialView?: string;
 };
 
 const toSummary = (p: Project): ProjectSummary => ({
@@ -35,7 +40,7 @@ const toSummary = (p: Project): ProjectSummary => ({
 });
 
 /** 프로필 — 내 프로젝트 탭: 왼쪽 목록 + 오른쪽 상세 (기획 5.1) */
-export default function ProjectsTab({ connected, initialProjects, initialProjectUuid }: Props) {
+export default function ProjectsTab({ connected, initialProjects, initialProjectUuid, initialView }: Props) {
   const t = useTranslations("profile.projects");
   const [projects, setProjects] = useState<ProjectSummary[]>(initialProjects ?? []);
   const [selected, setSelected] = useState<string | null>(
@@ -45,6 +50,7 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
   const [detailError, setDetailError] = useState(false);
   const [importing, setImporting] = useState(false);
   const [tab, setTab] = useState<DetailTab>("card");
+  const jobs = useJobs();
 
   // 선택이 바뀌면 상세를 다시 받는다 (방금 만든 프로젝트는 이미 detail에 있다)
   useEffect(() => {
@@ -72,8 +78,16 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
     setTab("card");
   };
 
+  // 분석 완료 알림의 [보기]처럼 같은 화면에서 ?project=가 바뀌면 그 프로젝트로 옮긴다
+  useEffect(() => {
+    if (initialProjectUuid && projects.some((p) => p.uuid === initialProjectUuid)) select(initialProjectUuid);
+    if (DETAIL_TABS.includes(initialView as DetailTab)) setTab(initialView as DetailTab);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialProjectUuid, initialView]);
+
   const applySaved = (project: Project) => {
-    setDetail(project);
+    // 생성 중에 다른 프로젝트로 옮겼으면 지금 보는 상세는 덮지 않는다
+    setDetail((d) => (d?.uuid === project.uuid ? project : d));
     setProjects((list) => list.map((p) => (p.uuid === project.uuid ? toSummary(project) : p)));
   };
 
@@ -113,7 +127,7 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
 
   if (projects.length === 0) {
     return (
-      <div className="card animate-fade-in-up p-12 text-center">
+      <div className="card animate-fade-in-up p-8 text-center sm:p-12">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
           <FolderGit2 className="h-7 w-7 text-gray-500" />
         </div>
@@ -128,7 +142,16 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
     );
   }
 
-  const percent = detail ? Math.round((detail.filledSlots / CARD_SLOTS.length) * 100) : 0;
+  const jumpTo = (slot: CardSlot) => {
+    setTab("card");
+    // 탭을 막 바꿨으면 칸이 그려진 뒤에 찾는다
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`slot-${slot}`);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      el.querySelector<HTMLElement>("input, textarea")?.focus({ preventScroll: true });
+    });
+  };
 
   return (
     <div className="mx-auto w-full max-w-3xl">
@@ -156,12 +179,27 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
           )}
         </div>
         {detail && (
-          <div className="mt-4 flex items-center gap-3">
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-100">
-              <div className="h-full rounded-full bg-black transition-[width] duration-700 ease-out motion-reduce:transition-none"
-                style={{ width: `${percent}%` }} />
+          <div className="mt-4 flex items-start gap-3">
+            {/* 칸마다 칩 하나 — 안 쓴 칸이 눈에 띄고, 누르면 그 칸으로 간다 */}
+            <div className="flex flex-1 flex-wrap gap-1.5">
+              {CARD_SLOTS.map((slot, i) => {
+                const filled = isSlotFilled(detail.card[slot].value);
+                const title = t(`card.${slot}.title`);
+                return (
+                  <button key={slot} type="button" onClick={() => jumpTo(slot)}
+                    aria-label={`${title} — ${t(filled ? "slotFilled" : "slotEmpty")}`}
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs transition ${
+                      filled
+                        ? "bg-gray-100 text-gray-400 hover:text-black"
+                        : "border border-dashed border-gray-400 font-medium text-gray-900 hover:border-black hover:bg-gray-50"
+                    }`}>
+                    {filled ? <Check className="h-3 w-3" /> : <span className="tabular-nums">{i + 1}</span>}
+                    {title}
+                  </button>
+                );
+              })}
             </div>
-            <span className="shrink-0 text-xs font-medium tabular-nums text-gray-500">
+            <span className="shrink-0 pt-1 text-xs font-medium tabular-nums text-gray-500">
               {t("progress", { filled: detail.filledSlots, total: CARD_SLOTS.length })}
             </span>
           </div>
@@ -173,28 +211,31 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
           <div key={detail.uuid}>
             <div role="tablist" aria-label={t("detailTabsLabel")}
               className="mb-6 flex w-fit max-w-full gap-1 overflow-x-auto rounded-full bg-gray-100 p-1">
-              {DETAIL_TABS.map((id) => {
-                const ready = READY_TABS.includes(id);
-                return (
-                  <button key={id} type="button" role="tab" aria-selected={tab === id} disabled={!ready}
-                    onClick={() => setTab(id)} title={ready ? undefined : t("comingSoon")}
-                    className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
-                      tab === id ? "bg-white text-black shadow-sm" : "text-gray-500 hover:text-black"
-                    } disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-gray-500`}>
-                    {t(`tabs.${id}`)}
-                  </button>
-                );
-              })}
+              {DETAIL_TABS.map((id) => (
+                <button key={id} type="button" role="tab" aria-selected={tab === id}
+                  onClick={() => setTab(id)}
+                  className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 ${
+                    tab === id ? "bg-white text-black shadow-sm" : "text-gray-500 hover:text-black"
+                  }`}>
+                  {t(`tabs.${id}`)}
+                  {jobs.get(jobKey(detail.uuid, id))?.status === "running" && (
+                    <span aria-hidden className="ml-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-current align-middle" />
+                  )}
+                </button>
+              ))}
             </div>
 
             {tab === "card" && <ProjectCardEditor project={detail} onSaved={applySaved} />}
+            {tab === "explain" && <ImplementationExplainer project={detail} onSaved={applySaved} />}
+            {tab === "interview" && <InterviewPractice project={detail} onSaved={applySaved} />}
+            {tab === "techReco" && <TechRecommendations project={detail} onSaved={applySaved} />}
           </div>
         ) : detailError ? (
           <p role="alert" className="card animate-fade-in-up p-10 text-center text-sm text-gray-500">{t("detailFailed")}</p>
         ) : (
           <div className="space-y-4">
             <Skeleton className="h-8 w-1/2" />
-            <Skeleton className="h-9 w-80" />
+            <Skeleton className="h-9 w-80 max-w-full" />
             {[0, 1, 2].map((i) => <Skeleton key={i} className="h-36 w-full rounded-2xl" />)}
           </div>
         )}

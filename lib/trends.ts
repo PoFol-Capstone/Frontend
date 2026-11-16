@@ -65,6 +65,33 @@ export function rankRows(current: LanguageCount[], previous: LanguageCount[] | n
     });
 }
 
+export type TrendSeries = {
+  periods: string[];
+  /** 마지막 달 순위 순. shares[i]/ranks[i]는 periods[i]의 값 (rank 1 = 1위) */
+  languages: { language: string; shares: number[]; ranks: number[] }[];
+};
+
+/** 월별 스냅샷 → 언어별 시계열 (선 그래프 · 순위 변동 · 3D 막대 공용) */
+export function trendSeries(
+  snapshots: GithubTrendSnapshot[],
+  key: "globalNewRepos" | "koreaUsers",
+): TrendSeries {
+  const perPeriod = snapshots.map((s) => rankRows(s[key], null));
+  const last = perPeriod.at(-1) ?? [];
+  return {
+    periods: snapshots.map((s) => s.period),
+    languages: last.map(({ language }) => ({
+      language,
+      shares: perPeriod.map((rows) => rows.find((r) => r.language === language)?.share ?? 0),
+      // 그 달 데이터에 없는 언어는 꼴찌 다음 순위로 둔다
+      ranks: perPeriod.map((rows) => {
+        const i = rows.findIndex((r) => r.language === language);
+        return i === -1 ? rows.length + 1 : i + 1;
+      }),
+    })),
+  };
+}
+
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 
 function rankLines(current: LanguageCount[], previous: LanguageCount[] | null, unit: string): string[] {

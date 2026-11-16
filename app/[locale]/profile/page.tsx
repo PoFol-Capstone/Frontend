@@ -7,6 +7,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import SessionExpired from "@/components/SessionExpired";
 import ProfileSidebar from "./_components/ProfileSidebar";
+import ScrollTopButton from "./_components/ScrollTopButton";
 import PostCarousel, { PROFILE_POSTS_PAGE_SIZE } from "./_components/PostCarousel";
 import ProfileTabs, { parseProfileTab } from "./_components/ProfileTabs";
 import GitHubTab from "./_components/GitHubTab";
@@ -15,7 +16,7 @@ import { getGithubConnected, getMyAnalysis } from "@/lib/githubAnalysis";
 import { getMyProjects } from "@/lib/projects";
 
 type Props = {
-  searchParams: Promise<{ page?: string; tab?: string; project?: string }>;
+  searchParams: Promise<{ page?: string; tab?: string; project?: string; view?: string }>;
 };
 
 export default function ProfilePage({ searchParams }: Props) {
@@ -81,8 +82,8 @@ async function ProfileContent({ searchParams }: Props) {
   const t = await getTranslations("profile");
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-white px-10 py-8">
-      <div className="mx-auto grid max-w-6xl grid-cols-[300px_1fr] gap-12">
+    <main className="min-h-[calc(100vh-64px)] bg-white px-4 py-6 sm:px-10 sm:py-8">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-[300px_1fr] lg:gap-12">
         <ProfileSidebar
           profile={profile}
           isOwner={true}
@@ -103,11 +104,12 @@ async function ProfileContent({ searchParams }: Props) {
               connected={projects[0]}
               initialProjects={projects[1].ok ? projects[1].data : null}
               initialProjectUuid={params.project ?? null}
+              initialView={params.view}
             />
           )}
           {postsResult && (
             <section>
-              <h2 className="mb-4 text-3xl font-bold">{t("postsHeading")}</h2>
+              <h2 className="mb-4 text-2xl font-bold sm:text-3xl">{t("postsHeading")}</h2>
               <PostCarousel
                 posts={postsResult.content.map((p) => ({
                   id: p.uuid,
@@ -126,6 +128,7 @@ async function ProfileContent({ searchParams }: Props) {
           )}
         </section>
       </div>
+      <ScrollTopButton />
     </main>
   );
 }

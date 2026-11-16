@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import ProfileSidebar from "../_components/ProfileSidebar";
+import ScrollTopButton from "../_components/ScrollTopButton";
 import PostCarousel, { PROFILE_POSTS_PAGE_SIZE } from "../_components/PostCarousel";
 import PublicGitHubSection from "../_components/PublicGitHubSection";
 import { getPublicGitHub } from "@/lib/githubAnalysis";
@@ -75,8 +76,8 @@ async function UserProfileContent({ params, searchParams }: Props) {
   }));
 
   return (
-    <main className="min-h-[calc(100vh-64px)] bg-white px-10 py-8">
-      <div className="mx-auto grid max-w-6xl grid-cols-[300px_1fr] gap-12">
+    <main className="min-h-[calc(100vh-64px)] bg-white px-4 py-6 sm:px-10 sm:py-8">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-[300px_1fr] lg:gap-12">
         <ProfileSidebar
           profile={profile}
           isOwner={isOwner}
@@ -86,7 +87,7 @@ async function UserProfileContent({ params, searchParams }: Props) {
 
         <section className="space-y-12">
           <section>
-            <h2 className="mb-4 text-3xl font-bold">{t("postsHeading")}</h2>
+            <h2 className="mb-4 text-2xl font-bold sm:text-3xl">{t("postsHeading")}</h2>
             <PostCarousel
               posts={carouselPosts}
               page={postsResult.number}
@@ -97,6 +98,7 @@ async function UserProfileContent({ params, searchParams }: Props) {
           {publicGitHub && <PublicGitHubSection data={publicGitHub} />}
         </section>
       </div>
+      <ScrollTopButton />
     </main>
   );
 }

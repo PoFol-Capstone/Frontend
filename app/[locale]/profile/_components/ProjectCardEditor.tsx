@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Plus, Sparkles, X } from "lucide-react";
+import { BookOpen, FileDown, Plus, ScanSearch, Sparkles, X } from "lucide-react";
 import { SourceBadge } from "@/components/SourceBadge";
-import { updateCardSlot } from "@/lib/projects";
-import { cleanFeatures, isSlotFilled, MAX_FEATURES, sameValue, type AiDraft } from "@/lib/projectCard";
+import { cardFeedbackPrompt } from "@/lib/feedbackPrompt";
+import { fillCardFacts, updateCardSlot } from "@/lib/projects";
+import { clearJob, jobKey, startCardJob, useJob, watchJob } from "@/lib/aiCardJobs";
+import FeedbackPromptButton from "./FeedbackPromptButton";
+import { cardToMarkdown, cleanFeatures, isSlotFilled, MAX_FEATURES, sameValue } from "@/lib/projectCard";
 import {
   CARD_SLOTS,
   PROBLEM_FIELDS,
+  type CardHints,
   type CardSlot,
   type CardValue,
   type ProblemSolving,
@@ -29,47 +34,86 @@ type Props = {
 /** 정리 카드 7칸 — 칸마다 따로 저장한다. 고친 칸은 출처가 본인 작성이 된다 */
 export default function ProjectCardEditor({ project, onSaved }: Props) {
   const t = useTranslations("profile.projects.card.ai");
-  const [aiBusy, setAiBusy] = useState(false);
-  const [aiError, setAiError] = useState<string | null>(null);
-  // 프로젝트를 바꾸면 이전 프로젝트의 안내가 남지 않게 uuid와 함께 둔다
-  const [ai, setAi] = useState<(Pick<AiDraft, "skipped" | "techCompare"> & { uuid: string }) | null>(null);
-  const result = ai?.uuid === project.uuid ? ai : null;
+  const tc = useTranslations("profile.projects.card");
+  const [factsError, setAiError] = useState<string | null>(null);
+  // 분석은 화면 밖(aiCardJobs)에서 돈다 — 다른 페이지에 갔다 와도 이어서 보이고, 끝나면 여기서 결과를 받는다
+  const key = jobKey(project.uuid, "card");
+  const job = useJob(key);
+  const aiBusy = job?.status === "running";
+  const aiError = job?.status === "error" ? (job.error ?? t("failed")) : factsError;
+  useEffect(() => watchJob(key), [key]);
+  useEffect(() => {
+    if (job?.status !== "done") return;
+    if (job.project) onSaved(job.project);
+    clearJob(key);
+  }, [job, key, onSaved]);
+  // AI 보조 정보(비운 이유 · 비교 기술 · 회고 질문)는 백엔드 assets.hints에 저장돼 새로고침해도 남는다
+  const hints: CardHints = project.assets?.hints ?? {};
 
-  const generate = async () => {
-    setAiBusy(true);
+  const [factsBusy, setFactsBusy] = useState(false);
+  // AI 없이 레포에서 확인한 사실만 채운다 — AI 초안보다 먼저 권한다 (ppt/v6-plan.md 4.4)
+  const fillFacts = async () => {
+    setFactsBusy(true);
     setAiError(null);
-    try {
-      const res = await fetch("/api/ai/project-card", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectUuid: project.uuid }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setAiError(data.error ?? t("failed"));
-        return;
-      }
-      setAi({ uuid: project.uuid, skipped: data.skipped ?? {}, techCompare: data.techCompare ?? [] });
-      onSaved(data.project);
-    } catch {
-      setAiError(t("failed"));
-    } finally {
-      setAiBusy(false);
-    }
+    const res = await fillCardFacts(project.uuid);
+    if (res.ok) onSaved(res.data);
+    else setAiError(res.error || t("failed"));
+    setFactsBusy(false);
+  };
+
+  // 브라우저에서 바로 .md 파일로 받는다 (서버 호출 없음)
+  const exportMarkdown = () => {
+    const md = cardToMarkdown(project, (key) => tc(key.includes(".") ? key : `${key}.title`));
+    const url = URL.createObjectURL(new Blob([md], { type: "text/markdown;charset=utf-8" }));
+    const a = Object.assign(document.createElement("a"), { href: url, download: `${project.repoFullName.split("/").pop()}.md` });
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const generate = () => {
+    setAiError(null);
+    startCardJob(project.uuid, project.repoFullName);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="relative space-y-6">
       <div className="flex animate-fade-in-up flex-wrap items-center gap-3 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-5">
         <p className="mr-auto flex items-center gap-2 text-[13px] text-gray-600">
           <Sparkles className="h-4 w-4 shrink-0 text-gray-400" /> {t("hint")}
+          <span className="block w-full text-xs text-gray-400">{t("codeNotice")}</span>
         </p>
-        <button type="button" onClick={generate} disabled={aiBusy}
+        <button type="button" onClick={fillFacts} disabled={factsBusy || aiBusy}
           className="btn btn-primary btn-sm">
+          <ScanSearch className={`h-4 w-4 ${factsBusy ? "animate-pulse" : ""}`} /> {factsBusy ? t("running") : t("facts")}
+        </button>
+        <button type="button" onClick={generate} disabled={aiBusy || factsBusy}
+          className="btn btn-secondary btn-sm">
           <Sparkles className={`h-4 w-4 ${aiBusy ? "animate-pulse" : ""}`} /> {aiBusy ? t("running") : t("run")}
         </button>
+        {(project.filledSlots > 0 || hints.overview) && (
+          <button type="button" onClick={exportMarkdown} className="btn btn-secondary btn-sm">
+            <FileDown className="h-4 w-4" /> {tc("exportMd")}
+          </button>
+        )}
+        {project.filledSlots > 0 && <FeedbackPromptButton buildPrompt={() => cardFeedbackPrompt(project)} />}
         {aiError && <p role="alert" className="w-full text-sm text-red-500">{aiError}</p>}
       </div>
+      {aiBusy && (
+        <div role="status" aria-live="polite"
+          className="absolute inset-0 z-20 flex animate-fade-in-up flex-col items-center justify-start gap-5 rounded-2xl bg-white/75 px-6 pt-32 text-center backdrop-blur-sm">
+          <div className="relative h-24 w-20">
+            {/* 옅은 실루엣 위로 진한 실루엣이 차오른다 */}
+            <Image src="/brand/pofol-symbol.png" alt="" fill sizes="80px" className="object-contain opacity-15 brightness-0" />
+            <Image src="/brand/pofol-symbol.png" alt="" fill sizes="80px" className="animate-fill-up object-contain" />
+          </div>
+          <div className="space-y-1.5">
+            <p className="text-base font-semibold text-gray-900">{t("running")}</p>
+            <p className="text-sm text-gray-500">{t("wait")}</p>
+            <p className="text-xs text-gray-400">{t("background")}</p>
+          </div>
+        </div>
+      )}
+      {hints.overview && <Overview text={hints.overview} />}
       {CARD_SLOTS.map((slot, i) => (
         <SlotEditor
           index={i}
@@ -79,15 +123,22 @@ export default function ProjectCardEditor({ project, onSaved }: Props) {
           saved={project.card[slot].value}
           source={project.card[slot].source}
           onSaved={onSaved}
-          skipReason={result?.skipped[slot]}
-          techCompare={slot === "techReasons" ? result?.techCompare : undefined}
+          skipReason={hints.skipped?.[slot]}
+          techCompare={slot === "techReasons" ? hints.techCompare : undefined}
+          retroQuestions={slot === "retrospective" ? hints.retroQuestions : undefined}
+          contribution={slot === "myRole" ? hints.contribution : undefined}
+          commitUrl={
+            slot === "problemSolving" && hints.problemCommit
+              ? `https://github.com/${project.repoFullName}/commit/${hints.problemCommit}`
+              : undefined
+          }
         />
       ))}
     </div>
   );
 }
 
-function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, techCompare }: {
+function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, techCompare, retroQuestions, commitUrl, contribution }: {
   index: number;
   uuid: string;
   slot: CardSlot;
@@ -96,7 +147,12 @@ function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, tec
   onSaved: (project: Project) => void;
   /** AI가 근거를 못 찾아 비워 둔 칸 (이유가 없으면 빈 문자열) */
   skipReason?: string;
-  techCompare?: AiDraft["techCompare"];
+  techCompare?: CardHints["techCompare"];
+  /** 회고가 비었을 때 스스로 답해 볼 질문 */
+  retroQuestions?: string[];
+  /** 문제 해결의 근거 커밋 링크 */
+  commitUrl?: string;
+  contribution?: CardHints["contribution"];
 }) {
   const t = useTranslations("profile.projects.card");
   const [draft, setDraft] = useState<CardValue<CardSlot>>(saved);
@@ -126,8 +182,8 @@ function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, tec
   };
 
   return (
-    <section style={{ animationDelay: `${80 + index * 60}ms` }}
-      className={`card animate-fade-in-up transition-[border-color,box-shadow] duration-300 hover:shadow-sm ${
+    <section id={`slot-${slot}`} style={{ animationDelay: `${80 + index * 60}ms` }}
+      className={`card scroll-mt-24 animate-fade-in-up transition-[border-color,box-shadow] duration-300 hover:shadow-sm ${
         dirty ? "border-gray-400" : "hover:border-gray-300"
       }`}>
       <div className="mb-1 flex items-center gap-2.5">
@@ -158,6 +214,25 @@ function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, tec
           </ul>
         </div>
       )}
+      {showSkip && retroQuestions && retroQuestions.length > 0 && (
+        <div className="mb-3 rounded-lg border border-gray-200 px-3 py-2 text-sm">
+          <p className="mb-1 font-medium text-gray-700">{t("ai.retroTitle")}</p>
+          <ul className="list-disc space-y-1 pl-4 text-gray-600">
+            {retroQuestions.map((q) => <li key={q}>{q}</li>)}
+          </ul>
+        </div>
+      )}
+      {commitUrl && isSlotFilled(saved) && (
+        <p className="mb-3 text-xs text-gray-500">
+          {t("ai.problemEvidence")}{" "}
+          <a href={commitUrl} target="_blank" rel="noopener noreferrer"
+            className="font-mono text-gray-600 underline hover:text-black">
+            {commitUrl.split("/").pop()?.slice(0, 7)}
+          </a>
+        </p>
+      )}
+
+      {contribution && <ContributionChart data={contribution} />}
 
       {slot === "features" ? (
         <FeaturesInput value={draft as ProjectFeature[]} onChange={setDraft} />
@@ -171,7 +246,7 @@ function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, tec
           aria-label={t(`${slot}.title`)} placeholder={t(`${slot}.placeholder`)} className={AREA} />
       )}
 
-      <div className="mt-4 flex items-center justify-end gap-3">
+      <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
         {error && <p role="alert" className="mr-auto text-sm text-red-500">{error}</p>}
         {dirty && !busy && (
           <button type="button" onClick={() => setDraft(saved)} className="text-sm text-gray-500 hover:text-black">
@@ -238,5 +313,75 @@ function ProblemInput({ value, onChange }: { value: ProblemSolving; onChange: (v
         </label>
       ))}
     </div>
+  );
+}
+
+/** 내 역할 차트 — 커밋 종류 · 폴더별 커밋 수 (코드가 센 값, AI 아님) */
+function ContributionChart({ data }: { data: NonNullable<CardHints["contribution"]> }) {
+  const t = useTranslations("profile.projects.card.chart");
+  const share = data.total > 0 ? Math.round((100 * data.mine) / data.total) : 0;
+  const bars = (title: string, rows: { label: string; n: number }[]) => {
+    const max = Math.max(1, ...rows.map((r) => r.n));
+    return (
+      <div>
+        <p className="mb-2 text-xs font-semibold text-gray-500">{title}</p>
+        <ul className="space-y-1.5">
+          {rows.map((r) => (
+            <li key={r.label} className="grid grid-cols-[minmax(0,7rem)_1fr_2rem] items-center gap-2 text-xs">
+              <span className="truncate text-gray-600" title={r.label}>{r.label}</span>
+              <span className="h-2 overflow-hidden rounded-full bg-gray-100">
+                <span className="block h-full origin-left animate-fade-in-up rounded-full bg-gray-900"
+                  style={{ width: `${(100 * r.n) / max}%` }} />
+              </span>
+              <span className="text-right tabular-nums text-gray-500">{r.n}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+  return (
+    <div className="mb-4 grid gap-5 rounded-xl border border-gray-100 p-4 sm:grid-cols-[auto_1fr_1fr]">
+      <div className="flex flex-col items-center justify-center gap-1">
+        <div className="relative h-20 w-20 rounded-full"
+          role="img" aria-label={t("share", { share })}
+          style={{ background: `conic-gradient(#111 ${share * 3.6}deg, #f3f4f6 0)` }}>
+          <span className="absolute inset-2.5 flex items-center justify-center rounded-full bg-white text-sm font-bold">
+            {share}%
+          </span>
+        </div>
+        <span className="text-[11px] text-gray-500">{t("mine")}</span>
+      </div>
+      {bars(t("kinds"), data.kinds.map((k) => ({ label: k.kind, n: k.n })))}
+      {data.folders.length > 0 && bars(t("folders"), data.folders.map((f) => ({ label: f.path, n: f.commits })))}
+    </div>
+  );
+}
+
+/** 프로젝트 상세 소개 — "## 소제목" 줄로 나눈 AI 글. 7칸과 별개로 읽기 전용 */
+function Overview({ text }: { text: string }) {
+  const t = useTranslations("profile.projects.card.overview");
+  const sections = text.split(/^##\s*/m).map((part) => {
+    const [head, ...body] = part.trim().split("\n");
+    return { head: body.length > 0 ? head.trim() : "", body: (body.length > 0 ? body.join("\n") : head).trim() };
+  }).filter((sec) => sec.body);
+
+  return (
+    <section className="card animate-fade-in-up">
+      <div className="mb-1 flex items-center gap-2.5">
+        <BookOpen className="h-5 w-5 shrink-0 text-gray-400" />
+        <h3 className="text-[17px] font-bold tracking-tight text-gray-900">{t("title")}</h3>
+        <SourceBadge source="AI" />
+      </div>
+      <p className="mb-5 pl-7.5 text-[13px] leading-relaxed text-gray-500">{t("hint")}</p>
+      <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+        {sections.map((sec, i) => (
+          <div key={i} className={i === 0 ? "sm:col-span-2" : undefined}>
+            {sec.head && <h4 className="mb-1.5 text-sm font-semibold text-gray-900">{sec.head}</h4>}
+            <p className="whitespace-pre-line text-[15px] leading-7 text-gray-700">{sec.body}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

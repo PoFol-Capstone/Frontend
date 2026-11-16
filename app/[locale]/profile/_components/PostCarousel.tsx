@@ -24,7 +24,7 @@ export default function PostCarousel({ posts, page, totalPages, pathname, query 
       {posts.length === 0 ? (
         <EmptyView />
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {posts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}

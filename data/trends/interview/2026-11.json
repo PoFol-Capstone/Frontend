@@ -1,0 +1,308 @@
+{
+  "period": "2026-11",
+  "collectedAt": "2026-11-11T22:11:27.220Z",
+  "sources": [
+    {
+      "repo": "gyoogle/tech-interview-for-developer",
+      "url": "https://github.com/gyoogle/tech-interview-for-developer",
+      "license": "MIT",
+      "themes": 52,
+      "fetchedAt": "2026-11-11T22:11:27.038Z"
+    },
+    {
+      "repo": "WeareSoft/tech-interview",
+      "url": "https://github.com/WeareSoft/tech-interview",
+      "license": null,
+      "themes": 0,
+      "fetchedAt": "2026-11-11T22:11:27.090Z"
+    },
+    {
+      "repo": "JaeYeopHan/Interview_Question_for_Beginner",
+      "url": "https://github.com/JaeYeopHan/Interview_Question_for_Beginner",
+      "license": "MIT",
+      "themes": 0,
+      "fetchedAt": "2026-11-11T22:11:27.192Z"
+    }
+  ],
+  "themes": {
+    "sql": [
+      {
+        "theme": "JOIN",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "SQL Injection",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "SQL과 NOSQL의 차이",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "testing": [
+      {
+        "theme": "TDD(Test Driven Development)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "msa": [
+      {
+        "theme": "마이크로서비스 아키텍처(MSA)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "javascript": [
+      {
+        "theme": "데이터 타입",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Closure",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Collaborate with Git on Javascript and Node.js",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "ES2015+ 요약 정리",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "nodejs": [
+      {
+        "theme": "Collaborate with Git on Javascript and Node.js",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "git": [
+      {
+        "theme": "Collaborate with Git on Javascript and Node.js",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Git Commit Message Convention",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Git vs GitHub vs GitLab Flow",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "java": [
+      {
+        "theme": "자바 가상 머신(Java Virtual Machine)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "자바 컴파일 과정",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "직렬화(Serialization)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "컴포지션(Composition)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Auto Boxing & Unboxing",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Call by value와 Call by reference",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Casting(업캐스팅 & 다운캐스팅)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Interned String in JAVA",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "cpp": [
+      {
+        "theme": "가상 함수(virtual function)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "입출력 실행속도 줄이는 법",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Vector Container",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "python": [
+      {
+        "theme": "매크로 라이브러리",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "linux": [
+      {
+        "theme": "Linux Basic Command",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Permission",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Von Neumann Architecture",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "ssr": [
+      {
+        "theme": "CSR & SSR",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "aws": [
+      {
+        "theme": "스프링 부트 배포 스크립트 생성",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "react": [
+      {
+        "theme": "React & Spring Boot 연동하여 환경 구축하기",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "React Fragment",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "React Hook",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Vue.js와 React의 차이",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "spring": [
+      {
+        "theme": "더티 체킹 (Dirty Checking)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Bean Scope",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "React & Spring Boot 연동하여 환경 구축하기",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Spring MVC",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Spring Security   Authentication and Authorization",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "SpringApplication",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Test Code",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Vue CLI + Spring Boot 연동하여 환경 구축하기",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "jpa": [
+      {
+        "theme": "더티 체킹 (Dirty Checking)",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "vue": [
+      {
+        "theme": "Vue CLI + Spring Boot 연동하여 환경 구축하기",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Vue.js + Firebase로 이메일 회원가입로그인 구현",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Vue.js + Firebase로 페이스북(facebook) 로그인 연동하기",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Vue.js 라이프사이클 이해하기",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      },
+      {
+        "theme": "Vue.js와 React의 차이",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ],
+    "rest": [
+      {
+        "theme": "REST API",
+        "count": 1,
+        "source": "gyoogle/tech-interview-for-developer"
+      }
+    ]
+  }
+}

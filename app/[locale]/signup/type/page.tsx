@@ -1,3 +1,4 @@
+import GithubLoginButton from "@/components/GithubLoginButton";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 
@@ -17,13 +18,7 @@ export default function SignupPage() {
             {t("emailStart")}
           </Link>
 
-          {/* TODO: 임시로 GitHub 로그인 숨김 처리 */}
-          <button
-            type="button"
-            className="mt-2 hidden h-12 rounded-xl bg-black px-4 text-[15px] font-semibold text-white hover:opacity-90"
-          >
-            {t("githubLogin")}
-          </button>
+          <GithubLoginButton label={t("githubLogin")} />
         </div>
       </section>
     </main>

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { previousMonth, share, summarize, type GithubTrendSnapshot } from "@/lib/trends";
+import { previousMonth, share, summarize, trendSeries, type GithubTrendSnapshot } from "@/lib/trends";
 
 test("previousMonth — 1월이면 작년 12월, 말일까지", () => {
   assert.deepEqual(previousMonth(new Date("2027-01-02T00:00:00Z")), {
@@ -48,4 +48,18 @@ test("readSnapshots — 폴더 없으면 빈 배열, 월 파일만 오래된 순
   fs.writeFileSync(path.join(dir, "2026-10.json"), JSON.stringify(snap("2026-10", 1)));
   fs.writeFileSync(path.join(dir, "notes.txt"), "x");
   assert.deepEqual(readSnapshots(dir).map((s) => s.period), ["2026-10", "2026-11"]);
+});
+
+test("trendSeries — 언어별 월별 비중과 순위, 마지막 달 순서", () => {
+  const snap = (period: string, counts: [string, number][]) =>
+    ({ period, globalNewRepos: counts.map(([language, count]) => ({ language, count })), koreaUsers: [] }) as unknown as GithubTrendSnapshot;
+  const s = trendSeries(
+    [snap("2026-09", [["Go", 3], ["Rust", 1]]), snap("2026-10", [["Go", 1], ["Rust", 2], ["Dart", 1]])],
+    "globalNewRepos",
+  );
+  assert.deepEqual(s.periods, ["2026-09", "2026-10"]);
+  assert.deepEqual(s.languages.map((l) => l.language), ["Rust", "Go", "Dart"]);
+  assert.deepEqual(s.languages[0], { language: "Rust", shares: [0.25, 0.5], ranks: [2, 1] });
+  assert.deepEqual(s.languages[2].ranks, [3, 3]); // 9월엔 없던 언어 → 꼴찌 다음
+  assert.deepEqual(s.languages[2].shares, [0, 0.25]);
 });

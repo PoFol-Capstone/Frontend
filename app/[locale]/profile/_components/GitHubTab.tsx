@@ -20,7 +20,6 @@ import type {
 } from "@/types/githubAnalysis";
 import RepoChecklist from "./RepoChecklist";
 import TopProjects from "./TopProjects";
-import ProfileReadmePanel from "./ProfileReadmePanel";
 
 // 분석은 백엔드가 비동기로 한다 — 2.5초 간격으로 최대 1분 조회
 const POLL_INTERVAL_MS = 2_500;
@@ -177,10 +176,7 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
           {!summary.hasProfileReadme && (
             <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">
               <AlertTriangle size={18} className="mt-0.5 shrink-0 text-amber-600" />
-              <div>
-                <p className="font-semibold">{t("noProfileReadmeBanner")}</p>
-                <p className="mt-0.5 text-gray-600">{t("noProfileReadmeHint")}</p>
-              </div>
+              <p className="font-semibold">{t("noProfileReadmeBanner")}</p>
             </div>
           )}
 
@@ -260,9 +256,6 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
 
           {/* 3.4 대표 프로젝트 · 방향성 */}
           <TopProjects analysis={analysis} onChange={setAnalysis} usage={usage} onUsageChange={refreshUsage} />
-
-          {/* 3.3 프로필 README */}
-          <ProfileReadmePanel analysis={analysis} onChange={setAnalysis} usage={usage} onUsageChange={refreshUsage} />
 
           {/* 타인 공개 범위 */}
           <Section card title={t("visibility.heading")} description={t("visibility.desc")}>

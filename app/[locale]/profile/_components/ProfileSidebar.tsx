@@ -34,25 +34,43 @@ export default function ProfileSidebar({
 
   const [isFollowerOpen, setIsFollowerOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
 
   return (
     <>
-      <aside className="card h-fit text-center">
-        <div className="mb-4">
-          <Avatar
-            src={profile.avatarUrl}
-            name={profile.name}
-            size="lg"
-            className="mx-auto"
-          />
+      {/* 데스크톱에서는 스크롤해도 화면에 고정 */}
+      <aside className="card h-fit text-center lg:sticky lg:top-6">
+        {/* 모바일은 아바타·이름을 한 줄로 — 탭 내용이 화면 아래로 밀리지 않게 */}
+        <div className="flex items-center gap-4 text-left lg:block lg:text-center">
+          <div className="shrink-0 lg:mb-4">
+            <Avatar
+              src={profile.avatarUrl}
+              name={profile.name}
+              size="lg"
+              className="lg:mx-auto"
+            />
+          </div>
+
+          <div className="min-w-0">
+            <h1 className="truncate text-2xl font-bold lg:text-3xl">{profile.name}</h1>
+
+            <div className="mt-1 text-sm font-medium lg:mt-2">
+              {profile.position} · {profile.positionMonths}{t("monthsSuffix")}
+            </div>
+          </div>
         </div>
 
-        <h1 className="text-3xl font-bold">{profile.name}</h1>
+        <button
+          type="button"
+          onClick={() => setIsDetailOpen((v) => !v)}
+          aria-expanded={isDetailOpen}
+          className="mt-3 text-sm font-medium text-gray-500 hover:text-black lg:hidden"
+        >
+          {isDetailOpen ? t("showLess") : t("showMore")}
+        </button>
 
-        <div className="mt-2 text-sm font-medium">
-          {profile.position} · {profile.positionMonths}{t("monthsSuffix")}
-        </div>
-
+        <div className={isDetailOpen ? "" : "hidden lg:block"}>
         <p className="mt-4 text-left text-sm leading-6">
           {profile.bio || t("noBio")}
         </p>
@@ -119,8 +137,9 @@ export default function ProfileSidebar({
             </div>
           )}
         </div>
+        </div>
 
-        <div className="mt-6 flex items-center justify-center gap-5 text-sm font-semibold">
+        <div className="mt-4 flex items-center justify-center gap-5 text-sm font-semibold lg:mt-6">
           <button
             type="button"
             onClick={() => setIsFollowerOpen(true)}

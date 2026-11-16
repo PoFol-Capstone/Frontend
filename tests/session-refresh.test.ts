@@ -97,14 +97,14 @@ describe("OAuth 콜백 URL (P1-3)", () => {
 
   for (const [name, query] of variants) {
     for (const prefix of ["", "/en"]) {
-      it(`${name}${prefix ? " (en)" : ""}: 기존 로그인 쿠키를 바꾸지 않고 토큰 없는 주소로 보낸다`, async () => {
+      it(`${name}${prefix ? " (en)" : ""}: 기존 로그인 쿠키를 바꾸지 않고 토큰 없는 로그인 화면으로 보낸다`, async () => {
         const { cookies } = existingSession();
         const res = await proxy(pageRequest(`${prefix}/oauth/callback${query}`, cookies));
 
         assert.equal(res.status, 307);
         const location = new URL(res.headers.get("location")!);
-        assert.equal(location.pathname, `${prefix}/oauth/callback`);
-        assert.equal(location.search, "");
+        assert.equal(location.pathname, `${prefix}/login`);
+        assert.equal(location.search, "?error=github");
         assert.deepEqual(setCookies(res), []);
         assert.deepEqual(mergedSessionCookieNames(res), []);
         assert.equal(res.headers.get("Cache-Control"), "no-store");
@@ -113,10 +113,25 @@ describe("OAuth 콜백 URL (P1-3)", () => {
     }
   }
 
-  it("쿼리 없는 콜백 페이지는 쿠키를 건드리지 않는 안내 화면으로 그대로 간다", async () => {
+  it("교환 코드는 세션에 손대지 않고 code만 실어 교환 핸들러로 넘긴다", async () => {
+    const { cookies } = existingSession();
+    const query = new URLSearchParams({ code: "one-time", ...attacker });
+    const res = await proxy(pageRequest(`/en/oauth/callback?${query}`, cookies));
+
+    assert.equal(res.status, 307);
+    const location = new URL(res.headers.get("location")!);
+    assert.equal(location.pathname, "/api/auth/github/finish");
+    assert.equal(location.search, "?code=one-time");
+    assert.deepEqual(setCookies(res), []);
+    assert.deepEqual(mergedSessionCookieNames(res), []);
+    assert.equal(backend.requests.length, 0);
+  });
+
+  it("쿼리 없는 콜백도 쿠키를 건드리지 않고 로그인 화면으로 보낸다", async () => {
     const { cookies } = existingSession();
     const res = await proxy(pageRequest("/oauth/callback", cookies));
-    assert.notEqual(res.status, 307);
+    assert.equal(res.status, 307);
+    assert.equal(new URL(res.headers.get("location")!).pathname, "/login");
     assert.deepEqual(setCookies(res), []);
   });
 

@@ -117,8 +117,26 @@ body {
   }
 }
 
+/* 실루엣 아래에서 위로 차오르다 잠깐 머문 뒤 다시 비워진다 */
+@keyframes fill-up {
+  0% {
+    clip-path: inset(100% 0 0 0);
+  }
+  60%,
+  80% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fill-up {
+  animation: fill-up 2.4s ease-in-out infinite;
 }
 
 .animate-logo {
@@ -152,7 +170,8 @@ body {
   .animate-fade-in-up,
   .animate-logo,
   .animate-blob,
-  .animate-shine {
+  .animate-shine,
+  .animate-fill-up {
     animation: none !important;
   }
 }

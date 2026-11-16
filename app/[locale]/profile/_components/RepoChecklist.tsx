@@ -228,8 +228,6 @@ function CheckAction({ code, repo }: { code: CheckCode; repo?: AnalyzedRepo }) {
           <ExternalLink size={14} /> {t("envGuide")}
         </a>
       );
-    case "NO_PROFILE_README":
-      return <p className="mt-3 text-xs text-gray-500">{t("profileReadmeAction")}</p>;
     default:
       return null;
   }

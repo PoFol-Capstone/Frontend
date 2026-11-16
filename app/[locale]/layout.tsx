@@ -1,3 +1,4 @@
+import CardJobNotice from "@/components/CardJobNotice";
 import HeaderSlot, { HeaderFallback } from "@/components/HeaderSlot";
 import { NavigationProvider } from "@/components/NavigationProvider";
 import type { Metadata } from "next";
@@ -42,7 +43,8 @@ export default async function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body>
+      {/* 하단 탭바(로그인 · 모바일에서만 렌더)가 있을 때만 그 높이만큼 본문 아래를 비운다 */}
+      <body className="max-md:has-[#mobile-tab-bar]:pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <NextIntlClientProvider>
           <NavigationProvider>
             {/* 세션 쿠키 읽기는 HeaderSlot 안으로 옮겨 Suspense 뒤에서 스트리밍한다.
@@ -51,6 +53,7 @@ export default async function RootLayout({
               <HeaderSlot />
             </Suspense>
             {children}
+            <CardJobNotice />
           </NavigationProvider>
         </NextIntlClientProvider>
       </body>
