@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { cleanFeatures, hasTestFiles, isSlotFilled, myRoleLead, sameValue, summarizeCommits, toAiDraft } from "@/lib/projectCard";
+import { cardToMarkdown, cleanFeatures, contribution, hasTestFiles, isSlotFilled, myRoleLead, sameValue, summarizeCommits, toAiDraft } from "@/lib/projectCard";
 import { CARD_SLOTS } from "@/types/project";
 
 // 프로젝트 자산화 (pofol/docs/2026-10-27-project-asset-plan.md) — 정리 카드 순수 함수
@@ -69,10 +69,51 @@ describe("AI 정리 카드 초안", () => {
     assert.equal(draft.hints.techCompare.length, 1);
   });
 
-  it("결과 칸은 AI가 아니라 사실 정리가 채운다 — AI 값은 무시, skipped에도 안 넣는다", () => {
-    const draft = toAiDraft({ results: "커밋 34개" }, tree, noFix);
-    assert.equal(draft.values.results, undefined);
-    assert.equal("results" in draft.hints.skipped, false);
+  it("MD 내보내기 — 소개 · 채운 칸만, 기능 · 문제 해결은 하위 제목으로", () => {
+    const empty = { value: "", source: "AI" as const };
+    const md = cardToMarkdown(
+      {
+        repoFullName: "me/pofol",
+        assets: { hints: { overview: "## 배경\n소개 글" } },
+        card: {
+          oneLiner: { value: "한 줄", source: "SELF" },
+          myRole: empty,
+          features: { value: [{ name: "로그인", description: "JWT", evidence: ["lib/auth.ts"] }], source: "AI" },
+          techReasons: empty,
+          problemSolving: { value: { problem: "만료", cause: "", solution: "재발급", result: "" }, source: "AI" },
+          results: empty,
+          retrospective: empty,
+        },
+      } as never,
+      (k) => k,
+    );
+    assert.equal(md, "# pofol\n\nhttps://github.com/me/pofol\n\n## overview\n\n### 배경\n소개 글\n\n## oneLiner\n\n한 줄\n\n## features\n\n### 로그인\n\nJWT\n\n`lib/auth.ts`\n\n## problemSolving\n\n**problemSolving.problem**: 만료\n\n**problemSolving.solution**: 재발급\n");
+  });
+
+  it("상세 소개는 hints.overview로, 없으면 비운다", () => {
+    assert.equal(toAiDraft({ overview: " ## 배경\n소개 " }, tree, noFix).hints.overview, "## 배경\n소개");
+    assert.equal(toAiDraft({}, tree, noFix).hints.overview, undefined);
+  });
+
+  it("결과 칸도 AI가 쓴다 — 비면 skipped로", () => {
+    assert.equal(toAiDraft({ results: "배포 완료" }, tree, noFix).values.results, "배포 완료");
+    assert.equal("results" in toAiDraft({}, tree, noFix).hints.skipped, true);
+  });
+
+  it("내 역할 차트 — 커밋 종류별로 센다", () => {
+    const c = contribution({
+      myFiles: [{ path: "src/app", commits: 3 }],
+      commits: [
+        { sha: "a", author: "me", message: "feat: 로그인", date: null },
+        { sha: "b", author: "me", message: "fix: 토큰", date: null },
+        { sha: "c", author: "me", message: "로그인 기능 추가", date: null },
+        { sha: "d", author: "you", message: "feat: x", date: null },
+      ],
+      myLogin: "me",
+    });
+    assert.deepEqual(c?.kinds, [{ kind: "기능 개발", n: 2 }, { kind: "버그 수정", n: 1 }]);
+    assert.equal(c?.total, 4);
+    assert.equal(contribution({ myFiles: [], commits: [], myLogin: "me" }), undefined);
   });
 
   it("문제 해결의 근거 커밋은 실제 fix 후보에 있는 것만 남긴다", () => {

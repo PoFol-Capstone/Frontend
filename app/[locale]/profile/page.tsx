@@ -16,7 +16,7 @@ import { getGithubConnected, getMyAnalysis } from "@/lib/githubAnalysis";
 import { getMyProjects } from "@/lib/projects";
 
 type Props = {
-  searchParams: Promise<{ page?: string; tab?: string; project?: string }>;
+  searchParams: Promise<{ page?: string; tab?: string; project?: string; view?: string }>;
 };
 
 export default function ProfilePage({ searchParams }: Props) {
@@ -104,6 +104,7 @@ async function ProfileContent({ searchParams }: Props) {
               connected={projects[0]}
               initialProjects={projects[1].ok ? projects[1].data : null}
               initialProjectUuid={params.project ?? null}
+              initialView={params.view}
             />
           )}
           {postsResult && (

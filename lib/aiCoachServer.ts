@@ -26,14 +26,13 @@ export async function fetchAnalysis(): Promise<GitHubAnalysis> {
   return res.data;
 }
 
-/** 월 사용량 1회 차감. 한도 초과(429)·인증 실패는 응답으로 돌려준다 */
-export async function consumeAiUsage(feature: AiFeature): Promise<NextResponse | null> {
-  try {
-    await http.post("/api/ai/usage/consume", { feature }, { requireAuth: true });
-    return null;
-  } catch (err) {
-    return backendErrorResponse(err, "AI 사용 횟수를 확인하지 못했습니다.");
-  }
+/**
+ * 월 사용 한도 — 시연에 방해돼서 끔 (항상 통과). 토큰 기록(recordAiTokens)은 그대로 남아 비용은 계속 집계된다.
+ * shortcut: 한도 없음, 실사용자에게 열 때 백엔드 /api/ai/usage/consume 차감을 되살릴 것
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- 한도를 되살릴 때 다시 쓰는 인자
+export async function consumeAiUsage(_feature: AiFeature): Promise<NextResponse | null> {
+  return null;
 }
 
 /**

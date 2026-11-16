@@ -1,12 +1,10 @@
 # [분석 · 기획] AI 호출량 · 비용 분석 + 비즈니스 모델 + 발표 반영
 
 - 작성일: 2026.11.10
-- 상태: 분석(코드 기준 추정) + 계획. 코드 변경 없음
-- 근거: `lib/aiCoachServer.ts`, `app/api/ai/*`, 백엔드 `AiUsageService.java`, 로컬 Redis 사용량
 
 ---
 
-## 1. 지금 AI를 어디서 몇 번 부르나 (코드 기준)
+## 1. 지금 AI를 어디서 몇 번 부르나
 
 | 기능 | 라우트 | 월 한도 (백엔드) | 분당 제한 (프론트) | 모델 | 비고 |
 |---|---|---|---|---|---|
@@ -136,3 +134,8 @@
 - 사람인 약관의 "이용 대가 수취 금지"가 서비스 전체에 적용되는지, 사람인 데이터를 쓰는 기능에만 적용되는지 — api@saramin.co.kr 문의
 
 출처: [사람인 API 이용자 주의사항](https://oapi.saramin.co.kr/caution) · gpt-4o-mini 단가: [LLM Reference](https://www.llmreference.com/model/gpt-4o-mini/openai-api), [developersdigest](https://www.developersdigest.tech/models/gpt-4o-mini)
+
+---
+
+<!-- 작성 메모 -->
+> 작성 메모: 분석은 코드 기준 추정이며 코드 변경은 없음. 근거 파일: `lib/aiCoachServer.ts`, `app/api/ai/*`, 백엔드 `AiUsageService.java`, 로컬 Redis 사용량.

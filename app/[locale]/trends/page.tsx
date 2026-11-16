@@ -202,7 +202,7 @@ function ChartSection({ title, hint, children }: { title: string; hint: string; 
     <section className="mt-12">
       <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
       <p className="mt-1 text-xs text-gray-500">{hint}</p>
-      <div className="mt-4">{children}</div>
+      <div className="mt-4 overflow-x-auto">{children}</div>
     </section>
   );
 }

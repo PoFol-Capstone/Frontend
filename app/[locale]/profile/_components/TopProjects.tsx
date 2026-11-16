@@ -20,14 +20,13 @@ type Props = {
 };
 
 /** 3.4 대표 프로젝트 Top 3 (점수 대신 근거 칩) · AI 방향성 */
-export default function TopProjects({ analysis, onChange, usage, onUsageChange }: Props) {
+export default function TopProjects({ analysis, onChange, onUsageChange }: Props) {
   const t = useTranslations("profile.github.top");
   const tRole = useTranslations("profile.github.roles");
   const [error, setError] = useState<string | null>(null);
   const [targetRole, setTargetRole] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const direction = parseDirection(analysis.direction);
-  const remaining = usage?.features.find((f) => f.feature === "github-direction")?.remaining ?? null;
   const repos = new Map(analysis.repos.map((r) => [r.fullName, r]));
 
   const toggleFeatured = async (fullName: string) => {
@@ -150,13 +149,11 @@ export default function TopProjects({ analysis, onChange, usage, onUsageChange }
             <option value="">{t("targetRoleNone")}</option>
             {TARGET_ROLES.map((role) => <option key={role} value={tRole(role)}>{tRole(role)}</option>)}
           </select>
-          <button type="button" onClick={generateDirection} disabled={isGenerating || remaining === 0}
+          <button type="button" onClick={generateDirection} disabled={isGenerating}
             className="btn btn-primary">
             <Sparkles size={14} />
             {isGenerating ? t("generating") : direction ? t("regenerate") : t("generate")}
-          </button>
-          {remaining !== null && <span className="text-xs text-gray-500">{t("remaining", { count: remaining })}</span>}
-        </div>
+          </button>        </div>
       </div>
 
       {error && <p role="alert" className="text-sm text-red-500">{error}</p>}

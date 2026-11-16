@@ -52,6 +52,15 @@ export type CardHints = {
   techCompare?: TechCompare[];
   retroQuestions?: string[];
   problemCommit?: string | null;
+  /** 프로젝트 상세 소개 — AI가 레포 전체를 읽고 쓴 여러 문단 */
+  overview?: string;
+  /** 내 역할 차트 — 내 커밋 종류 · 폴더별 커밋 수 */
+  contribution?: {
+    mine: number;
+    total: number;
+    kinds: { kind: string; n: number }[];
+    folders: { path: string; commits: number }[];
+  };
 };
 
 export type ExplainData = {

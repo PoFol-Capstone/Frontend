@@ -223,14 +223,14 @@ function authed(path: string, init: { method?: string; body?: unknown } = {}) {
 }
 
 describe("POST /api/ai/github-direction", () => {
-  it("월 한도를 넘으면 OpenAI를 부르지 않고 429를 그대로 돌려준다", async () => {
+  it("월 한도를 확인하지 않는다 (시연용으로 한도 끔)", async () => {
     backend.route("GET /api/github/analysis", () => ({ status: 200, body: analysis() }));
     backend.route("POST /api/ai/usage/consume", () => ({ status: 429, body: { error: "이번 달 AI 사용 횟수(5회)를 모두 사용했습니다" } }));
+    backend.route("PUT /api/github/analysis/direction", () => ({ status: 204 }));
 
     const res = await direction(authed("/api/ai/github-direction", { method: "POST", body: {} }));
-    assert.equal(res.status, 429);
-    assert.match((await res.json()).error, /모두 사용/);
-    assert.equal(openaiCalls(), 0);
+    assert.notEqual(res.status, 429);
+    assert.equal(backend.countRequests("POST", "/api/ai/usage/consume"), 0);
   });
 
   it("분석이 없으면 차감 없이 409", async () => {

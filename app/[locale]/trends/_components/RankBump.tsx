@@ -21,7 +21,7 @@ export default function RankBump({ series }: { series: TrendSeries }) {
   const last = series.periods.at(-1)!;
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" aria-hidden>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[560px]" aria-hidden>
       {series.periods.map((p) => (
         <text key={p} x={x(p)} y={12} textAnchor="middle" className="fill-gray-400 text-[10px]">{p}</text>
       ))}

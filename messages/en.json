@@ -648,8 +648,27 @@
           "compareTitle": "Compare these before writing your reasons",
           "retroTitle": "Answer these before writing your retrospective",
           "problemEvidence": "Evidence commit:",
-          "codeNotice": "The AI draft sends part of your public repo code to the AI."
-        }
+          "codeNotice": "The AI draft sends part of your public repo code to the AI.",
+          "background": "Analysis keeps running if you leave this page. We'll let you know when it's done."
+        },
+        "chart": {
+          "share": "My commit share {share}%",
+          "mine": "My commit share",
+          "kinds": "Commit types",
+          "folders": "Top folders"
+        },
+        "overview": {
+          "title": "Project overview",
+          "hint": "Written by AI from the README, code structure and commits. Regenerated with each AI draft."
+        },
+        "exportMd": "Export .md"
+      },
+      "cardNotice": {
+        "running": "Analyzing {repo}…",
+        "done": "{repo} analysis is ready",
+        "error": "{repo} analysis failed",
+        "view": "View",
+        "close": "Close"
       }
     },
     "github": {

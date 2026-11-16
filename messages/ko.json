@@ -648,8 +648,27 @@
           "compareTitle": "이유를 정리하기 전에 비교해 보세요",
           "retroTitle": "회고를 쓰기 전에 스스로 답해 보세요",
           "problemEvidence": "근거 커밋:",
-          "codeNotice": "AI 초안은 공개 레포 코드 일부를 AI에 보내 만들어요."
-        }
+          "codeNotice": "AI 초안은 공개 레포 코드 일부를 AI에 보내 만들어요.",
+          "background": "다른 페이지에 다녀와도 분석은 계속돼요. 끝나면 알려 드릴게요."
+        },
+        "chart": {
+          "share": "내 커밋 비중 {share}%",
+          "mine": "내 커밋 비중",
+          "kinds": "커밋 종류",
+          "folders": "많이 고친 폴더"
+        },
+        "overview": {
+          "title": "프로젝트 상세 소개",
+          "hint": "AI가 README · 코드 구조 · 커밋을 읽고 정리한 소개예요. AI 초안을 다시 받으면 새로 써요."
+        },
+        "exportMd": "MD로 내보내기"
+      },
+      "cardNotice": {
+        "running": "{repo} 분석 중…",
+        "done": "{repo} 분석이 끝났어요",
+        "error": "{repo} 분석에 실패했어요",
+        "view": "보기",
+        "close": "닫기"
       }
     },
     "github": {

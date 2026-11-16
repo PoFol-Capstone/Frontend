@@ -8,6 +8,8 @@ import { practiceOrder } from "@/lib/projectAssets";
 import { recordInterviewPractice } from "@/lib/projects";
 import type { InterviewQuestion, Project } from "@/types/project";
 import FeedbackPromptButton from "./FeedbackPromptButton";
+import { startJob } from "@/lib/aiCardJobs";
+import { useProjectJob } from "./useProjectJob";
 
 const PAGE = 5;
 
@@ -19,41 +21,30 @@ type Props = {
 /** 면접 연습 탭 — 내 코드 · 커밋 근거 질문 5개씩, 답을 쓰고 "좋은 답의 요소"와 비교한다. 채점 없음 */
 export default function InterviewPractice({ project, onSaved }: Props) {
   const t = useTranslations("profile.projects.interview");
-  const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(0);
+  const { busy, notice, error } = useProjectJob(project.uuid, "interview", (p) => {
+    setPage(0);
+    onSaved(p);
+  }, t("failed"));
   const interview = project.assets?.interview;
 
-  const generate = async () => {
-    setBusy(true);
-    setError(null);
-    setNotice(null);
-    try {
+  // 작업은 화면 밖(aiCardJobs)에서 돈다 — 다른 탭 · 페이지로 가도 이어지고 오른쪽 아래 알림이 뜬다
+  const generate = () =>
+    startJob(project.uuid, project.repoFullName, "interview", async () => {
       const res = await fetch("/api/ai/interview-questions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectUuid: project.uuid }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? t("failed"));
-        return;
-      }
-      if (data.unchanged) setNotice(t("unchanged"));
-      setPage(0);
-      onSaved(data.project);
-    } catch {
-      setError(t("failed"));
-    } finally {
-      setBusy(false);
-    }
-  };
+      if (!res.ok) return { error: data.error };
+      return { project: data.project, notice: data.unchanged ? t("unchanged") : undefined };
+    });
 
   if (!interview || interview.questions.length === 0) {
     const noMyCommits = (project.assets?.hints?.skipped?.myRole ?? null) !== null;
     return (
-      <div className="card animate-fade-in-up p-12 text-center">
+      <div className="card animate-fade-in-up p-8 text-center sm:p-12">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
           <MessageCircleQuestion className="h-7 w-7 text-gray-500" />
         </div>

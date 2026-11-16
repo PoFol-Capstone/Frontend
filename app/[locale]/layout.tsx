@@ -1,3 +1,4 @@
+import CardJobNotice from "@/components/CardJobNotice";
 import HeaderSlot, { HeaderFallback } from "@/components/HeaderSlot";
 import { NavigationProvider } from "@/components/NavigationProvider";
 import type { Metadata } from "next";
@@ -52,6 +53,7 @@ export default async function RootLayout({
               <HeaderSlot />
             </Suspense>
             {children}
+            <CardJobNotice />
           </NavigationProvider>
         </NextIntlClientProvider>
       </body>

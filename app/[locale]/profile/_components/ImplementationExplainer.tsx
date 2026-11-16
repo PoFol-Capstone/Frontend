@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowDown, FileCode2, FolderTree, GitBranch, Lightbulb, Sparkles } from "lucide-react";
 import { explainFeedbackPrompt } from "@/lib/feedbackPrompt";
+import { startJob } from "@/lib/aiCardJobs";
 import type { Project } from "@/types/project";
 import FeedbackPromptButton from "./FeedbackPromptButton";
+import { useProjectJob } from "./useProjectJob";
 
 type Props = {
   project: Project;
@@ -15,38 +16,25 @@ type Props = {
 /** 구현 설명 탭 — 핵심 파일 코드를 읽은 AI가 구조 · 요청 흐름 · 주요 파일 · 설계 선택을 설명한다 */
 export default function ImplementationExplainer({ project, onSaved }: Props) {
   const t = useTranslations("profile.projects.explain");
-  const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { busy, notice, error } = useProjectJob(project.uuid, "explain", onSaved, t("failed"));
   const explain = project.assets?.explain;
 
-  const generate = async () => {
-    setBusy(true);
-    setError(null);
-    setNotice(null);
-    try {
+  // 작업은 화면 밖(aiCardJobs)에서 돈다 — 다른 탭 · 페이지로 가도 이어지고 오른쪽 아래 알림이 뜬다
+  const generate = () =>
+    startJob(project.uuid, project.repoFullName, "explain", async () => {
       const res = await fetch("/api/ai/project-explain", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ projectUuid: project.uuid }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(data.error ?? t("failed"));
-        return;
-      }
-      if (data.unchanged) setNotice(t("unchanged"));
-      onSaved(data.project);
-    } catch {
-      setError(t("failed"));
-    } finally {
-      setBusy(false);
-    }
-  };
+      if (!res.ok) return { error: data.error };
+      return { project: data.project, notice: data.unchanged ? t("unchanged") : undefined };
+    });
 
   if (!explain) {
     return (
-      <div className="card animate-fade-in-up p-12 text-center">
+      <div className="card animate-fade-in-up p-8 text-center sm:p-12">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
           <FolderTree className="h-7 w-7 text-gray-500" />
         </div>

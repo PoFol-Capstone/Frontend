@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Compass, RefreshCw } from "lucide-react";
 import { generateTechReco, setTechRecoDone } from "@/lib/projects";
 import type { Project, TechRecoItem } from "@/types/project";
+import { startJob } from "@/lib/aiCardJobs";
+import { useProjectJob } from "./useProjectJob";
 
 type Props = {
   project: Project;
@@ -15,22 +17,19 @@ type Props = {
 /** 기술 추천 탭 — (희망 직군 공고의 우대 기술 − 내 레포 기술) + 첫 단계. AI 호출 없음 */
 export default function TechRecommendations({ project, onSaved }: Props) {
   const t = useTranslations("profile.projects.techReco");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { busy, error } = useProjectJob(project.uuid, "techReco", onSaved, t("failed"));
   const reco = project.assets?.techReco;
 
-  const generate = async () => {
-    setBusy(true);
-    setError(null);
-    const res = await generateTechReco(project.uuid);
-    setBusy(false);
-    if (res.ok) onSaved(res.data);
-    else setError(res.error || t("failed"));
-  };
+  // 작업은 화면 밖(aiCardJobs)에서 돈다 — 다른 탭 · 페이지로 가도 이어지고 오른쪽 아래 알림이 뜬다
+  const generate = () =>
+    startJob(project.uuid, project.repoFullName, "techReco", async () => {
+      const res = await generateTechReco(project.uuid);
+      return res.ok ? { project: res.data } : { error: res.error || undefined };
+    });
 
   if (!reco) {
     return (
-      <div className="card animate-fade-in-up p-12 text-center">
+      <div className="card animate-fade-in-up p-8 text-center sm:p-12">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
           <Compass className="h-7 w-7 text-gray-500" />
         </div>

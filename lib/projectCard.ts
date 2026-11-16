@@ -5,6 +5,7 @@ import {
   type CardSlot,
   type CardValue,
   type ProblemSolving,
+  type Project,
   type ProjectFeature,
   type TechCompare,
 } from "@/types/project";
@@ -33,6 +34,35 @@ export function cleanFeatures(features: ProjectFeature[]): ProjectFeature[] {
 
 export function sameValue(a: CardValue<CardSlot>, b: CardValue<CardSlot>): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
+}
+
+/**
+ * 정리 카드 → 마크다운 (MD로 내보내기). 빈 칸은 건너뛴다.
+ * label: 칸 key("myRole") · 문제 해결 하위 key("problemSolving.cause") → 화면 제목
+ */
+export function cardToMarkdown(
+  project: Pick<Project, "repoFullName" | "card" | "assets">,
+  label: (key: string) => string,
+): string {
+  const out = [`# ${project.repoFullName.split("/").pop()}`, "", `https://github.com/${project.repoFullName}`];
+  const overview = project.assets?.hints?.overview;
+  if (overview) out.push("", `## ${label("overview")}`, "", overview.replace(/^##\s*/gm, "### "));
+  for (const slot of CARD_SLOTS) {
+    const value = project.card[slot].value;
+    if (!isSlotFilled(value)) continue;
+    out.push("", `## ${label(slot)}`, "");
+    if (typeof value === "string") out.push(value.trim());
+    else if (Array.isArray(value)) {
+      for (const f of value) {
+        out.push(`### ${f.name}`, "", f.description);
+        if (f.evidence.length > 0) out.push("", f.evidence.map((p) => `\`${p}\``).join(" · "));
+        out.push("");
+      }
+    } else {
+      for (const f of PROBLEM_FIELDS) if (value[f].trim()) out.push(`**${label(`problemSolving.${f}`)}**: ${value[f].trim()}`, "");
+    }
+  }
+  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
 }
 
 // ── AI 초안 (POST /api/ai/project-card) ──────────────────────────────
@@ -64,8 +94,33 @@ export type RepoContext = {
 export type AiDraft = {
   values: Partial<{ [S in CardSlot]: CardValue<S> }>;
   /** 화면 보조 정보 — 백엔드 assets.hints로 저장돼 새로고침해도 남는다 */
-  hints: Required<Pick<CardHints, "skipped" | "techCompare" | "retroQuestions" | "problemCommit">>;
+  hints: Required<Pick<CardHints, "skipped" | "techCompare" | "retroQuestions" | "problemCommit">> &
+    Pick<CardHints, "contribution" | "overview">;
 };
+
+const COMMIT_KINDS: [string, RegExp][] = [
+  ["기능 개발", /^(feat|add)\b|추가|구현|기능/i],
+  ["버그 수정", /^(fix|hotfix)\b|버그|수정|오류|에러|해결/i],
+  ["리팩터링", /^(refactor|perf|style)\b|리팩|개선|정리/i],
+  ["문서 · 설정", /^(docs|chore|build|ci|test)\b|문서|readme|설정/i],
+];
+
+/** 내 역할 칸 차트 데이터 — 내 커밋 종류 · 폴더별 커밋 수 (AI 없이 코드가 센다) */
+export function contribution(ctx: Pick<RepoContext, "myFiles" | "commits" | "myLogin">): CardHints["contribution"] {
+  const { mine, total, myMessages } = summarizeCommits(ctx.commits, ctx.myLogin);
+  if (mine === 0) return undefined;
+  const counts = new Map<string, number>();
+  for (const m of myMessages) {
+    const kind = COMMIT_KINDS.find(([, re]) => re.test(m))?.[0] ?? "기타";
+    counts.set(kind, (counts.get(kind) ?? 0) + 1);
+  }
+  return {
+    mine,
+    total,
+    kinds: [...counts].map(([kind, n]) => ({ kind, n })).sort((a, b) => b.n - a.n),
+    folders: ctx.myFiles.slice(0, 6),
+  };
+}
 
 /**
  * 내 역할 칸의 첫 문장 — 수치 · 영역은 AI가 아니라 코드가 쓴다 (AI 심층 기획 3.1).
@@ -98,7 +153,7 @@ export function summarizeCommits(commits: RepoCommit[], myLogin: string | null) 
     total: commits.length,
     mine: mine.length,
     otherAuthors: new Set(commits.map((c) => c.author?.toLowerCase()).filter((a) => a && a !== me)).size,
-    myMessages: mine.slice(0, 60).map(firstLine),
+    myMessages: mine.slice(0, 100).map(firstLine),
     fixMessages: commits.filter((c) => FIX_COMMIT.test(c.message)).slice(0, 30).map(firstLine),
   };
 }
@@ -112,13 +167,12 @@ const strList = (v: unknown, maxItems: number, maxLen: number) =>
 /**
  * AI 응답을 칸 값으로 다듬는다. 기능 근거 경로는 실제 파일 트리에 있는 것만,
  * 문제 해결의 근거 커밋은 실제 fix 후보에 있는 것만 남긴다 (지어낸 근거 차단).
- * results는 AI가 아니라 사실 정리(facts)가 채우므로 여기서 무시한다.
  */
 export function toAiDraft(raw: Record<string, unknown>, tree: string[], fixShas: ReadonlySet<string>): AiDraft {
   const files = new Set(tree);
   const values: AiDraft["values"] = {};
 
-  for (const slot of ["oneLiner", "myRole", "techReasons", "retrospective"] as const) {
+  for (const slot of ["oneLiner", "myRole", "techReasons", "results", "retrospective"] as const) {
     const text = str(raw[slot], slot === "oneLiner" ? 200 : 3000);
     if (text) values[slot] = text;
   }
@@ -142,7 +196,7 @@ export function toAiDraft(raw: Record<string, unknown>, tree: string[], fixShas:
   const reasons = (raw.skipped ?? {}) as Record<string, unknown>;
   const skipped: CardHints["skipped"] = {};
   for (const slot of CARD_SLOTS) {
-    if (slot !== "results" && !(slot in values)) skipped[slot] = str(reasons[slot], 200);
+    if (!(slot in values)) skipped[slot] = str(reasons[slot], 200);
   }
 
   const techCompare = (Array.isArray(raw.techCompare) ? raw.techCompare : [])
@@ -159,6 +213,12 @@ export function toAiDraft(raw: Record<string, unknown>, tree: string[], fixShas:
 
   return {
     values,
-    hints: { skipped, techCompare: values.techReasons ? [] : techCompare, retroQuestions, problemCommit },
+    hints: {
+      skipped,
+      techCompare: values.techReasons ? [] : techCompare,
+      retroQuestions,
+      problemCommit,
+      overview: str(raw.overview, 5000) || undefined,
+    },
   };
 }

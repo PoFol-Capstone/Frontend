@@ -44,7 +44,7 @@ export default function CompareSlope({
   const height = Math.max(H, ...labelL.values(), ...labelR.values()) + 8;
 
   return (
-    <svg viewBox={`0 0 ${W} ${height}`} className="w-full" aria-hidden>
+    <svg viewBox={`0 0 ${W} ${height}`} className="w-full min-w-[460px]" aria-hidden>
       <text x={xL} y={14} textAnchor="middle" className="fill-gray-500 text-[11px]">{leftLabel}</text>
       <text x={xR} y={14} textAnchor="middle" className="fill-gray-500 text-[11px]">{rightLabel}</text>
       <line x1={xL} x2={xL} y1={PAD.top} y2={H - PAD.bottom} className="stroke-gray-200" />

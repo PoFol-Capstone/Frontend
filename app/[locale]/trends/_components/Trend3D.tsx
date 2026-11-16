@@ -61,6 +61,7 @@ export default function Trend3D({ series }: { series: TrendSeries }) {
     controls.target.set(0, 2, 0);
     controls.enableDamping = true;
     controls.enableZoom = false; // 휠은 페이지 스크롤에 양보
+    renderer.domElement.style.touchAction = "pan-y"; // 모바일: 세로 스와이프는 페이지 스크롤, 가로 드래그만 회전
     controls.autoRotate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     controls.autoRotateSpeed = 0.8;
 
