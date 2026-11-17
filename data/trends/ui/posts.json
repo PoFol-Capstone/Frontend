@@ -158,5 +158,45 @@
     "image": "https://cdn-images-1.medium.com/max/1024/1*jSm2wuX6DerL6DwhQFrLqA.png",
     "titleKo": "결정 극장인가, 결정 디자인인가?",
     "summaryKo": "AI가 정보를 쉽게 만들었지만, 결정을 간단하게 하지는 못했습니다. 우리는 지식을 쌓는 것에서 결정을 소유하는 것으로 역할이 변화하고 있습니다."
+  },
+  {
+    "source": "UX Collective",
+    "title": "The trash robot that doesn’t pick up, but hands out",
+    "link": "https://uxdesign.cc/the-trash-robot-that-doesnt-pick-up-but-hands-out-9f599d49f8d0?source=rss----138adf9c44c---4",
+    "date": "2026-11-16T12:16:15.000Z",
+    "summary": "On kawaii, embarrassment, and designing to invite Continue reading on UX Collective »",
+    "image": "https://cdn-images-1.medium.com/max/2600/1*rJzIX7VSM6KLSfr7FqCJNQ.png"
+  },
+  {
+    "source": "UX Collective",
+    "title": "Before you ship your Wrapped, Schrödinger’s Nvidia, Infinite tokens",
+    "link": "https://uxdesign.cc/before-you-ship-your-wrapped-schr%C3%B6dingers-nvidia-infinite-tokens-64a9160bd2eb?source=rss----138adf9c44c---4",
+    "date": "2026-11-16T12:17:08.000Z",
+    "summary": "Weekly curated resources for designers — thinkers and makers. “When Ted Chiang wrote in The New Yorker that AI isn’t going to make art, I felt vindicated. I forwarded it. To people who had not asked…",
+    "image": "https://cdn-images-1.medium.com/max/1024/0*A34o9Fc4cFx_KBhU.png"
+  },
+  {
+    "source": "Figma Blog",
+    "title": "How 1Password uses Figma Make to design for trust and certainty",
+    "link": "https://www.figma.com/blog/1password-figma-make/",
+    "date": "2026-11-16T18:03:00.000Z",
+    "summary": "From autofill to AI agent approvals, every 1Password interaction counts. Here's how the design team uses Figma Make to design moments users trust.",
+    "image": "https://cdn.sanity.io/images/599r6htc/regionalized/bbbd715863ae9596492a6b6eda14af49a9b802de-2400x1260.png?w=1200&q=70&fit=max&auto=format"
+  },
+  {
+    "source": "UX Collective",
+    "title": "UI edge cases: A reference guide",
+    "link": "https://uxdesign.cc/ui-edge-cases-a-reference-guide-e778061588ef?source=rss----138adf9c44c---4",
+    "date": "2026-11-16T21:20:24.000Z",
+    "summary": "A practical reference guide for catching UI edge cases before they ship — organized by category, with how to test, how to detect them in the wild, and how to design a fix. With examples. UI edge case…",
+    "image": "https://cdn-images-1.medium.com/max/1024/1*R_ZHpYkP3hc4ER5e4KuPsA.png"
+  },
+  {
+    "source": "UX Collective",
+    "title": "Why bother paying for software anymore?",
+    "link": "https://uxdesign.cc/why-bother-paying-for-software-anymore-e1f76093f772?source=rss----138adf9c44c---4",
+    "date": "2026-11-16T21:27:14.000Z",
+    "summary": "And why design is the answer AI bros didn’t expect. Continue reading on UX Collective »",
+    "image": "https://cdn-images-1.medium.com/max/1600/1*TV7xQSMxyAg-Mgkm4Fat5g.png"
   }
 ]
