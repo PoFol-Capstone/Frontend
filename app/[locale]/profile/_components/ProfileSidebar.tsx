@@ -12,6 +12,9 @@ import FollowerModal from "./FollowerModal";
 import FollowButton from "@/components/FollowButton";
 import type { FollowerUser } from "@/types/user";
 
+// 팔로워 수 · 조회수는 잠시 숨김 — true로 바꾸면 복구
+const SHOW_STATS = false;
+
 interface Props {
   profile: Profile;
   isOwner: boolean;
@@ -61,6 +64,11 @@ export default function ProfileSidebar({
           </div>
         </div>
 
+        {/* 한줄소개는 모바일에서도 접지 않고, 긴 단어·줄바꿈도 그대로 보여준다 */}
+        <p className="mt-4 whitespace-pre-line break-words text-left text-sm leading-6">
+          {profile.bio || t("noBio")}
+        </p>
+
         <button
           type="button"
           onClick={() => setIsDetailOpen((v) => !v)}
@@ -71,10 +79,6 @@ export default function ProfileSidebar({
         </button>
 
         <div className={isDetailOpen ? "" : "hidden lg:block"}>
-        <p className="mt-4 text-left text-sm leading-6">
-          {profile.bio || t("noBio")}
-        </p>
-
         <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-300 pt-3">
           {profile.skills.map((skill) => (
             <span
@@ -139,6 +143,7 @@ export default function ProfileSidebar({
         </div>
         </div>
 
+        {SHOW_STATS && (
         <div className="mt-4 flex items-center justify-center gap-5 text-sm font-semibold lg:mt-6">
           <button
             type="button"
@@ -154,6 +159,7 @@ export default function ProfileSidebar({
             <span>{profile.totalViewCount.toLocaleString()}</span>
           </div>
         </div>
+        )}
 
         {isOwner ? (
           <button
