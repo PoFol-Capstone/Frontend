@@ -12,6 +12,9 @@ import FollowerModal from "./FollowerModal";
 import FollowButton from "@/components/FollowButton";
 import type { FollowerUser } from "@/types/user";
 
+// 팔로워 수 · 조회수는 잠시 숨김 — true로 바꾸면 복구
+const SHOW_STATS = false;
+
 interface Props {
   profile: Profile;
   isOwner: boolean;
@@ -140,6 +143,7 @@ export default function ProfileSidebar({
         </div>
         </div>
 
+        {SHOW_STATS && (
         <div className="mt-4 flex items-center justify-center gap-5 text-sm font-semibold lg:mt-6">
           <button
             type="button"
@@ -155,6 +159,7 @@ export default function ProfileSidebar({
             <span>{profile.totalViewCount.toLocaleString()}</span>
           </div>
         </div>
+        )}
 
         {isOwner ? (
           <button
