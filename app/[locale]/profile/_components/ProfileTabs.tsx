@@ -9,7 +9,7 @@ export function parseProfileTab(value: string | undefined): ProfileTab {
 }
 
 /** 내 프로필의 프로젝트 / GitHub / 게시물 탭 (?tab=) — 링크라 새로고침·공유해도 같은 탭이 열린다 */
-export default async function ProfileTabs({ active }: { active: ProfileTab }) {
+export default async function ProfileTabs({ active, uuid }: { active: ProfileTab; uuid: string }) {
   const t = await getTranslations("profile.tabs");
   const tabs: { id: ProfileTab; href: string }[] = [
     { id: "projects", href: "/profile" },
@@ -30,6 +30,11 @@ export default async function ProfileTabs({ active }: { active: ProfileTab }) {
           {t(tab.id)}
         </Link>
       ))}
+      {/* GitHub 탭의 공개 범위 설정이 남에게 어떻게 보이는지 확인하는 곳 */}
+      <Link href={`/profile/${uuid}?preview=1`}
+        className="ml-auto pb-3 text-sm text-gray-500 underline-offset-2 hover:text-black hover:underline">
+        {t("preview")}
+      </Link>
     </nav>
   );
 }

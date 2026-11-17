@@ -471,7 +471,6 @@
       "avatarTooLarge": "사진은 {max}MB 이하만 올릴 수 있어요.",
       "avatarUploadFailed": "사진을 올리지 못했어요."
     },
-    "editPageStub": "프로필 편집",
     "error": {
       "title": "프로필을 불러오지 못했습니다.",
       "desc": "잠시 후 다시 시도해 주세요.",
@@ -481,8 +480,11 @@
       "label": "프로필 탭",
       "projects": "프로젝트",
       "github": "GitHub",
-      "posts": "게시물"
+      "posts": "게시물",
+      "preview": "공개 프로필 보기"
     },
+    "previewBanner": "다른 사람에게 보이는 내 프로필이에요.",
+    "previewBack": "내 프로필로 돌아가기",
     "projects": {
       "listLabel": "내 프로젝트 목록",
       "import": "레포 가져오기",
@@ -497,6 +499,7 @@
       "delete": "프로젝트 삭제",
       "deleteConfirm": "{repo} 프로젝트를 삭제할까요? 정리 카드도 함께 삭제됩니다.",
       "deleteFailed": "삭제하지 못했어요. 잠시 후 다시 시도해주세요.",
+      "unsavedConfirm": "정리 카드에 저장하지 않은 내용이 있어요. 다른 프로젝트로 옮기면 사라져요. 옮길까요?",
       "detailTabsLabel": "프로젝트 상세 탭",
       "comingSoon": "준비 중",
       "tabs": {
@@ -573,7 +576,8 @@
         "sourceFallback": "공고 데이터 수집 전 — 사전 기준으로 추천해요. 매달 2일 공고가 수집되면 자동 전환돼요.",
         "allCovered": "우대 기술을 이미 모두 쓰고 있어요. 멋진데요!",
         "firstStep": "첫 단계:",
-        "done": "해봤어요"
+        "done": "해봤어요",
+        "toggleFailed": "저장하지 못했어요. 다시 시도해주세요."
       },
       "importModal": {
         "title": "레포 가져오기",

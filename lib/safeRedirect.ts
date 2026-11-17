@@ -49,3 +49,14 @@ export function resolvePostLoginPath(
 ): string {
   return toSafeInternalPath(callbackUrl, origin) ?? defaultHomePath(locale);
 }
+
+/**
+ * 사용자가 입력한 외부 링크(포트폴리오 등)를 절대 URL로 맞춘다.
+ * "naver.com"처럼 스킴 없이 넣으면 href가 상대경로가 되어 우리 사이트 안으로 이동하던 문제를 막는다.
+ * http(s)가 아닌 값("javascript:..." 등)도 https:// 접두로 무해해진다.
+ */
+export function toExternalUrl(raw: string): string {
+  const url = raw.trim();
+  if (!url) return "";
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}

@@ -471,7 +471,6 @@
       "avatarTooLarge": "Photos must be {max}MB or smaller.",
       "avatarUploadFailed": "Couldn't upload the photo."
     },
-    "editPageStub": "Edit Profile",
     "error": {
       "title": "Couldn't load the profile.",
       "desc": "Please try again in a moment.",
@@ -481,8 +480,11 @@
       "label": "Profile tabs",
       "projects": "Projects",
       "github": "GitHub",
-      "posts": "Posts"
+      "posts": "Posts",
+      "preview": "View public profile"
     },
+    "previewBanner": "This is how others see your profile.",
+    "previewBack": "Back to my profile",
     "projects": {
       "listLabel": "My projects",
       "import": "Import repo",
@@ -497,6 +499,7 @@
       "delete": "Delete project",
       "deleteConfirm": "Delete {repo}? Its project card will be deleted too.",
       "deleteFailed": "Could not delete. Please try again later.",
+      "unsavedConfirm": "You have unsaved changes in the project card. They will be lost if you switch projects. Switch anyway?",
       "detailTabsLabel": "Project detail tabs",
       "comingSoon": "Coming soon",
       "tabs": {
@@ -573,7 +576,8 @@
         "sourceFallback": "Job data not collected yet — using the curated fallback. Switches automatically once postings are collected on the 2nd of each month.",
         "allCovered": "You already use every preferred tech. Nice!",
         "firstStep": "First step:",
-        "done": "Tried it"
+        "done": "Tried it",
+        "toggleFailed": "Could not save. Please try again."
       },
       "importModal": {
         "title": "Import repo",

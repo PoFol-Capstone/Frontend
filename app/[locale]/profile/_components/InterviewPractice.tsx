@@ -27,6 +27,23 @@ export default function InterviewPractice({ project, onSaved }: Props) {
     onSaved(p);
   }, t("failed"));
   const interview = project.assets?.interview;
+  const questions = interview?.questions ?? [];
+
+  // 보는 동안 순서를 고정한다 — 답을 저장할 때마다 다시 정렬하면 방금 쓴 카드가 화면에서 사라졌다.
+  // 질문이 새로 만들어졌거나 한 바퀴 다 돌았을 때만 다시 정렬한다
+  const ids = questions.map((q) => q.id).join(",");
+  const [frozen, setFrozen] = useState(() => ({ ids, order: practiceOrder(questions).map((q) => q.id) }));
+  if (frozen.ids !== ids) setFrozen({ ids, order: practiceOrder(questions).map((q) => q.id) });
+
+  const next5 = () => {
+    const next = page + 1;
+    if (next * PAGE >= questions.length) {
+      setFrozen({ ids, order: practiceOrder(questions).map((q) => q.id) });
+      setPage(0);
+    } else {
+      setPage(next);
+    }
+  };
 
   // 작업은 화면 밖(aiCardJobs)에서 돈다 — 다른 탭 · 페이지로 가도 이어지고 오른쪽 아래 알림이 뜬다
   const generate = () =>
@@ -59,10 +76,11 @@ export default function InterviewPractice({ project, onSaved }: Props) {
     );
   }
 
-  const ordered = practiceOrder(interview.questions);
-  const start = (page * PAGE) % ordered.length;
-  const visible = ordered.slice(start, start + PAGE);
-  const practiced = interview.questions.filter((q) => q.practicedAt).length;
+  const byId = new Map(questions.map((q) => [q.id, q]));
+  const visible = frozen.order
+    .slice(page * PAGE, page * PAGE + PAGE)
+    .flatMap((id) => byId.get(id) ?? []);
+  const practiced = questions.filter((q) => q.practicedAt).length;
 
   return (
     <div className="space-y-6">
@@ -71,7 +89,7 @@ export default function InterviewPractice({ project, onSaved }: Props) {
           {t("progress", { practiced, total: interview.questions.length })}
           <span className="block text-xs text-gray-400">{t("noGrading")}</span>
         </p>
-        <button type="button" onClick={() => setPage((p) => p + 1)} className="btn btn-secondary btn-sm">
+        <button type="button" onClick={next5} className="btn btn-secondary btn-sm">
           {t("next5")}
         </button>
         <button type="button" onClick={generate} disabled={busy} className="btn btn-secondary btn-sm">

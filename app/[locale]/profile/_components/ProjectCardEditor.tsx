@@ -182,7 +182,7 @@ function SlotEditor({ index, uuid, slot, saved, source, onSaved, skipReason, tec
   };
 
   return (
-    <section id={`slot-${slot}`} style={{ animationDelay: `${80 + index * 60}ms` }}
+    <section id={`slot-${slot}`} data-dirty={dirty || undefined} style={{ animationDelay: `${80 + index * 60}ms` }}
       className={`card scroll-mt-24 animate-fade-in-up transition-[border-color,box-shadow] duration-300 hover:shadow-sm ${
         dirty ? "border-gray-400" : "hover:border-gray-300"
       }`}>

@@ -2,7 +2,7 @@ import { after, before, beforeEach, describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { startMockBackend, type MockBackend } from "./helpers/mockBackend";
 import { cookieWrites, setCookieContext } from "./mocks/next-headers.mjs";
-import { resolvePostLoginPath, toSafeInternalPath } from "@/lib/safeRedirect";
+import { resolvePostLoginPath, toExternalUrl, toSafeInternalPath } from "@/lib/safeRedirect";
 import {
   beginLoginFlow,
   beginSignupFlow,
@@ -220,5 +220,15 @@ describe("이메일 OTP 로그인 Server Function", () => {
     const result = await signInWithEmailOtp("member@test.dev", "000000");
     assert.deepEqual(result, { status: "invalidCode" });
     assert.deepEqual(written(), {});
+  });
+});
+
+describe("프로필 외부 링크 정규화", () => {
+  it("스킴 없는 주소는 https://를 붙이고, http(s)는 그대로 둔다", () => {
+    assert.equal(toExternalUrl(" naver.com "), "https://naver.com");
+    assert.equal(toExternalUrl("http://a.dev"), "http://a.dev");
+    assert.equal(toExternalUrl("HTTPS://a.dev"), "HTTPS://a.dev");
+    assert.equal(toExternalUrl(""), "");
+    assert.equal(toExternalUrl("javascript:alert(1)"), "https://javascript:alert(1)");
   });
 });

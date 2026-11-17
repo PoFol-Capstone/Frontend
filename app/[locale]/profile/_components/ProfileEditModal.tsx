@@ -9,6 +9,7 @@ import Field from "@/components/ui/Field";
 import { FaGithub } from "react-icons/fa";
 import { Profile } from "@/types/user";
 import { updateProfile } from "@/lib/user";
+import { toExternalUrl } from "@/lib/safeRedirect";
 import { useTranslations } from "next-intl";
 
 interface Props {
@@ -113,6 +114,7 @@ export default function ProfileEditModal({ profile, onClose }: Props) {
       await updateProfile({
         ...form,
         name: form.name.trim(),
+        portfolioUrl: toExternalUrl(form.portfolioUrl),
         positionMonths: duration?.totalMonths ?? 0,
         avatarUrl,
       });

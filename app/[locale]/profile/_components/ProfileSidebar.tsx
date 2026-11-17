@@ -5,6 +5,9 @@ import { Eye, Users, Mail, Link2 } from "lucide-react";
 import { useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import { toExternalUrl } from "@/lib/safeRedirect";
 
 import { Profile } from "@/types/user";
 import ProfileEditModal from "./ProfileEditModal";
@@ -31,9 +34,13 @@ export default function ProfileSidebar({
   viewerUuid,
 }: Props) {
   const t = useTranslations("profile.sidebar");
+  const tFollow = useTranslations("profile.follow");
   const githubUrl = profile.links.find((link) => link.type === "GITHUB")?.url;
-  const portfolioUrl = profile.links.find((link) => link.type !== "GITHUB")?.url;
-  const emailUrl = profile.email;
+  const portfolioRaw = profile.links.find((link) => link.type !== "GITHUB")?.url;
+  const portfolioUrl = portfolioRaw ? toExternalUrl(portfolioRaw) : undefined;
+  // 가입 이메일은 본인에게만 보여준다 (방문자에게 공개할 동의를 받은 적이 없다)
+  const emailUrl = isOwner ? profile.email : undefined;
+  const pathname = usePathname();
 
   const [isFollowerOpen, setIsFollowerOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -65,9 +72,11 @@ export default function ProfileSidebar({
         </div>
 
         {/* 한줄소개는 모바일에서도 접지 않고, 긴 단어·줄바꿈도 그대로 보여준다 */}
-        <p className="mt-4 whitespace-pre-line break-words text-left text-sm leading-6">
-          {profile.bio || t("noBio")}
-        </p>
+        {(profile.bio || isOwner) && (
+          <p className="mt-4 whitespace-pre-line break-words text-left text-sm leading-6">
+            {profile.bio || t("noBio")}
+          </p>
+        )}
 
         <button
           type="button"
@@ -102,7 +111,7 @@ export default function ProfileSidebar({
               <FaGithub className="h-4 w-4 shrink-0" />
               <span className="truncate">{githubUrl}</span>
             </a>
-          ) : (
+          ) : isOwner && (
             <div className="flex items-center gap-2 text-gray-400">
               <FaGithub className="h-4 w-4 shrink-0" />
               <span>{t("githubNotConnected")}</span>
@@ -119,7 +128,7 @@ export default function ProfileSidebar({
               <Link2 className="h-4 w-4 shrink-0" />
               <span className="truncate">{portfolioUrl}</span>
             </a>
-          ) : (
+          ) : isOwner && (
             <div className="flex items-center gap-2 text-gray-400">
               <Link2 className="h-4 w-4 shrink-0" />
               <span>{t("noPortfolio")}</span>
@@ -134,7 +143,7 @@ export default function ProfileSidebar({
               <Mail className="h-4 w-4 shrink-0" />
               <span className="truncate">{emailUrl}</span>
             </a>
-          ) : (
+          ) : isOwner && (
             <div className="flex items-center gap-2 text-gray-400">
               <Mail className="h-4 w-4 shrink-0" />
               <span>{t("noEmail")}</span>
@@ -169,6 +178,14 @@ export default function ProfileSidebar({
           >
             {t("editProfile")}
           </button>
+        ) : !viewerUuid ? (
+          // 비로그인 방문자는 팔로우 대신 로그인으로 보낸 뒤 이 프로필로 돌아오게 한다
+          <Link
+            href={{ pathname: "/login", query: { callbackUrl: pathname } }}
+            className="mt-6 block w-full rounded-xl bg-black py-3 text-sm font-semibold text-white transition hover:bg-gray-800"
+          >
+            {tFollow("follow")}
+          </Link>
         ) : (
           <FollowButton
             targetUuid={profile.uuid}

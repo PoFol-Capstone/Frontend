@@ -92,7 +92,7 @@ async function ProfileContent({ searchParams }: Props) {
         />
 
         <section className="space-y-8">
-          <ProfileTabs active={tab} />
+          <ProfileTabs active={tab} uuid={uuid} />
           {github && (
             <GitHubTab
               connected={github[0]}
