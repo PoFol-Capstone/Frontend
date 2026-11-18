@@ -3,6 +3,7 @@
 import { useModalA11y } from "@/hooks/useModalA11y";
 import { useTranslations } from "next-intl";
 import { useId } from "react";
+import { createPortal } from "react-dom";
 
 export default function Modal({
   title,
@@ -20,7 +21,8 @@ export default function Modal({
   const panelRef = useModalA11y(onClose);
   const titleId = useId();
 
-  return (
+  // 부모의 sticky/transform 스태킹 컨텍스트에 갇히지 않도록 body로 포털
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 backdrop-blur-[2px]"
       onClick={onClose}
@@ -49,6 +51,7 @@ export default function Modal({
         </div>
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -160,7 +160,7 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
 
   return (
     <div className="mx-auto w-full max-w-3xl">
-      <header className="card mb-6 animate-fade-in-up !p-5 md:!p-6">
+      <header className="card relative z-10 mb-6 animate-fade-in-up !p-5 md:!p-6">
         <div className="flex flex-wrap items-center gap-3">
           <ProjectList projects={projects} selected={selected} onSelect={select} onImport={() => setImporting(true)} />
           {detail && <StageBadge stage={detail.stage} />}
