@@ -50,7 +50,9 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
   const [detailError, setDetailError] = useState(false);
   const [importing, setImporting] = useState(false);
   const [tab, setTab] = useState<DetailTab>("card");
+  const [retryCount, setRetryCount] = useState(0);
   const jobs = useJobs();
+  const tError = useTranslations("profile.error");
 
   // 선택이 바뀌면 상세를 다시 받는다 (방금 만든 프로젝트는 이미 detail에 있다)
   useEffect(() => {
@@ -68,10 +70,12 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
     return () => {
       cancelled = true;
     };
-  }, [selected, detail?.uuid]);
+  }, [selected, detail?.uuid, retryCount]);
 
   const select = (uuid: string) => {
     if (uuid === selected) return;
+    // 정리 카드에 저장 안 한 칸이 있으면 (SlotEditor의 data-dirty) 옮기기 전에 묻는다
+    if (document.querySelector("[data-dirty]") && !window.confirm(t("unsavedConfirm"))) return;
     setSelected(uuid);
     setDetail(null);
     setDetailError(false);
@@ -112,10 +116,11 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
     setSelected(rest[0]?.uuid ?? null);
   };
 
-  if (!connected && projects.length === 0) return <ConnectCard />;
+  // 목록 조회 실패를 먼저 본다 — 연동 확인까지 실패하면(false) 연동한 사람에게 연동 카드가 뜨던 문제
   if (initialProjects === null) {
     return <p role="alert" className="card p-10 text-center text-sm text-gray-500">{t("loadFailed")}</p>;
   }
+  if (!connected && projects.length === 0) return <ConnectCard />;
 
   const importModal = importing && (
     <RepoImportModal
@@ -225,13 +230,22 @@ export default function ProjectsTab({ connected, initialProjects, initialProject
               ))}
             </div>
 
-            {tab === "card" && <ProjectCardEditor project={detail} onSaved={applySaved} />}
+            {/* 정리 카드는 숨기기만 한다 — 다른 상세 탭에 다녀와도 저장 안 한 입력이 남게 */}
+            <div hidden={tab !== "card"}>
+              <ProjectCardEditor project={detail} onSaved={applySaved} />
+            </div>
             {tab === "explain" && <ImplementationExplainer project={detail} onSaved={applySaved} />}
             {tab === "interview" && <InterviewPractice project={detail} onSaved={applySaved} />}
             {tab === "techReco" && <TechRecommendations project={detail} onSaved={applySaved} />}
           </div>
         ) : detailError ? (
-          <p role="alert" className="card animate-fade-in-up p-10 text-center text-sm text-gray-500">{t("detailFailed")}</p>
+          <div role="alert" className="card animate-fade-in-up p-10 text-center text-sm text-gray-500">
+            <p>{t("detailFailed")}</p>
+            <button type="button" onClick={() => { setDetailError(false); setRetryCount((n) => n + 1); }}
+              className="btn btn-secondary btn-sm mt-4">
+              {tError("retry")}
+            </button>
+          </div>
         ) : (
           <div className="space-y-4">
             <Skeleton className="h-8 w-1/2" />

@@ -61,7 +61,9 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
   }, [connected]);
 
   // ANALYZING 동안만 조회한다. 상태가 바뀌거나 1분이 지나면 멈춘다
-  const isAnalyzing = analysis?.status === "ANALYZING";
+  // 1분 넘게 끝나지 않으면 조회를 멈추고 버튼을 다시 풀어 준다 (예전엔 "분석 중"에서 영영 멈췄다)
+  const [stalled, setStalled] = useState(false);
+  const isAnalyzing = analysis?.status === "ANALYZING" && !stalled;
   useEffect(() => {
     if (!isAnalyzing) {
       pollCount.current = 0;
@@ -71,6 +73,7 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
       pollCount.current += 1;
       if (pollCount.current > POLL_MAX_ATTEMPTS) {
         setNotice(t("pollTimeout"));
+        setStalled(true);
         return;
       }
       const res = await getMyAnalysis();
@@ -82,6 +85,8 @@ export default function GitHubTab({ initialAnalysis, connected }: Props) {
   const handleAnalyze = async () => {
     setIsStarting(true);
     setNotice(null);
+    setStalled(false);
+    pollCount.current = 0;
     const res = await startAnalysis();
     setIsStarting(false);
     if (res.ok) {

@@ -81,7 +81,7 @@ export default function RepoImportModal({ registered, onCreated, onClose }: Prop
       <ul className="max-h-80 space-y-1 overflow-y-auto">
         {manual && (
           <li>
-            <RepoRow label={t("manualAdd", { repo: manual })} disabled={taken.has(manual.toLowerCase())}
+            <RepoRow label={t("manualAdd", { repo: manual })} disabled={taken.has(manual.toLowerCase()) || busy !== null}
               busy={busy === manual} onClick={() => register(manual)} />
           </li>
         )}

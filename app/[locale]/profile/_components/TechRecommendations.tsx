@@ -78,12 +78,15 @@ function RecoCard({ index, item, project, onSaved }: {
   const t = useTranslations("profile.projects.techReco");
   const [busy, setBusy] = useState(false);
   const [iconFailed, setIconFailed] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const toggle = async () => {
     setBusy(true);
+    setFailed(false);
     const res = await setTechRecoDone(project.uuid, item.id, !item.done);
     setBusy(false);
     if (res.ok) onSaved(res.data);
+    else setFailed(true);
   };
 
   return (
@@ -106,6 +109,7 @@ function RecoCard({ index, item, project, onSaved }: {
           <p className="mt-1.5 text-sm leading-relaxed text-gray-600">
             <span className="font-medium text-gray-700">{t("firstStep")}</span> {item.firstStep}
           </p>
+          {failed && <p role="alert" className="mt-1 text-sm text-red-500">{t("toggleFailed")}</p>}
         </div>
         <label className="flex shrink-0 cursor-pointer items-center gap-1.5 text-sm text-gray-500">
           <input type="checkbox" checked={item.done} onChange={toggle} disabled={busy}

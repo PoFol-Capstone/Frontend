@@ -5,7 +5,7 @@ import { ApiError } from "@/lib/http.server";
 import { parsePageParam } from "@/lib/pagination";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import ProfileSidebar from "../_components/ProfileSidebar";
 import ScrollTopButton from "../_components/ScrollTopButton";
 import PostCarousel, { PROFILE_POSTS_PAGE_SIZE } from "../_components/PostCarousel";
@@ -14,7 +14,8 @@ import { getPublicGitHub } from "@/lib/githubAnalysis";
 
 interface Props {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ page?: string }>;
+  /** preview=1 — 본인이 "공개 프로필 보기"로 들어온 경우, 남에게 보이는 화면 그대로 보여준다 */
+  searchParams: Promise<{ page?: string; preview?: string }>;
 }
 
 export default function UserProfilePage({ params, searchParams }: Props) {
@@ -38,7 +39,7 @@ async function loadProfile(id: string) {
 }
 
 async function UserProfileContent({ params, searchParams }: Props) {
-  const [{ id }, { page: pageParam }] = await Promise.all([params, searchParams]);
+  const [{ id }, { page: pageParam, preview: previewParam }] = await Promise.all([params, searchParams]);
   const page = parsePageParam(pageParam);
 
   const [sessionUuid, profile] = await Promise.all([
@@ -47,10 +48,11 @@ async function UserProfileContent({ params, searchParams }: Props) {
   ]);
 
   if (!profile) notFound();
-  if (sessionUuid === id)
+  const preview = previewParam === "1" && sessionUuid === profile.uuid;
+  if (sessionUuid === id && !preview)
     redirect({ href: "/profile", locale: await getLocale() });
 
-  const isOwner = sessionUuid === profile.uuid;
+  const isOwner = sessionUuid === profile.uuid && !preview;
 
   const [followers, postsResult, publicGitHub] = await Promise.all([
     // 팔로워 목록은 모달에서만 쓰므로 실패해도 페이지는 보여주되, 빈 목록이 아니라 실패로 표시한다
@@ -77,6 +79,12 @@ async function UserProfileContent({ params, searchParams }: Props) {
 
   return (
     <main className="min-h-[calc(100vh-64px)] bg-white px-4 py-6 sm:px-10 sm:py-8">
+      {preview && (
+        <div role="status" className="mx-auto mb-6 flex max-w-6xl flex-wrap items-center justify-between gap-2 rounded-xl bg-gray-100 px-4 py-3 text-sm">
+          <span>{t("previewBanner")}</span>
+          <Link href="/profile" className="font-medium underline">{t("previewBack")}</Link>
+        </div>
+      )}
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-[300px_1fr] lg:gap-12">
         <ProfileSidebar
           profile={profile}
@@ -93,6 +101,7 @@ async function UserProfileContent({ params, searchParams }: Props) {
               page={postsResult.number}
               totalPages={postsResult.totalPages}
               pathname={`/profile/${id}`}
+              query={preview ? { preview: "1" } : undefined}
             />
           </section>
           {publicGitHub && <PublicGitHubSection data={publicGitHub} />}

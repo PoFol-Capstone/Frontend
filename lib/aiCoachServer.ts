@@ -76,7 +76,10 @@ export async function completeJson(
     temperature,
   });
   await recordAiTokens(feature, completion.usage);
-  const parsed = JSON.parse(completion.choices[0].message.content ?? "{}");
+  let content = completion.choices[0].message.content ?? "{}";
+  // 화면은 마크다운을 렌더링하지 않아 **굵게**가 별표 그대로 보인다. README만 진짜 마크다운이라 둔다
+  if (feature !== "profile-readme") content = content.replace(/\*\*/g, "");
+  const parsed = JSON.parse(content);
   return typeof parsed === "object" && parsed !== null ? parsed : {};
 }
 
