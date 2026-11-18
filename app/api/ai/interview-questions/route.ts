@@ -98,6 +98,12 @@ export async function POST(req: NextRequest) {
   if (!questions) {
     return respond(NextResponse.json({ error: "레포에서 질문 근거를 충분히 찾지 못했어요." }, { status: 422 }));
   }
+  // 연습한 질문은 재생성해도 보관함에 남긴다 — 새 질문 id(q1, q2…)와 겹치지 않게 이름을 바꿔 붙인다
+  const stamp = Date.now().toString(36);
+  const kept = (saved?.questions ?? [])
+    .filter((q) => q.practicedAt)
+    .map((q) => (/^q\d+$/.test(q.id) ? { ...q, id: `a${stamp}-${q.id}` } : q));
+  questions = [...questions, ...kept];
 
   try {
     const result = (await http.put<Project>(

@@ -81,6 +81,11 @@ export default function InterviewPractice({ project, onSaved }: Props) {
     .slice(page * PAGE, page * PAGE + PAGE)
     .flatMap((id) => byId.get(id) ?? []);
   const practiced = questions.filter((q) => q.practicedAt).length;
+  // 연습한 질문은 아래 보관함에 최신순으로 모은다 — 지금 위에 떠 있는 카드는 중복으로 안 보여준다
+  const shown = new Set(visible.map((q) => q.id));
+  const archived = questions
+    .filter((q) => q.practicedAt && !shown.has(q.id))
+    .sort((a, b) => (b.practicedAt ?? "").localeCompare(a.practicedAt ?? ""));
 
   return (
     <div className="space-y-6">
@@ -103,6 +108,20 @@ export default function InterviewPractice({ project, onSaved }: Props) {
       {visible.map((q, i) => (
         <QuestionCard key={q.id} index={i} question={q} project={project} onSaved={onSaved} />
       ))}
+
+      {archived.length > 0 && (
+        <details className="group">
+          <summary className="flex cursor-pointer list-none items-center gap-1 text-sm font-semibold text-gray-600 hover:text-black">
+            <ChevronRight className="h-4 w-4 transition-transform group-open:rotate-90" />
+            {t("archive", { count: archived.length })}
+          </summary>
+          <div className="mt-4 space-y-6">
+            {archived.map((q, i) => (
+              <QuestionCard key={q.id} index={i} question={q} project={project} onSaved={onSaved} />
+            ))}
+          </div>
+        </details>
+      )}
 
       {interview.themeSources && interview.themeSources.length > 0 && (
         <p className="text-xs text-gray-400">

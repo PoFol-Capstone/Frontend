@@ -557,6 +557,7 @@
         "saving": "Saving…",
         "saveFailed": "Couldn't save your answer. Please try again shortly.",
         "goodAnswer": "Key points of a good answer",
+        "archive": "Practiced questions ({count})",
         "sources": "Question topic sources:"
       },
       "feedbackPrompt": {

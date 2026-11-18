@@ -557,6 +557,7 @@
         "saving": "저장 중…",
         "saveFailed": "답변을 저장하지 못했어요. 잠시 후 다시 시도해주세요.",
         "goodAnswer": "좋은 답의 요소",
+        "archive": "연습한 질문 보관함 ({count})",
         "sources": "질문 주제 출처:"
       },
       "feedbackPrompt": {
