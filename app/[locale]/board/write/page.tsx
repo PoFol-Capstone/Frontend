@@ -1,6 +1,6 @@
 "use client";
 
-import { createPost } from "@/lib/post";
+import { createPostAction } from "@/lib/post";
 import { joinPostContent } from "@/lib/postContent";
 import {
   hasValidRecruitPositions,
@@ -240,7 +240,7 @@ export default function Page() {
           : []),
       ];
 
-      const post = await createPost({
+      const result = await createPostAction({
         title: postTitle,
         content: hasProject ? projectcontent : recruitDescription,
         thumbnailUrl: project.thumbnailUrl || null,
@@ -256,6 +256,13 @@ export default function Page() {
         tagNames: tags,
         document: postDocument,
       });
+      if (!result.ok) {
+        console.error("[board/write] createPost failed:", result.status, result.error);
+        // 400은 백엔드 검증 사유(제목 길이 등)라 그대로 보여주고, 나머지는 일반 문구
+        setSubmitError(result.status === 400 ? result.error : t("submitFailed"));
+        return;
+      }
+      const post = result.data;
       try {
         sessionStorage.removeItem(DRAFT_KEY);
       } catch {
@@ -264,8 +271,7 @@ export default function Page() {
       router.push(`/board/${post.uuid}`);
     } catch (err) {
       console.error("[board/write] createPost failed:", err);
-      const message = err instanceof Error ? err.message : String(err);
-      setSubmitError(message);
+      setSubmitError(t("submitFailed"));
     } finally {
       setIsSubmitting(false);
     }

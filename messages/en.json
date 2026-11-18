@@ -334,7 +334,8 @@
         "summarizeFailed": "AI summary failed.",
         "thumbnailFailed": "Failed to generate thumbnail."
       },
-      "recruitingTitle": "Recruiting"
+      "recruitingTitle": "Recruiting",
+      "submitFailed": "Failed to publish the post. Please try again shortly."
     },
     "edit": {
       "title": "Edit post",

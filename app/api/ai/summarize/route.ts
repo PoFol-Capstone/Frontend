@@ -66,11 +66,8 @@ ${readmeText}
       mainFeatures: result.mainFeatures ?? "",
     });
   } catch (error: unknown) {
-    const err = error as { message?: string; status?: number };
-    console.error("AI 요약 에러:", err);
-    return respond(
-      { error: err.message ?? "AI 요약에 실패했습니다." },
-      { status: err.status ?? 500 },
-    );
+    // 공급자(OpenAI)의 401·원문 메시지를 그대로 넘기면 클라이언트가 "재로그인"으로 오인한다 — 원문은 서버 로그에만
+    console.error("AI 요약 에러:", error);
+    return respond({ error: "AI 요약에 실패했습니다." }, { status: 502 });
   }
 }

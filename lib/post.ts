@@ -2,13 +2,23 @@
 
 import type {
   PagedResponse,
+  PostLink,
   PostListParams,
   RequestPosts,
   ResponsePosts,
   UpdatePostRequest,
 } from "@/types/post";
+import { headers } from "next/headers";
+import { attempt, type ActionResult } from "./actionResult";
 import { requireSessionUuid } from "./authGuard";
 import { http } from "./http.server";
+import { toExternalUrl } from "./safeRedirect";
+
+// "myapp.vercel.app"처럼 스킴 없이 저장되면 상세 화면 링크가 /board/... 상대경로로 깨진다
+const withAbsoluteLinks = <T extends { links: PostLink[] }>(body: T): T => ({
+  ...body,
+  links: body.links.map((l) => ({ ...l, url: toExternalUrl(l.url) })),
+});
 
 /**
  *
@@ -33,12 +43,22 @@ export async function getPosts(
 
 export async function createPost(body: RequestPosts): Promise<ResponsePosts> {
   await requireSessionUuid();
-  const res = await http.post<ResponsePosts>("/api/posts", body);
+  const res = await http.post<ResponsePosts>("/api/posts", withAbsoluteLinks(body));
   return res.data;
 }
 
+/** 클라이언트용: 던진 에러 메시지는 프로덕션에서 가려지므로 결과를 값으로 돌려준다 */
+export async function createPostAction(body: RequestPosts): Promise<ActionResult<ResponsePosts>> {
+  return attempt(() => createPost(body));
+}
+
 export async function getPost(uuid: string): Promise<ResponsePosts> {
-  const res = await http.get<ResponsePosts>(`/api/posts/${uuid}`);
+  // 서버에서 백엔드를 부르므로 실제 방문자 IP를 넘겨야 비로그인 조회수 중복 방지가 사람 단위로 동작한다
+  const h = await headers();
+  const ip = h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip");
+  const res = await http.get<ResponsePosts>(`/api/posts/${uuid}`, {
+    headers: ip ? { "X-Forwarded-For": ip } : undefined,
+  });
   return res.data;
 }
 
@@ -47,7 +67,7 @@ export async function updatePost(
   body: UpdatePostRequest,
 ): Promise<ResponsePosts> {
   await requireSessionUuid();
-  const res = await http.patch<ResponsePosts>(`/api/posts/${uuid}`, body);
+  const res = await http.patch<ResponsePosts>(`/api/posts/${uuid}`, withAbsoluteLinks(body));
   return res.data;
 }
 

@@ -334,7 +334,8 @@
         "summarizeFailed": "AI 요약에 실패했습니다.",
         "thumbnailFailed": "썸네일 생성에 실패했습니다."
       },
-      "recruitingTitle": "모집중"
+      "recruitingTitle": "모집중",
+      "submitFailed": "게시글 등록에 실패했습니다. 잠시 후 다시 시도해주세요."
     },
     "edit": {
       "title": "게시글 수정",
