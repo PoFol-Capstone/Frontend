@@ -286,5 +286,29 @@
     "date": "2026-11-20T03:44:24.000Z",
     "summary": "Take up to 2 in-depth training courses, teaching user experience best practices for successful design. Live online training focused on long-lasting skills for UX professionals. March 1-4, 2027 (Ameri…",
     "image": "https://media.nngroup.com/media/events/opengraph_images/Mar_Asia__Event_card.png"
+  },
+  {
+    "source": "Nielsen Norman Group",
+    "title": "Can AI Generate Good Designs from Raw User Data?",
+    "link": "https://www.nngroup.com/articles/raw-data-vs-synthesized-data/?utm_source=rss&utm_medium=feed&utm_campaign=rss-syndication",
+    "date": "2026-11-20T18:00:00.000Z",
+    "summary": "In our study, AI-generated designs were better when the AI received synthesized findings and recommendations instead of raw user comments alone.",
+    "image": "https://media.nngroup.com/media/articles/opengraph_images/Can_AI_Card.png"
+  },
+  {
+    "source": "Nielsen Norman Group",
+    "title": "Qualitative User-Research Methods: An Overview",
+    "link": "https://www.nngroup.com/articles/qual-research-methods/?utm_source=rss&utm_medium=feed&utm_campaign=rss-syndication",
+    "date": "2026-11-20T18:00:00.000Z",
+    "summary": "Want to know why users struggle or what they need? Start by choosing the right method. Here are 4 of the most popular qualitative UX-research methods.",
+    "image": "https://media.nngroup.com/media/articles/opengraph_images/Qualitative_User_Research_Card.png"
+  },
+  {
+    "source": "Figma Blog",
+    "title": "Workflow lab: Turning context into a plan with Specs and the Figma agent",
+    "link": "https://www.figma.com/blog/workflow-lab-specs-and-the-figma-agent/",
+    "date": "2026-11-20T22:17:00.000Z",
+    "summary": "Bringing scattered context onto the canvas helps teams connect the diagrams, designs, and technical decisions they need to build, all in one place. This workflow shows how Specs and the Figma agent p…",
+    "image": "https://cdn.sanity.io/images/599r6htc/regionalized/2ca1e62056e0643145440afac47fe74aac4957ea-1056x704.jpg?w=1200&q=70&fit=max&auto=format"
   }
 ]
